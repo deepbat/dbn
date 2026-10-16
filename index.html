@@ -27,9 +27,9 @@
 <style>
 :root{--paper:#F6F3EC;--paper-2:#FFFDF9;--paper-3:#EDE7DA;--ink:#16150F;--ink-2:#3B382E;--muted:#6E6857;--line:#DED7C7;--accent:#C2410C;--accent-wash:#F5E6DC;--dim:#CFC8B6;--band-bg:#16150F;--band-fg:#F6F3EC;
 --f-display:"Instrument Serif","Iowan Old Style",Georgia,serif;--f-body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;--pad:clamp(1.25rem,5vw,4.5rem);--nav-h:58px}
-html.dark{--paper:#0F0E0B;--paper-2:#171612;--paper-3:#211F19;--ink:#F4F1E7;--ink-2:#CEC8B8;--muted:#948D7C;--line:#2E2B24;--accent:#F07A3C;--accent-wash:#2B1B11;--dim:#3A362C;--band-bg:#1C1915;--band-fg:#F4F1E7}
+html.dark,html.nt{--paper:#0F0E0B;--paper-2:#171612;--paper-3:#211F19;--ink:#F4F1E7;--ink-2:#CEC8B8;--muted:#948D7C;--line:#2E2B24;--accent:#F07A3C;--accent-wash:#2B1B11;--dim:#3A362C;--band-bg:#1C1915;--band-fg:#F4F1E7}
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;color-scheme:light}html.dark{color-scheme:dark}
+html{-webkit-text-size-adjust:100%;color-scheme:light}html.dark,html.nt{color-scheme:dark}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 img{display:block;max-width:100%}a{color:inherit}
 .mono{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
@@ -150,15 +150,103 @@ footer{border-top:1px solid var(--line);padding:1.4rem 0 2rem;color:var(--muted)
  .hint{display:none}.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}
  .h-head{padding-top:0}.band .pin{padding:5rem 0}.cue i{animation:none}
 }
+
+/* ===== v3 additions ===== */
+html{background:var(--paper)}html.dark #sky{opacity:calc(var(--sa,.5)*.35)}body{background:transparent}
+.contact{background:transparent}
+#sky{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--s1,#fff0) 0%,var(--s2,#fff0) 100%);opacity:var(--sa,.5)}
+#orb{position:fixed;z-index:-1;pointer-events:none;width:clamp(60px,12vw,130px);aspect-ratio:1;border-radius:50%;left:0;top:0;transform:translate3d(var(--ox,50vw),var(--oy,20vh),0);background:radial-gradient(circle at 35% 35%,var(--o1,#fff6),var(--o2,#fff0) 70%);filter:blur(2px);opacity:var(--oa,.7)}
+#stars{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:var(--st,0);background-image:radial-gradient(1.5px 1.5px at 12% 18%,#fff,transparent),radial-gradient(1px 1px at 38% 8%,#fff,transparent),radial-gradient(1.5px 1.5px at 64% 22%,#fff,transparent),radial-gradient(1px 1px at 82% 12%,#fff,transparent),radial-gradient(1px 1px at 24% 40%,#fff,transparent),radial-gradient(1.5px 1.5px at 90% 44%,#fff,transparent),radial-gradient(1px 1px at 52% 34%,#fff,transparent),radial-gradient(1px 1px at 8% 62%,#fff,transparent)}
+#clock{position:fixed;left:1rem;bottom:calc(1rem + env(safe-area-inset-bottom));z-index:41;display:flex;gap:.55rem;align-items:center;padding:.45rem .8rem;border-radius:99px;border:1px solid var(--line);background:color-mix(in srgb,var(--paper-2) 80%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--ink-2);pointer-events:none}
+#clock b{font-weight:500;color:var(--accent);font-variant-numeric:tabular-nums}
+/* previews */
+.card{position:relative}
+.card-idx{position:absolute;top:calc(clamp(1.2rem,3vw,2rem) + .4rem);right:calc(clamp(1.2rem,3vw,2rem) + .7rem);font-size:clamp(1.6rem,5vw,2.4rem)!important;z-index:3;color:#fff;text-shadow:0 1px 8px #0008}
+.pv{position:relative;height:clamp(72px,17svh,170px);border-radius:14px;overflow:hidden;background:#14120e;margin:-.2rem 0 .4rem;flex:none;color:#f4f1e7;font-family:var(--f-mono);font-size:.62rem;line-height:1.6}
+.pv>*{position:absolute}
+.pv iframe{position:absolute;left:0;top:0;width:1100px;height:620px;border:0;transform-origin:0 0;pointer-events:none;opacity:0;transition:opacity .6s;background:#000}
+.pv iframe.on{opacity:1}
+.pv .live{left:.6rem;bottom:.5rem;z-index:2;display:flex;gap:.4rem;align-items:center;background:#0009;padding:.15rem .5rem;border-radius:99px;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase}
+.pv .live i{width:6px;height:6px;border-radius:50%;background:#ff5a3c;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.card:not(.vis) .pv *{animation-play-state:paused!important}
+.pv-stars{inset:0;background:radial-gradient(1.5px 1.5px at 20% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 70% 20%,#ffd7a8,transparent),radial-gradient(2px 2px at 45% 65%,#fff,transparent),radial-gradient(1.5px 1.5px at 85% 70%,#9fd0ff,transparent),radial-gradient(1px 1px at 10% 80%,#fff,transparent),radial-gradient(1px 1px at 60% 45%,#fff,transparent);animation:twk 3s ease-in-out infinite alternate}
+@keyframes twk{to{opacity:.45;transform:scale(1.04)}}
+.pv-ring{left:50%;top:50%;width:70px;height:70px;margin:-35px;border-radius:50%;border:2px solid #F07A3C;animation:ring 2.4s ease-out infinite}
+.pv-ring.b{animation-delay:1.2s}
+@keyframes ring{from{transform:scale(.3);opacity:1}to{transform:scale(2.6);opacity:0}}
+.pv-grid{inset:.7rem;display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:.28rem;align-content:start}
+.pv-grid span{height:.62rem;border-radius:3px;background:#2c2922}
+.pv-grid span.n{background:#3b372c}
+.pv-grid span.ok{background:#2fa86b;animation:okp 4s infinite}
+.pv-grid span.ok:nth-child(3n){animation-delay:.9s}.pv-grid span.ok:nth-child(4n){animation-delay:1.8s}.pv-grid span.ok:nth-child(5n){animation-delay:2.6s}
+@keyframes okp{0%,20%{background:#2c2922}30%,100%{background:#2fa86b}}
+.pv-term{inset:0;padding:.7rem .8rem;white-space:nowrap;overflow:hidden}
+.pv-term div{width:0;overflow:hidden;animation:typ 6s steps(34) infinite}
+.pv-term div:nth-child(2){animation-delay:1.2s;color:#F07A3C}.pv-term div:nth-child(3){animation-delay:2.4s;color:#9fd0ff}.pv-term div:nth-child(4){animation-delay:3.6s;color:#7be0a4}
+@keyframes typ{0%{width:0}18%,90%{width:34ch}100%{width:0}}
+.pv-chart{inset:0}.pv-chart svg{width:100%;height:100%}
+.pv-chart path{fill:none;stroke:#7be0a4;stroke-width:2;stroke-dasharray:420;stroke-dashoffset:420;animation:draw 5s ease-in-out infinite}
+.pv-chart path.f{stroke:none;fill:#7be0a422;stroke-dasharray:none;animation:fade 5s infinite}
+@keyframes draw{0%{stroke-dashoffset:420}60%,100%{stroke-dashoffset:0}}@keyframes fade{0%,40%{opacity:0}70%,100%{opacity:1}}
+.pv-bars{inset:.8rem;display:flex;flex-direction:column;gap:.5rem;justify-content:center}
+.pv-bars span{display:block;height:.55rem;border-radius:99px;background:#2c2922;position:relative;overflow:hidden}
+.pv-bars span:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#F07A3C,#ffb27a);transform-origin:0 50%;animation:fill 4s ease-in-out infinite}
+.pv-bars span:nth-child(2):after{animation-delay:.5s}.pv-bars span:nth-child(3):after{animation-delay:1s}.pv-bars span:nth-child(4):after{animation-delay:1.5s}
+@keyframes fill{0%{transform:scaleX(0)}60%,100%{transform:scaleX(var(--w,.8))}}
+.pv-bars span:nth-child(1){--w:.9}.pv-bars span:nth-child(2){--w:.6}.pv-bars span:nth-child(3){--w:.75}.pv-bars span:nth-child(4){--w:.45}
+.pv-win{inset:.6rem .8rem 0;border-radius:10px 10px 0 0;background:#211f19;border:1px solid #3a362c;overflow:hidden}
+.pv-win:before{content:"";display:block;height:14px;background:#2e2b24;box-shadow:inset 8px 0 0 -4px #ff5f57}
+.pv-win div{position:absolute;left:0;right:0;top:14px;animation:scr 7s ease-in-out infinite alternate}
+.pv-win div i{display:block;height:.7rem;margin:.55rem .7rem;border-radius:4px;background:#3a362c}
+.pv-win div i:nth-child(3n){width:55%;background:#F07A3C66}.pv-win div i:nth-child(3n+1){width:80%}
+@keyframes scr{to{transform:translateY(-60%)}}
+/* contact form */
+.cform{display:grid;gap:.8rem;margin-top:1.6rem;max-width:520px}
+.cform label{display:grid;gap:.35rem;color:var(--muted)}
+.cform input,.cform textarea{font:inherit;font-family:var(--f-body);font-size:1rem;letter-spacing:0;text-transform:none;color:var(--ink);background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:.75rem .9rem;width:100%}
+.cform textarea{min-height:120px;resize:vertical}
+.cform input:focus,.cform textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.cform .row{display:flex;gap:.6rem;flex-wrap:wrap}.cform small{color:var(--muted);font-size:.8rem}
+/* sound */
+#snd{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer}
+#snd svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6}#snd .w2{display:none}#snd[aria-pressed=true] .w2{display:inline}#snd[aria-pressed=true]{color:var(--accent);border-color:var(--accent)}
+/* intro */
+#intro{position:fixed;inset:0;z-index:200;background:#0F0E0B;color:#F4F1E7;display:grid;place-items:center;animation:introOut .7s 3.2s forwards;transition:transform .8s cubic-bezier(.7,0,.2,1)}
+#intro.go{transform:translateY(-100%)}
+#intro .in{text-align:center;font-family:var(--f-display);font-size:clamp(2.4rem,9vw,5rem);letter-spacing:-.02em;line-height:1}
+#intro .in em{color:#F07A3C}
+#intro .cnt{display:block;margin-top:1.2rem;font-family:var(--f-mono);font-size:.8rem;letter-spacing:.2em;color:#948D7C;font-variant-numeric:tabular-nums}
+#intro .ln{display:block;height:2px;width:min(60vw,320px);margin:.9rem auto 0;background:#2E2B24;position:relative;overflow:hidden}#intro .ln i{position:absolute;inset:0;background:#F07A3C;transform-origin:0 50%;transform:scaleX(var(--ip,0))}
+@keyframes introOut{to{transform:translateY(-100%);visibility:hidden}}
+#intro.done{display:none}
+/* desktop cursor and hover */
+#cur{position:fixed;left:0;top:0;z-index:150;pointer-events:none;width:34px;height:34px;margin:-17px 0 0 -17px;border:1.5px solid var(--accent);border-radius:50%;transition:width .25s,height .25s,margin .25s,background .25s,opacity .3s;opacity:0;mix-blend-mode:normal}
+#cur.big{width:68px;height:68px;margin:-34px 0 0 -34px;background:color-mix(in srgb,var(--accent) 16%,transparent)}
+#cur-dot{position:fixed;left:0;top:0;z-index:151;pointer-events:none;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--accent);opacity:0}
+@media (hover:hover) and (pointer:fine) and (min-width:821px){
+ .has-cur,.has-cur a,.has-cur button{cursor:none}
+ .card{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+ .card:hover{box-shadow:0 26px 50px -18px rgba(22,21,15,.4)}
+ .cta{transition:transform .2s}
+ .ph{transition:transform .35s}.ph:hover{transform:scale(1.03)}
+ .socials a{transition:padding .3s,color .3s}.socials a:hover{padding-left:.8rem;color:var(--accent)}
+}
+@media (max-width:820px){.hint span:first-child{display:none}#orb{opacity:.5}#clock{bottom:calc(1rem + env(safe-area-inset-bottom));font-size:.62rem}.pv iframe{display:none}}
+@media (prefers-reduced-motion:reduce){#intro{display:none}#orb,#sky,#stars{transition:none}.pv *{animation:none!important}.card{transform:none!important}}
 </style>
 </head>
 <body>
+<div id="intro" aria-hidden="true"><div class="in"><span>Deepak <em>Batra</em></span><span class="ln"><i></i></span><span class="cnt">00</span></div></div>
+<div id="sky"></div><div id="stars"></div><div id="orb"></div><div id="cur"></div><div id="cur-dot"></div>
+<div id="clock" class="mono" aria-hidden="true"><b id="clk">06:30</b><span id="clk-l">Sunrise</span></div>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <a class="skip" href="#about">Skip to content</a>
 <nav class="nav" id="nav" aria-label="Primary">
  <a class="brand" href="#top" aria-label="Deepak Batra, back to top"><b class="brand-long">Deepak Batra</b><b class="brand-short" aria-hidden="true">DB</b><span class="mono brand-tag" aria-hidden="true">/ dbn</span></a>
  <div class="nav-links" id="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#archive">Archive</a><a href="#contact">Contact</a></div>
  <div class="nav-actions"><a class="cta" href="#contact">Say hello</a>
+  <button id="snd" type="button" aria-pressed="false" aria-label="Turn on ambient sound"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path class="w2" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>
   <button class="theme" id="theme" type="button" aria-label="Toggle dark mode"><svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg><svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg></button></div>
 </nav>
 <main>
@@ -208,13 +296,13 @@ footer{border-top:1px solid var(--line);padding:1.4rem 0 2rem;color:var(--muted)
  <div class="pin">
   <div class="h-head"><p class="eyebrow mono">02 / The work &nbsp; 07 experiments</p><h2 class="title">Ideas become <em>things.</em></h2></div>
   <div class="track" data-track>
-<article class="card"><span class="card-idx">01</span><h3>Punjabi Rewind</h3><p class="tags mono">Vanilla JS · WebGL · Music</p><p>Hindi and Punjabi hits in an interactive, fluid-ink music experience. A browser experiment built around the songs I keep coming back to.</p><div class="note"><h4 class="mono">Link</h4><div class="pj-links"><a class="cta" href="https://deepbat.github.io/punjabi-rewind/" target="_blank" rel="noopener">Open Punjabi Rewind</a></div></div></article>
-<article class="card"><span class="card-idx">02</span><h3>FCS Attendance</h3><p class="tags mono">Workplace tool · Attendance</p><p>A workplace attendance project. One of the tools I build around the practical needs of everyday office work.</p><div class="note"><h4 class="mono">Status</h4><p>In use, quietly improving one small thing at a time.</p></div></article>
-<article class="card"><span class="card-idx">03</span><h3>Local LLM Experiments</h3><p class="tags mono">Ollama · OpenClaw · Embeddings · CUDA</p><p>Experiments with locally-run language models, Ollama, OpenClaw and embeddings. I explore what local AI can actually do with NVIDIA CUDA and my own machines — no headline required.</p><div class="note"><h4 class="mono">Why</h4><p>Because running it yourself is the only way to find out what it really does.</p></div></article>
-<article class="card"><span class="card-idx">04</span><h3>Trading Tools</h3><p class="tags mono">NIFTY Options · Python · Flattrade · Kotak Neo</p><p>Tools and experiments around NIFTY options, Python and APIs. I use Flattrade and Kotak Neo in my own trading workflow.</p><div class="note"><h4 class="mono">Note</h4><p>Built for my own workflow first. Everything else is a happy accident.</p></div></article>
-<article class="card"><span class="card-idx">05</span><h3>Scholarship &amp; Grant Software</h3><p class="tags mono">WPF / .NET · SQLite · PDF Export</p><p>A Windows desktop application for managing scholarship and grant records, applicant workflows and reporting. Built end-to-end as a practical tool I actually use.</p><div class="note"><h4 class="mono">Behind the build</h4><p>I wanted to turn a practical process into something orderly — and to learn what building real desktop software actually takes: installers, data migrations, error states and all.</p></div></article>
-<article class="card"><span class="card-idx">06</span><h3>Office Automation</h3><p class="tags mono">PowerShell · Python · Office 365</p><p>Small tools and scheduled scripts that quietly remove repetitive work from the week. Mostly PowerShell, some Apps Script.</p><div class="note"><h4 class="mono">Behind the build</h4><p>If something is repetitive and interesting enough to automate, I usually end up trying. Most of these live as small scripts that never needed a UI.</p></div></article>
-<article class="card"><span class="card-idx">07</span><h3>Personal Websites</h3><p class="tags mono">HTML / CSS · Three.js · WebGL</p><p>Websites I have built as experiments in design, interaction and browser-native technology. Each version is a self-imposed brief — including the one you are reading.</p><div class="note"><h4 class="mono">Behind the build</h4><p>I like seeing how far a browser can be pushed while keeping it useful. No frameworks unless they earn their place.</p><div class="pj-links"><a class="cta cta--ghost" href="https://github.com/deepbat/dbn" target="_blank" rel="noopener">This site’s code</a><a class="cta cta--ghost" href="https://github.com/deepbat" target="_blank" rel="noopener">More on GitHub</a></div></div></article>
+<article class="card"><span class="card-idx">01</span><div class="pv" data-live="https://deepbat.github.io/punjabi-rewind/"><div class="pv-stars"></div><div class="pv-ring"></div><div class="pv-ring b"></div><span class="live mono"><i></i>Live preview</span></div><h3>Punjabi Rewind</h3><p class="tags mono">Vanilla JS · WebGL · Music</p><p>Hindi and Punjabi hits in an interactive, fluid-ink music experience. A browser experiment built around the songs I keep coming back to.</p><div class="note"><h4 class="mono">Link</h4><div class="pj-links"><a class="cta" href="https://deepbat.github.io/punjabi-rewind/" target="_blank" rel="noopener">Open Punjabi Rewind</a></div></div></article>
+<article class="card"><span class="card-idx">02</span><div class="pv"><div class="pv-grid"><span class="n"></span><span></span><span class="ok"></span><span class="ok"></span><span></span><span class="ok"></span><span class="n"></span><span class="ok"></span><span class="ok"></span><span></span><span class="ok"></span><span class="ok"></span><span class="n"></span><span class="ok"></span><span></span><span class="ok"></span><span class="ok"></span><span></span><span class="n"></span><span></span><span class="ok"></span><span class="ok"></span><span></span><span class="ok"></span></div><span class="live mono"><i></i>Preview</span></div><h3>FCS Attendance</h3><p class="tags mono">Workplace tool · Attendance</p><p>A workplace attendance project. One of the tools I build around the practical needs of everyday office work.</p><div class="note"><h4 class="mono">Status</h4><p>In use, quietly improving one small thing at a time.</p></div></article>
+<article class="card"><span class="card-idx">03</span><div class="pv"><div class="pv-term"><div>$ ollama run llama3</div><div>&gt;&gt;&gt; embed(&quot;office notes&quot;)</div><div>[0.12, -0.83, 0.41, ...]</div><div>running on cuda:0 &#10003;</div></div></div><h3>Local LLM Experiments</h3><p class="tags mono">Ollama · OpenClaw · Embeddings · CUDA</p><p>Experiments with locally-run language models, Ollama, OpenClaw and embeddings. I explore what local AI can actually do with NVIDIA CUDA and my own machines — no headline required.</p><div class="note"><h4 class="mono">Why</h4><p>Because running it yourself is the only way to find out what it really does.</p></div></article>
+<article class="card"><span class="card-idx">04</span><div class="pv"><div class="pv-chart"><svg viewBox="0 0 300 100" preserveAspectRatio="none"><path class="f" d="M0 80 L30 70 L60 76 L90 52 L120 58 L150 36 L180 44 L210 22 L240 30 L270 12 L300 18 L300 100 L0 100Z"/><path d="M0 80 L30 70 L60 76 L90 52 L120 58 L150 36 L180 44 L210 22 L240 30 L270 12 L300 18"/></svg></div></div><h3>Trading Tools</h3><p class="tags mono">NIFTY Options · Python · Flattrade · Kotak Neo</p><p>Tools and experiments around NIFTY options, Python and APIs. I use Flattrade and Kotak Neo in my own trading workflow.</p><div class="note"><h4 class="mono">Note</h4><p>Built for my own workflow first. Everything else is a happy accident.</p></div></article>
+<article class="card"><span class="card-idx">05</span><div class="pv"><div class="pv-bars"><span></span><span></span><span></span><span></span></div></div><h3>Scholarship &amp; Grant Software</h3><p class="tags mono">WPF / .NET · SQLite · PDF Export</p><p>A Windows desktop application for managing scholarship and grant records, applicant workflows and reporting. Built end-to-end as a practical tool I actually use.</p><div class="note"><h4 class="mono">Behind the build</h4><p>I wanted to turn a practical process into something orderly — and to learn what building real desktop software actually takes: installers, data migrations, error states and all.</p></div></article>
+<article class="card"><span class="card-idx">06</span><div class="pv"><div class="pv-term"><div>PS&gt; Get-ChildItem *.xlsx</div><div>merging 14 sheets...</div><div>report.pdf saved</div><div>done in 2.1s &#10003;</div></div></div><h3>Office Automation</h3><p class="tags mono">PowerShell · Python · Office 365</p><p>Small tools and scheduled scripts that quietly remove repetitive work from the week. Mostly PowerShell, some Apps Script.</p><div class="note"><h4 class="mono">Behind the build</h4><p>If something is repetitive and interesting enough to automate, I usually end up trying. Most of these live as small scripts that never needed a UI.</p></div></article>
+<article class="card"><span class="card-idx">07</span><div class="pv"><div class="pv-win"><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div><h3>Personal Websites</h3><p class="tags mono">HTML / CSS · Three.js · WebGL</p><p>Websites I have built as experiments in design, interaction and browser-native technology. Each version is a self-imposed brief — including the one you are reading.</p><div class="note"><h4 class="mono">Behind the build</h4><p>I like seeing how far a browser can be pushed while keeping it useful. No frameworks unless they earn their place.</p><div class="pj-links"><a class="cta cta--ghost" href="https://github.com/deepbat/dbn" target="_blank" rel="noopener">This site’s code</a><a class="cta cta--ghost" href="https://github.com/deepbat" target="_blank" rel="noopener">More on GitHub</a></div></div></article>
 
   </div>
   <div class="hint mono"><span>Keep scrolling</span><span class="bar"><i></i></span></div>
@@ -259,6 +347,13 @@ footer{border-top:1px solid var(--line);padding:1.4rem 0 2rem;color:var(--muted)
   <div class="rv">
    <p style="color:var(--ink-2);max-width:44ch">If you have a stubborn problem, a tool that should exist, or just want to talk about local models, chai or old Punjabi songs — my inbox is open.</p>
    <div class="c-actions"><a class="cta cta--lg" href="https://wa.me/919779777570" target="_blank" rel="noopener">WhatsApp</a><button class="cta cta--lg cta--ghost" type="button" id="copy-mail" data-mail="deepak.batra@outlook.com">Copy email</button></div>
+   <form class="cform" id="cform" novalidate>
+    <label class="mono">Your name<input id="cf-n" name="n" autocomplete="name" placeholder="Name" required/></label>
+    <label class="mono">Your email or phone (optional)<input id="cf-c" name="c" autocomplete="email" placeholder="So I can reply"/></label>
+    <label class="mono">Message<textarea id="cf-m" name="m" placeholder="What are you working on?" required></textarea></label>
+    <div class="row"><button class="cta cta--lg" type="submit" id="cf-mail">Send by email</button><button class="cta cta--lg cta--ghost" type="button" id="cf-wa">Send on WhatsApp</button></div>
+    <small id="cf-s" role="status">Opens your email app or WhatsApp with the message filled in.</small>
+   </form>
    <p style="margin-top:1.6rem"><a href="mailto:deepak.batra@outlook.com">deepak.batra@outlook.com</a> &nbsp;/&nbsp; <span class="mono" style="color:var(--muted)">+91 97797 77570</span></p>
   </div>
   <ul class="socials rv">
@@ -317,6 +412,73 @@ var tick=false;addEventListener('scroll',function(){if(!tick){tick=true;requestA
 var rt;addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(Math.abs(innerHeight-vh)>140||true)measure()},150)});
 addEventListener('load',measure);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measure);
 measure();
+})();
+
+/* ===== v3 JS ===== */
+(function(){
+var d=document,root=d.documentElement,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var $=function(s,c){return(c||d).querySelector(s)},$$=function(s,c){return[].slice.call((c||d).querySelectorAll(s))};
+var fine=matchMedia('(hover:hover) and (pointer:fine)').matches&&innerWidth>820;
+/* intro */
+var intro=$('#intro');
+if(intro){ if(reduce){intro.remove()} else {
+ var cnt=$('.cnt',intro),t0=performance.now(),dur=innerWidth>820?1300:900,fin=false;
+ function fn(){if(fin)return;fin=true;intro.classList.add('go');setTimeout(function(){intro.classList.add('done')},900)}
+ (function step(n){var p=Math.min(1,(n-t0)/dur);cnt.textContent=String(Math.round(p*100)).padStart(2,'0');intro.style.setProperty('--ip',p);if(p<1)requestAnimationFrame(step);else setTimeout(fn,150)})(t0);
+ setTimeout(fn,2500);
+}}
+/* cards visibility + lazy live preview (desktop only) */
+var cards=$$('.card');
+if('IntersectionObserver' in window){var cio=new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('vis',e.isIntersecting);
+ if(e.isIntersecting&&fine&&!reduce){var pv=$('.pv[data-live]',e.target);if(pv&&!pv._l){pv._l=1;var f=d.createElement('iframe');f.src=pv.dataset.live;f.loading='lazy';f.title='Live preview';f.setAttribute('aria-hidden','true');f.tabIndex=-1;f.setAttribute('sandbox','allow-scripts allow-same-origin');
+  function fit(){f.style.transform='scale('+(pv.clientWidth/1100)+')'}fit();addEventListener('resize',fit);
+  f.addEventListener('load',function(){f.classList.add('on')});pv.insertBefore(f,pv.firstChild)}}})},{threshold:.2});cards.forEach(function(c){cio.observe(c)})}
+else cards.forEach(function(c){c.classList.add('vis')});
+/* day in a life sky */
+var stops=[ // hour, top, bottom, alpha, orb inner, orb outer, stars, label
+ [6.5,'#f7a77a','#ffe3c2',.55,'#fff1c9cc','#ffb870',0,'Sunrise'],
+ [9,'#9fd0f5','#fff2d6',.5,'#fff7d6cc','#ffd36e',0,'Office hours'],
+ [13,'#7fc0f2','#e9f6ff',.5,'#fffbe0dd','#ffe98a',0,'Lunch'],
+ [17,'#f3c27a','#ffe6bd',.55,'#ffe7b0cc','#ffb04c',0,'Excel o\u2019clock'],
+ [19,'#e8806a','#f7c079',.6,'#ffd1a0cc','#ff7a45',.1,'Chai time'],
+ [21,'#2a2f6b','#6b4a86',.7,'#f4f1e7ee','#cfd6ff',.9,'Markets & NIFTY'],
+ [24,'#0b0d2a','#1c1740',.8,'#f4f1e7ee','#b9c4ff',1,'Curiosity hours']];
+function hex(h){h=h.replace('#','');var n=h.length===8?4:3;var o=[];for(var i=0;i<n;i++)o.push(parseInt(h.substr(i*2,2),16));if(n===3)o.push(255);return o}
+function mix(a,b,t){var A=hex(a),B=hex(b),o=[];for(var i=0;i<4;i++)o.push(Math.round(A[i]+(B[i]-A[i])*t));return 'rgba('+o[0]+','+o[1]+','+o[2]+','+(o[3]/255).toFixed(2)+')'}
+var sky=$('#sky'),orb=$('#orb'),clk=$('#clk'),clkl=$('#clk-l'),lastH=-1;
+function paintSky(){var max=root.scrollHeight-innerHeight,p=max>0?Math.min(1,Math.max(0,scrollY/max)):0;
+ var h=6.5+p*(24-6.5),i=0;while(i<stops.length-2&&h>stops[i+1][0])i++;var a=stops[i],b=stops[i+1],t=Math.min(1,Math.max(0,(h-a[0])/(b[0]-a[0])));
+ root.style.setProperty('--s1',mix(a[1],b[1],t));root.style.setProperty('--s2',mix(a[2],b[2],t));
+ root.style.setProperty('--sa',(a[3]+(b[3]-a[3])*t).toFixed(2));root.style.setProperty('--o1',mix(a[4],b[4],t));root.style.setProperty('--o2',mix(a[5],b[5],t).replace(/,[\d.]+\)$/,',0)'));
+ root.style.setProperty('--st',(a[6]+(b[6]-a[6])*t).toFixed(2));
+ var arc=p, ox=innerWidth*(.08+.84*arc),oy=innerHeight*(.62-Math.sin(arc*Math.PI)*.5);root.style.setProperty('--ox',ox.toFixed(0)+'px');root.style.setProperty('--oy',oy.toFixed(0)+'px');
+ root.classList.toggle('nt',h>=20.3);var hh=Math.floor(h)%24,mm=Math.floor((h%1)*60/5)*5;var s=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');if(s!==lastH){lastH=s;clk.textContent=s;var lab=stops[0][7];for(var k=0;k<stops.length;k++)if(h>=stops[k][0])lab=stops[k][7];clkl.textContent=lab}}
+if(reduce){root.style.setProperty('--sa','.35');root.style.setProperty('--s1','#f7d9b8');root.style.setProperty('--s2','#fff6e6');$('#clock').style.display='none';$('#orb').style.display='none'}
+else{var sk=false;addEventListener('scroll',function(){if(!sk){sk=true;requestAnimationFrame(function(){sk=false;paintSky()})}},{passive:true});addEventListener('resize',paintSky);addEventListener('load',paintSky);paintSky()}
+/* ambient sound: generated with WebAudio, off by default, no autoplay */
+var snd=$('#snd'),ac=null,master=null,on=false;
+function build(){var C=window.AudioContext||window.webkitAudioContext;if(!C)return false;ac=new C();master=ac.createGain();master.gain.value=0;master.connect(ac.destination);
+ var lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=900;lp.connect(master);
+ [[130.81,0],[196,4],[261.63,-3],[329.63,6]].forEach(function(n,i){var o=ac.createOscillator();o.type=i%2?'sine':'triangle';o.frequency.value=n[0];o.detune.value=n[1];var g=ac.createGain();g.gain.value=.07/(1+i*.4);var l=ac.createOscillator();l.frequency.value=.07+i*.03;var lg=ac.createGain();lg.gain.value=.03;l.connect(lg);lg.connect(g.gain);o.connect(g);g.connect(lp);o.start();l.start()});
+ return true}
+snd.addEventListener('click',function(){if(!ac&&!build())return;on=!on;snd.setAttribute('aria-pressed',on);snd.setAttribute('aria-label',on?'Turn off ambient sound':'Turn on ambient sound');
+ if(on){ac.resume&&ac.resume()}master.gain.cancelScheduledValues(ac.currentTime);master.gain.setTargetAtTime(on?.55:0,ac.currentTime,.6);
+ if(!on)setTimeout(function(){if(!on&&ac&&ac.suspend)ac.suspend()},2500)});
+d.addEventListener('visibilitychange',function(){if(!ac||!on)return;if(d.hidden)ac.suspend();else ac.resume()});
+/* desktop cursor, tilt, magnetic buttons */
+if(fine&&!reduce){root.classList.add('has-cur');var c=$('#cur'),dot=$('#cur-dot'),x=-100,y=-100,cx=x,cy=y,run=false;
+ function loop(){cx+=(x-cx)*.18;cy+=(y-cy)*.18;c.style.transform='translate3d('+cx.toFixed(1)+'px,'+cy.toFixed(1)+'px,0)';if(Math.abs(x-cx)+Math.abs(y-cy)>.3)requestAnimationFrame(loop);else run=false}
+ addEventListener('mousemove',function(e){x=e.clientX;y=e.clientY;c.style.opacity=1;dot.style.opacity=1;dot.style.transform='translate3d('+x+'px,'+y+'px,0)';if(!run){run=true;requestAnimationFrame(loop)}},{passive:true});
+ d.addEventListener('mouseleave',function(){c.style.opacity=0;dot.style.opacity=0});
+ d.addEventListener('mouseover',function(e){c.classList.toggle('big',!!e.target.closest('a,button,.ph,.card,input,textarea'))});
+ cards.forEach(function(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;el.style.setProperty('--ry',(px*7).toFixed(2)+'deg');el.style.setProperty('--rx',(-py*7).toFixed(2)+'deg')});el.addEventListener('mouseleave',function(){el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg')})});
+ $$('.cta,.theme,#snd').forEach(function(b){b.addEventListener('mousemove',function(e){var r=b.getBoundingClientRect();b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.22).toFixed(1)+'px,'+((e.clientY-r.top-r.height/2)*.3).toFixed(1)+'px)'});b.addEventListener('mouseleave',function(){b.style.transform=''})})}
+/* contact form: no backend, no account. mailto and wa.me with the text filled in */
+var f=$('#cform');if(f){var MAIL='deepak.batra@outlook.com',WA='919779777570',st=$('#cf-s');
+ function body(){var n=$('#cf-n').value.trim(),c=$('#cf-c').value.trim(),m=$('#cf-m').value.trim();return{n:n,m:m,t:m+'\n\n- '+n+(c?'\n'+c:'')}}
+ function ok(){var b=body();if(!b.n||!b.m){st.textContent='Please add your name and a message.';(b.n?$('#cf-m'):$('#cf-n')).focus();return null}return b}
+ f.addEventListener('submit',function(e){e.preventDefault();var b=ok();if(!b)return;st.textContent='Opening your email app...';location.href='mailto:'+MAIL+'?subject='+encodeURIComponent('Hello from '+b.n+' (via your site)')+'&body='+encodeURIComponent(b.t)});
+ $('#cf-wa').addEventListener('click',function(){var b=ok();if(!b)return;st.textContent='Opening WhatsApp...';window.open('https://wa.me/'+WA+'?text='+encodeURIComponent('Hi Deepak, '+b.t),'_blank','noopener')})}
 })();
 </script>
 </body>
