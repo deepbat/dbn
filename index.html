@@ -305,48 +305,6 @@ html.dark .cl i{background:radial-gradient(closest-side,#5d647da6 0%,#3c415766 5
  .pjb{min-height:0;padding:1.15rem var(--pad)}
 }
 @media (max-height:560px) and (orientation:landscape){.h-photo{width:min(40vw,46svh)}.h-line{font-size:11svh}}
-
-/* --- 2026-10-17 round: borrowed ideas, recreated in original form --- */
-/* spine: scroll-drawn line (gsap-style draw), driven by overall page progress --pp */
-.draw-line{position:fixed;left:max(6px,1.2vw);top:0;bottom:0;width:min(84px,11vw);z-index:-4;pointer-events:none;opacity:.42}
-html.dark .draw-line{opacity:.28}
-.draw-line svg{width:100%;height:100%;display:block}
-.draw-line path{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--pp,0));transition:stroke .5s}
-/* band as a rounded section card (awake-style stacked colour cards) */
-.band{background:transparent}
-.band .pin{top:10px;height:calc(100svh - 20px);width:calc(100% - 20px);margin:0 auto;border-radius:clamp(18px,2.6vw,30px);background:var(--band-bg);color:var(--band-fg)}
-/* spin badge: circular text scrub-rotated by the band chapter progress (gsap pinwheel, recreated) */
-.spin-badge{position:absolute;right:clamp(1rem,4vw,3rem);top:calc(var(--nav-h) + 1.2rem);width:clamp(84px,11vw,124px);aspect-ratio:1;transform:rotate(calc(var(--p,0)*540deg));will-change:transform;pointer-events:none}
-.spin-badge text{font-family:var(--f-mono);font-size:10.2px;letter-spacing:.22em;text-transform:uppercase;fill:var(--accent)}
-.spin-badge .sb-c{fill:var(--accent)}
-/* stacking cards: awake-style pinned deck, driven by chapter --p */
-.stack{--len:360}
-.stack .pin{justify-content:center}
-.stack .h-head{padding-top:0}
-.st-deck{position:relative;height:min(58svh,520px);max-width:960px;margin:1.6rem auto 0;width:100%}
-.st-card{position:absolute;inset:0;z-index:calc(1 + var(--n));background:var(--paper-2);border:1px solid var(--line);border-radius:24px;padding:clamp(1.3rem,3.2vw,2.4rem);display:flex;flex-direction:column;box-shadow:0 26px 64px -30px rgba(22,21,15,.38);will-change:transform;
- --pi:clamp(0,calc(var(--p,0)*4 - var(--n)),1);
- --ab:clamp(0,calc(var(--p,0)*4 - var(--n) - 1),2);
- transform:translate3d(0,calc((1 - var(--pi))*112% + var(--ab)*-14px),0) rotate(calc((1 - var(--pi))*5deg + var(--rot,0deg))) scale(calc(1 - var(--ab)*.04))}
-html.dark .st-card{box-shadow:0 30px 70px -30px rgba(0,0,0,.8)}
-.st-card .st-no{color:var(--cc,var(--accent));transition:color .5s}
-.st-card h3{font-family:var(--f-display);font-weight:400;font-size:clamp(1.9rem,5vw,3.2rem);line-height:1;margin:.4rem 0 .6rem}
-.st-card .st-tag{color:var(--cc,var(--accent));font-size:.66rem;transition:color .5s}
-.st-card p.st-d{color:var(--ink-2);font-size:clamp(.92rem,2.2vw,1.02rem);max-width:52ch}
-.st-card .st-bar{margin-top:auto;height:4px;border-radius:99px;background:var(--line);overflow:hidden}
-.st-card .st-bar i{display:block;height:100%;background:var(--cc,var(--accent));border-radius:99px;width:calc(var(--pi)*100%);transition:background-color .5s}
-/* word flipper (awake "I need" carousel, recreated as an auto-rotating line) */
-.flip{color:var(--muted)}
-.flip-w{display:inline-block;height:1.35em;overflow:hidden;vertical-align:bottom}
-.flip-c{display:flex;flex-direction:column;transition:transform .55s cubic-bezier(.7,0,.2,1);will-change:transform}
-.flip-c span{height:1.35em;line-height:1.35em;color:var(--accent);transition:color .5s;white-space:nowrap}
-/* data-speed parallax on the big card numbers (scroll-driven, compositor-only, no-op fallback) */
-@keyframes idxdrift{from{transform:translate3d(0,26px,0)}to{transform:translate3d(0,-26px,0)}}
-@supports (animation-timeline: view()){
- @media (prefers-reduced-motion: no-preference){
-  .pcard-idx{animation:idxdrift linear both;animation-timeline:view();animation-range:entry 0% exit 100%}
- }
-}
 /* fallback: until the script confirms the pinned engine is healthy (html.pin-on), every chapter flows normally and the archive track scrolls natively - no script, no blank frames */
 html:not(.pin-on) .chap{height:auto!important}
 html:not(.pin-on) .pin{position:static;height:auto;min-height:0;padding:5rem 0 2rem;overflow:visible}
@@ -374,10 +332,6 @@ html:not(.pin-on) #intro{display:none}
 html:not(.pin-on) #sun,html:not(.pin-on) #moon,html:not(.pin-on) .st,html:not(.pin-on) .cl{display:none}
 html:not(.pin-on) #top-btn{display:none}
 html:not(.pin-on) .band .pin{padding:5rem 0}
-html:not(.pin-on) .st-card{position:static;transform:none;margin-bottom:1rem}
-html:not(.pin-on) .st-deck{height:auto}
-html:not(.pin-on) .spin-badge,html:not(.pin-on) .draw-line{display:none}
-
 /* reduced motion: calm readable page, everything still works */
 @media (prefers-reduced-motion:reduce){
  .chap{height:auto!important}.pin{position:static;height:auto;min-height:0;padding:5rem 0 2rem;overflow:visible}
@@ -387,7 +341,6 @@ html:not(.pin-on) .spin-badge,html:not(.pin-on) .draw-line{display:none}
  .hint{display:none}.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}
  .h-head{padding-top:0}.band .pin{padding:5rem 0}.cue i{animation:none}
  #intro{display:none}#sun,#moon,.st{display:none}.cl{display:none}
- .spin-badge,.draw-line{display:none}.st-card{position:static;transform:none;margin-bottom:1rem}.st-deck{height:auto}.flip-c{transform:none!important;transition:none}
  .kx .lx{opacity:1!important;transform:none!important;transition:none!important}
  .kxv,.title,.mega,.h-line{transform:none!important}
  .pcard{transform:none!important}.pcard .glow{display:none}
@@ -406,7 +359,6 @@ html:not(.pin-on) .spin-badge,html:not(.pin-on) .draw-line{display:none}
 <div class="cl cl1"><i style="left:6%;top:14%;width:17vw;height:11svh"></i><i style="left:48%;top:24%;width:23vw;height:13svh"></i><i style="left:82%;top:9%;width:15vw;height:9svh"></i></div>
 <div class="cl cl2"><i style="left:18%;top:36%;width:27vw;height:15svh"></i><i style="left:62%;top:46%;width:19vw;height:11svh"></i><i style="left:90%;top:32%;width:21vw;height:12svh"></i></div>
 <div class="cl cl3"><i style="left:2%;top:60%;width:35vw;height:17svh"></i><i style="left:46%;top:70%;width:29vw;height:15svh"></i><i style="left:84%;top:58%;width:31vw;height:16svh"></i></div>
-<div class="draw-line" aria-hidden="true"><svg viewBox="0 0 100 1000" preserveAspectRatio="none"><path d="M50 -10 C 96 120 4 230 50 340 C 96 450 4 560 50 670 C 96 780 4 890 50 1010" pathLength="1" vector-effect="non-scaling-stroke"/></svg></div>
 <div id="cur"></div><div id="cur-dot"></div>
 <div id="now" class="mono" role="status" aria-label="Right now"><span><span class="live-dot"></span>Jalandhar <b id="n-t">--:--</b> <i id="n-d"></i></span><span id="n-w" hidden></span><span id="n-a"></span><span id="n-g" hidden></span></div>
 <div id="tm-note" class="mono" role="status" aria-live="polite"></div>
@@ -415,7 +367,7 @@ html:not(.pin-on) .spin-badge,html:not(.pin-on) .draw-line{display:none}
 <a class="skip" href="#about">Skip to content</a>
 <nav class="nav" id="nav" aria-label="Primary">
  <a class="brand" href="#top" aria-label="Deepak Batra, back to top"><b class="brand-long">Deepak Batra</b><b class="brand-short" aria-hidden="true">DB</b><span class="mono brand-tag" aria-hidden="true">/ dbn</span></a>
- <div class="nav-links" id="navlinks"><a href="#about">About</a><a href="#do">Doing</a><a href="#work">Work</a><a href="#archive">Archive</a><a href="#contact">Contact</a></div>
+ <div class="nav-links" id="navlinks"><a href="#about">About</a><a href="#work">Work</a><a href="#archive">Archive</a><a href="#contact">Contact</a></div>
  <div class="nav-actions"><a class="cta" href="#contact">Say hello</a>
   <button id="snd" type="button" aria-pressed="false" aria-label="Turn on ambient sound"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path class="w2" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>
   <button class="theme" id="theme" type="button" aria-label="Toggle dark mode"><svg class="i-auto" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17Z" fill="currentColor"/></svg><svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg><svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg></button></div>
@@ -460,19 +412,8 @@ html:not(.pin-on) .spin-badge,html:not(.pin-on) .draw-line{display:none}
   </div>
  </div>
 </div></section>
-<section class="chap stack" id="do" data-chap>
- <div class="pin"><div class="wrap">
-  <div class="h-head" style="padding-left:0;padding-right:0"><p class="eyebrow mono">02 / What I do &nbsp; 04 things</p><h2 class="title kxv"><span class="tl">Day job,</span> <span class="tl"><em>night lab.</em></span></h2></div>
-  <div class="st-deck">
-   <article class="st-card" style="--n:0;--rot:-1.6deg;--cc:#B45309"><span class="st-no mono">01 / 04</span><h3>Office &amp; Finance</h3><p class="st-tag mono">Excel &#183; Payments &#183; Grants &#183; Reports</p><p class="st-d">The day job at F.C. Sondhi &amp; Co. Finance, scholarships and reports, where one wrong cell at 5pm ruins an evening &mdash; so the cells stay right.</p><div class="st-bar"><i></i></div></article>
-   <article class="st-card" style="--n:1;--rot:1.4deg;--cc:#C2410C"><span class="st-no mono">02 / 04</span><h3>Software Building</h3><p class="st-tag mono">Python &#183; APIs &#183; Desktop Apps</p><p class="st-d">Practical tools, desktop apps and small automations built around real work. Built for my own workflow first; everything else is a happy accident.</p><div class="st-bar"><i></i></div></article>
-   <article class="st-card" style="--n:2;--rot:-1.2deg;--cc:#2563EB"><span class="st-no mono">03 / 04</span><h3>Local AI</h3><p class="st-tag mono">Ollama &#183; OpenClaw &#183; Embeddings &#183; CUDA</p><p class="st-d">Language models running on my own machines with NVIDIA CUDA. No headline required &mdash; running it yourself is the only way to find out what it really does.</p><div class="st-bar"><i></i></div></article>
-   <article class="st-card" style="--n:3;--rot:1.8deg;--cc:#0E9F6E"><span class="st-no mono">04 / 04</span><h3>Photography &amp; Websites</h3><p class="st-tag mono">Frames &#183; HTML/CSS &#183; WebGL</p><p class="st-d">A camera that comes along most days, and websites built as self-imposed briefs &mdash; including the one you are reading.</p><div class="st-bar"><i></i></div></article>
-  </div>
- </div></div>
-</section>
 <section class="work" id="work">
- <div class="h-head"><p class="eyebrow mono">03 / The work &nbsp; 07 experiments</p><h2 class="title kxv"><span class="tl">Ideas become</span> <span class="tl"><em>things.</em></span></h2></div>
+ <div class="h-head"><p class="eyebrow mono">02 / The work &nbsp; 07 experiments</p><h2 class="title kxv"><span class="tl">Ideas become</span> <span class="tl"><em>things.</em></span></h2></div>
  <section class="pjb" data-color="#7C3AED" data-color-d="#A78BFA">
  <article class="pcard" style="--pcl:#7C3AED;--pcd:#A78BFA" data-pj="0" aria-label="Punjabi Rewind, tap to open"><div class="glow"></div><span class="pcard-idx">01</span><div class="pv" data-live="https://deepbat.github.io/punjabi-rewind/"><div class="pv-stars"></div><div class="pv-ring"></div><div class="pv-ring b"></div><span class="live mono"><i></i>Live preview</span></div><h3 class="kx e-in">Punjabi Rewind</h3><p class="tags mono">Vanilla JS · WebGL · Music</p><p>Hindi and Punjabi hits in an interactive, fluid-ink music experience. A browser experiment built around the songs I keep coming back to.</p><div class="note"><h4 class="mono">Link</h4><div class="pj-links"><a class="cta" href="https://deepbat.github.io/punjabi-rewind/" target="_blank" rel="noopener">Open Punjabi Rewind</a></div></div><button class="pj-open" type="button"><b>Open project</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></button></article>
  </section>
@@ -496,7 +437,7 @@ html:not(.pin-on) .spin-badge,html:not(.pin-on) .draw-line{display:none}
  </section>
 </section>
 <section class="chap band" data-chap data-words>
- <div class="pin"><svg class="spin-badge" viewBox="0 0 120 120" aria-hidden="true"><defs><path id="sb-c" d="M60 60 m -44 0 a 44 44 0 1 1 88 0 a 44 44 0 1 1 -88 0"/></defs><text><textPath href="#sb-c">Office mind &#183; Maker spirit &#183; Jalandhar &#183;</textPath></text><circle class="sb-c" cx="60" cy="60" r="4"/></svg><div class="wrap">
+ <div class="pin"><div class="wrap">
   <p class="scrub"><span class="w">The</span> <span class="w">best</span> <span class="w">way</span> <span class="w">to</span> <span class="w">understand</span> <span class="w">something?</span> <span class="w">Make</span> <span class="w">something.</span> </p>
   <p style="max-width:44ch;margin-top:1.6rem;opacity:.75">Take an idea apart. Find out how it works. Put it back together, a little more useful. That&rsquo;s usually how the next project begins.</p>
   <p class="sig mono" style="color:var(--accent)">— Deepak</p>
@@ -504,7 +445,7 @@ html:not(.pin-on) .spin-badge,html:not(.pin-on) .draw-line{display:none}
 </section>
 <section class="chap archive" id="archive" data-chap data-hscroll>
  <div class="pin">
-  <div class="h-head"><p class="eyebrow mono">04 / The archive &nbsp; 13 frames</p><h2 class="title kxv"><span class="tl">Life,</span> <span class="tl"><em>unfiltered.</em></span></h2></div>
+  <div class="h-head"><p class="eyebrow mono">03 / The archive &nbsp; 13 frames</p><h2 class="title kxv"><span class="tl">Life,</span> <span class="tl"><em>unfiltered.</em></span></h2></div>
   <div class="track" data-track id="sheet">
 <button class="ph" type="button" style="--ar:1600/900" aria-label="Open photograph 01"><img src="https://deepbat.github.io/db/images/gallery-01.webp" alt="Photograph 01 from the personal archive" decoding="async" width="1600" height="900"/><span class="ph-no">01 / 13</span></button>
 <button class="ph" type="button" style="--ar:1600/725" aria-label="Open photograph 02"><img src="https://deepbat.github.io/db/images/gallery-02.webp" alt="Photograph 02 from the personal archive" decoding="async" width="1600" height="725"/><span class="ph-no">02 / 13</span></button>
@@ -524,8 +465,7 @@ html:not(.pin-on) .spin-badge,html:not(.pin-on) .draw-line{display:none}
  </div>
 </section>
 <section class="contact" id="contact"><div class="wrap">
- <p class="eyebrow mono rv">05 / Contact &nbsp;—&nbsp; my inbox is open</p>
- <p class="flip mono rv">Ask me about <span class="flip-w"><span class="flip-c"><span>automation</span><span>local AI</span><span>websites</span><span>attendance tools</span><span>this site</span><span aria-hidden="true">automation</span></span></span></p>
+ <p class="eyebrow mono rv">04 / Contact &nbsp;—&nbsp; my inbox is open</p>
  <a class="mega rv kxv" href="mailto:deepak.batra@outlook.com">Say <em>hello.</em></a>
  <div class="c-grid">
   <div class="rv">
@@ -646,7 +586,7 @@ function mix(a,b,t){var A=hex(a),B=hex(b),o=[];for(var i=0;i<4;i++)o.push(Math.r
 var clk=$('#clk'),clkl=$('#clk-l'),lastH='';
 var lastY=scrollY,sv=0,lastK='';
 function update(){if(!root.classList.contains('pin-on'))return;var y=scrollY,max=document.documentElement.scrollHeight-vh,p=max>0?Math.min(1,Math.max(0,y/max)):0;
- prog.style.transform='scaleX('+p+')';root.style.setProperty('--pp',p.toFixed(4));nav.classList.toggle('stuck',y>24);tt.classList.toggle('show',y>vh*.8);
+ prog.style.transform='scaleX('+p+')';nav.classList.toggle('stuck',y>24);tt.classList.toggle('show',y>vh*.8);
  chaps.forEach(function(c){var q=(y-c.top)/c.len;if(q<-.3||q>1.3)return;q=q<0?0:q>1?1:q;var r=Math.round(q*1000)/1000;if(r===c.last)return;c.last=r;
   c.el.style.setProperty('--p',r);
   if(c.h)c.track.style.setProperty('--x',(-r*c.max).toFixed(1)+'px');
@@ -812,9 +752,6 @@ panel.addEventListener('touchstart',function(e){if(panel.scrollTop>0)return;pane
 panel.addEventListener('touchmove',function(e){if(!panel._drag)return;var dy=e.touches[0].clientY-panel._sy;if(dy>0)panel.style.transform='translate3d(0,'+dy+'px,0)'},{passive:true});
 panel.addEventListener('touchend',function(e){if(!panel._drag)return;panel._drag=false;var dy=e.changedTouches[0].clientY-panel._sy;
  panel.style.transform='';if(dy>110)requestClose()},{passive:true});
-/* word flipper */
-(function(){if(reduce)return;var fc=$('.flip-c');if(!fc)return;var fi=0,fN=fc.children.length-1;
- setInterval(function(){if(d.hidden)return;fi=(fi+1)%fN;fc.style.transform='translate3d(0,'+(-fi*1.35).toFixed(2)+'em,0)'},2200)})();
 /* ambient sound: generated with WebAudio, off by default, no autoplay */
 var snd=$('#snd'),ac=null,master=null,on=false;
 function build(){var C=window.AudioContext||window.webkitAudioContext;if(!C)return false;ac=new C();master=ac.createGain();master.gain.value=0;master.connect(ac.destination);
