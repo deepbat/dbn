@@ -303,6 +303,33 @@ html.dark .cl i{background:radial-gradient(closest-side,#5d647da6 0%,#3c415766 5
  .pjb{min-height:0;padding:3.4rem var(--pad)}
 }
 @media (max-height:560px) and (orientation:landscape){.h-photo{width:min(40vw,46svh)}.h-line{font-size:11svh}}
+/* fallback: until the script confirms the pinned engine is healthy (html.pin-on), every chapter flows normally and the archive track scrolls natively - no script, no blank frames */
+html:not(.pin-on) .chap{height:auto!important}
+html:not(.pin-on) .pin{position:static;height:auto;min-height:0;padding:5rem 0 2rem;overflow:visible}
+html:not(.pin-on) .hero{--p:1}
+html:not(.pin-on) .hero .pin{min-height:100svh}
+html:not(.pin-on) .h-line{opacity:.18;transform:none}
+html:not(.pin-on) .h-line .lx{transform:none}
+html:not(.pin-on) .h-photo{transform:none;--s:1}
+html:not(.pin-on) .h-copy{position:static;margin-top:1rem;opacity:1;transform:none}
+html:not(.pin-on) .h-top,html:not(.pin-on) .cue{display:none}
+html:not(.pin-on) .w{color:inherit}
+html:not(.pin-on) .band .w{color:var(--band-fg)}
+html:not(.pin-on) .track{transform:none!important;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:1.2rem;-webkit-overflow-scrolling:touch}
+html:not(.pin-on) .ph{scroll-snap-align:center}
+html:not(.pin-on) .hint{display:none}
+html:not(.pin-on) .h-head{padding-top:0}
+html:not(.pin-on) .archive .pin{padding-top:3rem}
+html:not(.pin-on) .rv{opacity:1;transform:none;transition:none}
+html:not(.pin-on) .kx .lx{opacity:1!important;transform:none!important;transition:none!important}
+html:not(.pin-on) .kxv,html:not(.pin-on) .title,html:not(.pin-on) .mega{transform:none!important}
+html:not(.pin-on) .pcard{transform:none!important}
+html:not(.pin-on) .pcard .glow{display:none}
+html:not(.pin-on) .pjx-item{opacity:1;transform:none;transition:none}
+html:not(.pin-on) #intro{display:none}
+html:not(.pin-on) #sun,html:not(.pin-on) #moon,html:not(.pin-on) .st,html:not(.pin-on) .cl{display:none}
+html:not(.pin-on) #top-btn{display:none}
+html:not(.pin-on) .band .pin{padding:5rem 0}
 /* reduced motion: calm readable page, everything still works */
 @media (prefers-reduced-motion:reduce){
  .chap{height:auto!important}.pin{position:static;height:auto;min-height:0;padding:5rem 0 2rem;overflow:visible}
@@ -474,6 +501,8 @@ html.dark .cl i{background:radial-gradient(closest-side,#5d647da6 0%,#3c415766 5
 (function(){'use strict';
 var root=document.documentElement,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var $=function(s,c){return(c||document).querySelector(s)},$$=function(s,c){return[].slice.call((c||document).querySelectorAll(s))};
+/* pinned engine is opt-in: added only when the script proves the horizontal tracks can move. If script is missing or fails, CSS above keeps every chapter flowing and the archive natively scrollable. */
+(function(){try{if(reduce)return;var ts=$$('[data-hscroll] [data-track]');if(!ts.length)return;for(var i=0;i<ts.length;i++)if(ts[i].scrollWidth<=innerWidth+8)return;root.classList.add('pin-on')}catch(e){}})();
 /* theme: auto (follows the phone) > light > dark */
 var tb=$('#theme'),tn=$('#tm-note'),mq=matchMedia('(prefers-color-scheme: dark)'),mode=root.getAttribute('data-tm')||'auto',tnT;
 var LBL={auto:'Night owl: follows your phone',light:'Light mode',dark:'Dark mode'},NEXT={auto:'light',light:'dark',dark:'auto'};
@@ -532,8 +561,14 @@ if(!reduce){
 /* scroll engine: one passive listener, one rAF. Chapters, kinetic velocity, sky world */
 var chaps=$$('[data-chap]').map(function(el){var o={el:el,words:el.hasAttribute('data-words')?$$('.w',el):null,h:el.hasAttribute('data-hscroll'),track:$('[data-track]',el),bar:$('.bar i',el),top:0,len:1,max:0,last:-1,n:0};if(o.words)o.n=o.words.length;return o});
 var vh=innerHeight;
-function measure(){vh=innerHeight;chaps.forEach(function(c){if(c.h){var tr=c.track;c.max=Math.max(0,tr.scrollWidth-innerWidth);c.el.style.height=(vh+c.max*1.05)+'px'}else c.el.style.height=''});
- chaps.forEach(function(c){c.top=c.el.getBoundingClientRect().top+scrollY;c.len=Math.max(1,c.el.offsetHeight-vh);c.last=-1});update()}
+function pinOff(){root.classList.remove('pin-on');chaps.forEach(function(c){c.el.style.height=''})}
+function measure(){try{
+ if(!root.classList.contains('pin-on')){pinOff();return}
+ vh=innerHeight;var bad=false;
+ chaps.forEach(function(c){if(c.h){var tr=c.track;c.max=Math.max(0,(tr?tr.scrollWidth:0)-innerWidth);if(c.max<8)bad=true;c.el.style.height=(vh+c.max*1.05)+'px'}else c.el.style.height=''});
+ if(bad){pinOff();return}
+ chaps.forEach(function(c){c.top=c.el.getBoundingClientRect().top+scrollY;c.len=Math.max(1,c.el.offsetHeight-vh);c.last=-1});update()
+}catch(e){pinOff()}}
 var prog=$('#progress'),nav=$('#nav'),links=$$('#navlinks a'),tg=links.map(function(a){return $(a.getAttribute('href'))});
 /* sky world stops: hour, top, bottom, alpha, stars, label */
 var stops=[
@@ -548,7 +583,7 @@ function hex(h){h=h.replace('#','');var n=h.length===8?4:3;var o=[];for(var i=0;
 function mix(a,b,t){var A=hex(a),B=hex(b),o=[];for(var i=0;i<4;i++)o.push(Math.round(A[i]+(B[i]-A[i])*t));return 'rgba('+o[0]+','+o[1]+','+o[2]+','+(o[3]/255).toFixed(2)+')'}
 var clk=$('#clk'),clkl=$('#clk-l'),lastH='';
 var lastY=scrollY,sv=0,lastK='';
-function update(){var y=scrollY,max=document.documentElement.scrollHeight-vh,p=max>0?Math.min(1,Math.max(0,y/max)):0;
+function update(){if(!root.classList.contains('pin-on'))return;var y=scrollY,max=document.documentElement.scrollHeight-vh,p=max>0?Math.min(1,Math.max(0,y/max)):0;
  prog.style.transform='scaleX('+p+')';nav.classList.toggle('stuck',y>24);tt.classList.toggle('show',y>vh*.8);
  chaps.forEach(function(c){var q=(y-c.top)/c.len;if(q<-.3||q>1.3)return;q=q<0?0:q>1?1:q;var r=Math.round(q*1000)/1000;if(r===c.last)return;c.last=r;
   c.el.style.setProperty('--p',r);
@@ -740,6 +775,8 @@ var f=$('#cform');if(f){var MAIL='deepak.batra@outlook.com',WA='919779777570',st
  $('#cf-wa').addEventListener('click',function(){var b=ok();if(!b)return;st.textContent='Opening WhatsApp...';window.open('https://wa.me/'+WA+'?text='+encodeURIComponent('Hi Deepak, '+b.t),'_blank','noopener')})}
 })();
 </script>
-<script>if('serviceWorker' in navigator&&location.protocol!=='file:'){addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(function(){})})}</script>
+<script>if('serviceWorker' in navigator&&location.protocol!=='file:'){var swc0=!!navigator.serviceWorker.controller;
+navigator.serviceWorker.addEventListener('message',function(e){var d=e.data||{};if(d.type==='dbn-sw-takeover'&&swc0){try{if(sessionStorage.getItem('dbn-swv')===d.v)return;sessionStorage.setItem('dbn-swv',d.v)}catch(x){}location.reload()}});
+addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{scope:'./'}).then(function(r){if(r&&r.waiting)r.waiting.postMessage('dbn-skip')}).catch(function(){})})}</script>
 </body>
 </html>
