@@ -99,6 +99,13 @@ em{font-family:var(--f-display);font-style:italic;font-weight:400;color:var(--ac
 .h-visual{position:relative;display:grid;place-items:center;width:min(100%,590px);aspect-ratio:1;justify-self:center;perspective:1100px;isolation:isolate}
 .h-visual::before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 10%,transparent),transparent 68%);filter:blur(16px);z-index:-2}
 .h-visual::after{content:"";position:absolute;left:18%;right:18%;bottom:16%;height:8%;border-radius:50%;background:color-mix(in srgb,var(--ink) 15%,transparent);filter:blur(20px);transform:scaleX(1.1);z-index:-1}
+
+.hero-art{display:grid;grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr);align-items:center;gap:clamp(.1rem,1.3vw,1rem);width:min(100%,660px);justify-self:center;position:relative}
+.h-portrait{position:relative;z-index:2;width:100%;max-width:285px;justify-self:center;aspect-ratio:.82;padding:10px 10px 0;background:var(--paper-2);border:1px solid var(--line);box-shadow:0 22px 48px -28px rgba(22,21,15,.48);transform:translateY(calc(var(--p,0)*-1.5vh)) rotate(calc(-2deg + var(--p,0)*2deg));transition:background-color .5s,border-color .5s;}
+.h-portrait::before{content:"";position:absolute;inset:-8px 8px 8px -8px;border:1px solid var(--line);z-index:-1;pointer-events:none}
+.h-portrait img{width:100%;height:calc(100% - 34px);object-fit:cover;object-position:center 34%;background:var(--paper-3)}
+.h-portrait figcaption{display:flex;align-items:center;justify-content:space-between;gap:.5rem;height:34px;color:var(--muted);font-size:.53rem;letter-spacing:.08em;white-space:nowrap}
+.h-visual{width:100%;max-width:none;min-width:0}
 .h-sculpture{position:relative;width:86%;aspect-ratio:1;transform-style:preserve-3d;transform:rotateX(calc(12deg + var(--p,0)*13deg)) rotateY(calc(-18deg + var(--p,0)*48deg)) rotateZ(calc(-9deg + var(--p,0)*24deg)) translateY(calc(var(--p,0)*-5vh));will-change:transform}
 .h-ring{position:absolute;left:50%;top:50%;width:84%;height:43%;border:clamp(8px,1.2vw,16px) solid transparent;border-radius:50%;background:linear-gradient(transparent,transparent) padding-box,linear-gradient(125deg,#873516 0%,#f58a4a 24%,#c14c20 46%,#ffb16f 63%,#7e3018 100%) border-box;box-shadow:inset 0 2px 5px #fff7,0 16px 28px #6b31182b;transform:translate(-50%,-50%) rotateX(64deg) rotateZ(-28deg) translateZ(12px);backface-visibility:visible}
 .h-ring.steel{width:92%;height:38%;border-width:clamp(6px,.85vw,11px);background:linear-gradient(transparent,transparent) padding-box,linear-gradient(115deg,#292824 0%,#8c887e 24%,#24231f 47%,#bdb8ac 66%,#302f2b 100%) border-box;box-shadow:0 12px 24px #201e192b;transform:translate(-50%,-50%) rotateX(68deg) rotateZ(32deg) translateZ(22px)}
@@ -111,8 +118,8 @@ em{font-family:var(--f-display);font-style:italic;font-weight:400;color:var(--ac
 .cue{position:absolute;bottom:1.6rem;left:50%;transform:translateX(-50%);color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:calc(1 - var(--p,0)*8)}
 .cue i{width:1px;height:38px;background:linear-gradient(var(--accent),transparent);animation:cue 1.8s ease-in-out infinite}
 @keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
-@media(max-width:820px){.h-stack{grid-template-columns:1fr;text-align:center;gap:0}.hero-title{font-size:clamp(3.7rem,12vw,7.2rem)}.h-copy{text-align:center;margin:.8rem auto 0}.h-cta{justify-content:center}.h-visual{width:min(76vw,430px);grid-row:2;margin:-.3rem auto 0}.h-kicker{margin-bottom:.9rem}.h-orbit-label{right:-2%;top:45%}}
-@media(max-width:520px){.hero-title{font-size:clamp(3.1rem,13vw,5rem)}.h-visual{width:min(82vw,360px)}.h-top{font-size:.59rem}.hero .pin{padding-top:calc(var(--nav-h) + 1rem)}}
+@media(max-width:820px){.h-stack{grid-template-columns:1fr;text-align:center;gap:0}.hero-title{font-size:clamp(3.7rem,12vw,7.2rem)}.h-copy{text-align:center;margin:.8rem auto 0}.h-cta{justify-content:center}.hero-art{grid-row:2;width:min(100%,560px);margin:-.3rem auto 0}.h-visual{width:100%;grid-row:auto;margin:0}.h-kicker{margin-bottom:.9rem}.h-orbit-label{right:-2%;top:45%}}
+@media(max-width:520px){.hero-title{font-size:clamp(3.1rem,13vw,5rem)}.hero-art{width:100%;gap:0}.h-visual{width:100%}.h-portrait{padding:7px 7px 0}.h-portrait figcaption{font-size:.46rem}.h-top{font-size:.59rem}.hero .pin{padding-top:calc(var(--nav-h) + 1rem)}}
 @media(max-height:560px) and (orientation:landscape){.h-visual{width:min(40vw,46svh)}.hero-title{font-size:11svh}}
 /* scrubbed text */
 .about{--len:320}.about .title{margin-bottom:1.2rem;font-size:clamp(2.2rem,min(7vw,10svh),5.5rem)}.about .eyebrow{margin-bottom:.6rem}
@@ -394,10 +401,16 @@ html:not(.pin-on) .band .pin{padding:5rem 0}
      <div class="h-cta"><a class="cta cta--lg" href="#work">See the work</a><a class="cta cta--lg cta--ghost" href="#contact">Get in touch</a></div>
     </div>
    </div>
-   <figure class="h-visual" role="img" aria-label="A sculptural copper loop orbiting a cream sphere">
-    <div class="h-sculpture" aria-hidden="true"><span class="h-ring"></span><span class="h-ring steel"></span><span class="h-ring ribbon"></span><span class="h-sphere"></span></div>
-    <figcaption class="h-orbit-label mono" aria-hidden="true"><i></i>Ideas in motion</figcaption>
-   </figure>
+   <div class="hero-art">
+    <figure class="h-portrait">
+     <img src="portrait-720.jpg" width="720" height="720" fetchpriority="high" decoding="async" alt="Portrait of Deepak Batra"/>
+     <figcaption class="mono"><span>Deepak Batra</span><span>Jalandhar, IN</span></figcaption>
+    </figure>
+    <figure class="h-visual" role="img" aria-label="A sculptural copper loop orbiting a cream sphere">
+     <div class="h-sculpture" aria-hidden="true"><span class="h-ring"></span><span class="h-ring steel"></span><span class="h-ring ribbon"></span><span class="h-sphere"></span></div>
+     <figcaption class="h-orbit-label mono" aria-hidden="true"><i></i>Ideas in motion</figcaption>
+    </figure>
+   </div>
   </div>
   <div class="cue mono"><span>Scroll to explore</span><i></i></div>
  </div>
