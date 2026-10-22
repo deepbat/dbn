@@ -681,39 +681,45 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  qa('.pcard,.ph,.panel,.a-grid .card').forEach(function(e){e.classList.add('in');e.classList.remove('rv')});
  root.classList.add('motion-3d');
  var cards=qa('.pcard'),photos=qa('.ph'),lines=qa('.h-lock>.h-line'),portrait=q('.h-photo'),panel=q('.panel'),sky=q('.h-sky'),heads=qa('main .h-sec .hl'),about=qa('.a-grid .card'),meter=q('.runway-meter i'),counter=q('#runway-count');
- var workDist=0,photoDist=0,metrics=[],busy=false;
+ var workDist=0,photoDist=0,metrics=[],pad=0,cur=scrollY,heroTop=0,workTop=0,archTop=0,T=0;
  var clamp=function(v,a,b){return Math.min(b,Math.max(a,v))},progress=function(el){var r=el.getBoundingClientRect();return clamp(-r.top/(el.offsetHeight-innerHeight+80),0,1)};
  var smooth=function(t){return t*t*(3-2*t)};
+ /* ease(): never stops. Slows near each rest point (slope .4) but keeps moving, so nothing looks frozen. */
+ var ease=function(p,n){if(n<2)return smooth(p);var seg=1/(n-1),i=Math.min(n-2,Math.floor(p/seg)),t=(p-i*seg)/seg;return clamp(i*seg+(t-.6*Math.sin(6.2832*t)/6.2832)*seg,0,1)};
+ var pg=function(top,el,extra){return clamp((cur-top)/Math.max(1,el.offsetHeight-innerHeight+extra),0,1)};
  /* dwell(): scroll progress with a hold at every item - each card/photo rests centered before the scene moves on. */
  var dwell=function(p,n,hold){if(n<2)return smooth(p);var seg=1/(n-1),i=Math.min(n-2,Math.floor(p/seg)),t=(p-i*seg)/seg,m=t<hold?0:(t-hold)/(1-hold);return clamp(i*seg+smooth(m)*seg,0,1)};
  function measure(){
   workDist=Math.max(0,grid.scrollWidth-(innerWidth>1200?1200:innerWidth)+2*parseFloat(getComputedStyle(q('#work .wrap')).paddingLeft));
   photoDist=Math.max(0,sheet.scrollWidth-innerWidth);
-  work.style.setProperty('--runway',Math.round(innerHeight+workDist*2.4)+'px');
-  archive.style.setProperty('--gallery-runway',Math.round(innerHeight+photoDist*1.7)+'px');
+  work.style.setProperty('--runway',Math.round(innerHeight+workDist*3.4)+'px');
+  archive.style.setProperty('--gallery-runway',Math.round(innerHeight+photoDist*2.4)+'px');
   metrics=cards.map(function(e){return{x:e.offsetLeft,w:e.offsetWidth}});
+  pad=parseFloat(getComputedStyle(q('#work .wrap')).paddingLeft);
+  heroTop=hero.getBoundingClientRect().top+scrollY;workTop=work.getBoundingClientRect().top+scrollY;archTop=archive.getBoundingClientRect().top+scrollY;
   update();
  }
  function update(){
   busy=false;
-  var hr=clamp(-hero.getBoundingClientRect().top/Math.max(1,hero.offsetHeight-innerHeight*.55),0,1),h=smooth(clamp((hr-.22)/.78,0,1)),mobile=innerWidth<700;
-  lines[0].style.transform='translate3d('+(-h*(mobile?38:145))+'px,'+(-h*14)+'px,'+(-h*90)+'px) rotateY('+h*24+'deg) rotateZ('+(-h*4)+'deg)';
-  lines[1].style.transform='translate3d('+(h*(mobile?38:145))+'px,'+(h*20)+'px,'+(-h*65)+'px) rotateY('+(-h*22)+'deg) rotateZ('+(h*4)+'deg)';
-  portrait.style.transform='translate3d(0,0,'+(h*130)+'px) rotateY('+(-h*28)+'deg) rotateZ('+(-4+h*12)+'deg) scale('+(1+h*.16)+')';
-  sky.style.transform='translate3d(0,'+(h*95)+'px,0)';
+  var hr=clamp((cur-heroTop)/Math.max(1,hero.offsetHeight-innerHeight*.55),0,1),h=smooth(hr),mobile=innerWidth<700,sw=Math.sin(T*.9),sw2=Math.cos(T*.7);
+  lines[0].style.transform='translate3d('+(-h*(mobile?38:145)+sw*5)+'px,'+(-h*14+sw2*3)+'px,'+(-h*90)+'px) rotateY('+(h*24+sw*2.5)+'deg) rotateZ('+(-h*4)+'deg)';
+  lines[1].style.transform='translate3d('+(h*(mobile?38:145)-sw*5)+'px,'+(h*20-sw2*3)+'px,'+(-h*65)+'px) rotateY('+(-h*22-sw*2.5)+'deg) rotateZ('+(h*4)+'deg)';
+  portrait.style.transform='translate3d(0,'+(sw2*7)+'px,'+(h*130)+'px) rotateY('+(-h*28+sw*6)+'deg) rotateZ('+(-4+h*12+sw2*1.2)+'deg) scale('+(1+h*.16)+')';
+  sky.style.transform='translate3d('+(sw*10)+'px,'+(h*95)+'px,0)';
   var pr=panel.getBoundingClientRect(),pp=clamp((innerHeight*.55-(pr.top+pr.height/2))/innerHeight,-1,1);
   panel.style.transform='rotateX('+(-pp*15)+'deg) rotateY('+(pp*10)+'deg) translateZ(12px)';
-  var pr0=progress(work),p=dwell(pr0,cards.length,.42),x=p*workDist;
+  var p=ease(pg(workTop,work,80),cards.length),x=p*workDist;
   grid.style.transform='translate3d('+(-x)+'px,0,0)';
-  cards.forEach(function(e,i){var c=metrics[i],v=clamp((c.x-x+c.w/2-(innerWidth/2-parseFloat(getComputedStyle(q('#work .wrap')).paddingLeft)))/innerWidth,-1.4,1.4);e.style.transform='perspective(1100px) translate3d(0,'+(Math.abs(v)*16)+'px,'+(90-Math.abs(v)*60)+'px) rotateY('+(-v*24)+'deg) rotateZ('+(v*2)+'deg)';});
+  cards.forEach(function(e,i){var c=metrics[i],v=clamp((c.x-x+c.w/2-(innerWidth/2-pad))/innerWidth,-1.4,1.4);e.style.transform='perspective(1100px) translate3d(0,'+(Math.abs(v)*16+Math.sin(T*1.1+i*1.3)*6)+'px,'+(90-Math.abs(v)*60)+'px) rotateX('+(Math.cos(T*.8+i)*1.8)+'deg) rotateY('+(-v*24+Math.sin(T*.9+i*.8)*3)+'deg) rotateZ('+(v*2)+'deg)';});
   meter.style.transform='scaleX('+p+')';counter.textContent=String(Math.min(7,Math.round(p*6)+1)).padStart(2,'0')+' / 07';
-  var gp=dwell(progress(archive),photos.length,.3),gx=gp*photoDist;sheet.style.transform='translate3d('+(-gx)+'px,0,0)';
-  photos.forEach(function(e){var v=clamp((e.offsetLeft-gx+e.offsetWidth/2-innerWidth/2)/innerWidth,-1.3,1.3);e.style.transform='perspective(1000px) translateZ('+(85-Math.abs(v)*50)+'px) rotateY('+(-v*20)+'deg) rotateZ('+(v*3)+'deg)';});
+  var gp=ease(pg(archTop,archive,80),photos.length),gx=gp*photoDist;sheet.style.transform='translate3d('+(-gx)+'px,0,0)';
+  photos.forEach(function(e,i){var v=clamp((e.offsetLeft-gx+e.offsetWidth/2-innerWidth/2)/innerWidth,-1.3,1.3);e.style.transform='perspective(1000px) translate3d(0,'+(Math.sin(T*1+i*1.1)*7)+'px,'+(85-Math.abs(v)*50)+'px) rotateY('+(-v*20+Math.sin(T*.8+i)*3)+'deg) rotateZ('+(v*3)+'deg)';});
   about.forEach(function(e,i){var r=e.getBoundingClientRect(),v=clamp((r.top-innerHeight*.35)/innerHeight,-.7,1);e.style.transform='perspective(1200px) rotateX('+(v*10)+'deg) rotateY('+(v*(i%2? -7:7))+'deg)';});
   heads.forEach(function(e){var r=e.getBoundingClientRect(),v=clamp((r.top-innerHeight*.65)/innerHeight,0,1);e.style.transform='rotateX('+(v*45)+'deg) translateY('+(v*18)+'px)';});
  }
- function request(){if(!busy){busy=true;requestAnimationFrame(update)}}
- addEventListener('scroll',request,{passive:true});addEventListener('resize',measure,{passive:true});
+ /* One continuous loop: scroll is eased (inertia) and ambient float never stops. */
+ function tick(ts){T=ts/1000;var d=scrollY-cur;cur=Math.abs(d)<.3?scrollY:cur+d*.085;update();requestAnimationFrame(tick)}
+ requestAnimationFrame(tick);addEventListener('resize',measure,{passive:true});
  qa('#sheet img').forEach(function(im){im.addEventListener('load',measure,{once:true})});
  if(document.fonts)document.fonts.ready.then(measure);measure();
  // Keep keyboard focus visible through the horizontal scene.
