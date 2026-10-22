@@ -231,9 +231,11 @@ html.dark .pcard:hover{box-shadow:11px 11px 0 rgba(0,0,0,.45)}
 .a-scroll::-webkit-scrollbar{height:10px}
 .a-scroll::-webkit-scrollbar-thumb{background:var(--navy);border-radius:99px}
 .a-scroll::-webkit-scrollbar-track{background:transparent}
-.ph{flex:none;scroll-snap-align:start;background:var(--card);border:var(--bd);border-radius:10px;box-shadow:var(--sh);padding:.6rem;cursor:pointer;transition:transform .15s}
+.ph{flex:none;position:relative;scroll-snap-align:start;background:var(--card);border:var(--bd);border-radius:10px;box-shadow:var(--sh);padding:.6rem;cursor:pointer;transition:transform .15s}
 .ph:hover{transform:translate(-2px,-2px)}
-.ph img{height:min(46vw,300px);width:auto;border-radius:6px;background:var(--chip-2)}
+.ph img,.ph video{height:min(46vw,300px);width:auto;border-radius:6px;background:var(--chip-2)}
+.ph video{display:block}
+.ph-chip{position:absolute;top:.95rem;right:.95rem;background:var(--navy);color:var(--lime);font-family:var(--f-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:.28rem .55rem;border-radius:6px;border:2px solid var(--lime);z-index:2}
 .ph figcaption{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.55rem .2rem .1rem}
 .hint{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:0 var(--pad)}
 /* lightbox */
@@ -244,7 +246,7 @@ html.dark .pcard:hover{box-shadow:11px 11px 0 rgba(0,0,0,.45)}
 .lb-close{background:var(--lime);border:2px solid var(--lime);border-radius:8px;width:40px;height:40px;display:grid;place-items:center;cursor:pointer}
 .lb-close svg{width:16px;height:16px;stroke:#052B42;stroke-width:2.4;fill:none;stroke-linecap:round}
 .lb-stage{flex:1;display:grid;place-items:center;position:relative;padding:0 var(--pad)}
-.lb-stage img{max-height:74vh;max-width:100%;border:3px solid #E8F3FA;border-radius:10px}
+.lb-stage img,.lb-stage video{max-height:74vh;max-width:100%;border:3px solid #E8F3FA;border-radius:10px}
 .lb-navs{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;pointer-events:none;padding:0 .8rem}
 .lb-nav{pointer-events:auto;width:44px;height:44px;border-radius:8px;background:var(--navy);border:2px solid #E8F3FA;display:grid;place-items:center;cursor:pointer}
 .lb-nav svg{width:18px;height:18px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -334,7 +336,7 @@ footer ul a:hover{color:var(--lime)}
 .motion-3d .archive-stage{position:sticky;top:80px;min-height:520px;height:calc(100svh - 80px);overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:2rem 0;perspective:1100px}
 .motion-3d .a-scroll{overflow:visible;width:max-content;scroll-snap-type:none;transform-style:preserve-3d;will-change:transform;gap:24px;padding-top:2rem;padding-bottom:2rem}
 .motion-3d .ph{will-change:transform;transform-style:preserve-3d;transition:none}
-.motion-3d .ph img{height:min(40vh,300px);max-width:none}
+.motion-3d .ph img,.motion-3d .ph video{height:min(40vh,300px);max-width:none}
 .motion-3d .ph figcaption{transform:translateZ(14px)}
 .motion-3d .arch-head .mono{max-width:20ch}
 .motion-3d .h-sec{perspective:1000px}
@@ -350,7 +352,7 @@ footer ul a:hover{color:var(--lime)}
  .motion-3d .pcard h3{font-size:1.15rem}
  .motion-3d .w-grid{gap:22px;margin-top:1.3rem}
  .motion-3d .archive-stage{top:76px;height:calc(100svh - 76px)}
- .motion-3d .ph img{height:34svh}
+ .motion-3d .ph img,.motion-3d .ph video{height:34svh}
  .motion-3d .runway-footer{font-size:.55rem;gap:.65rem}
 }
 @media(max-height:700px) and (min-width:701px){.motion-3d .work-stage{top:70px;min-height:0;height:calc(100svh - 70px)}.motion-3d .pcard{min-height:300px;padding:1rem;gap:.45rem}.motion-3d #work .work-stage>.wrap>p:not(.eyebrow){display:none}.motion-3d .runway-footer{margin-top:1rem}}
@@ -496,25 +498,38 @@ html.dark .arch-band .h-sec .hl{background:var(--lime);color:#052B42}
 <section class="arch-band" id="archive" style="padding-left:0;padding-right:0">
  <div class="wrap arch-head">
   <div>
-   <p class="eyebrow rv"><span class="n">04</span> · The archive &nbsp; 13 frames</p>
+   <p class="eyebrow rv"><span class="n">04</span> · The archive &nbsp; 30 frames + 1 clip</p>
    <h2 class="h-sec rv">Life, <span class="hl">unfiltered.</span></h2>
   </div>
   <p class="mono rv" style="color:var(--muted)">Drag or scroll sideways →</p>
  </div>
  <div class="a-scroll" id="sheet">
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-01.webp" alt="Photograph 01 from the personal archive" loading="lazy" decoding="async" width="1600" height="900"/><figcaption><span>Frame</span><span>01 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-02.webp" alt="Photograph 02 from the personal archive" loading="lazy" decoding="async" width="1600" height="725"/><figcaption><span>Frame</span><span>02 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-03.webp" alt="Photograph 03 from the personal archive" loading="lazy" decoding="async" width="1600" height="722"/><figcaption><span>Frame</span><span>03 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-04.webp" alt="Photograph 04 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>04 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-05.webp" alt="Photograph 05 from the personal archive" loading="lazy" decoding="async" width="729" height="1600"/><figcaption><span>Frame</span><span>05 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-06.webp" alt="Photograph 06 from the personal archive" loading="lazy" decoding="async" width="900" height="1600"/><figcaption><span>Frame</span><span>06 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-07.webp" alt="Photograph 07 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>07 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-08.webp" alt="Photograph 08 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>08 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-09.webp" alt="Photograph 09 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>09 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-10.webp" alt="Photograph 10 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>10 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-11.webp" alt="Photograph 11 from the personal archive" loading="lazy" decoding="async" width="729" height="1600"/><figcaption><span>Frame</span><span>11 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-12.webp" alt="Photograph 12 from the personal archive" loading="lazy" decoding="async" width="1600" height="900"/><figcaption><span>Frame</span><span>12 / 13</span></figcaption></figure>
-<figure class="ph rv"><img src="https://deepbat.github.io/db/images/gallery-13.webp" alt="Photograph 13 from the personal archive" loading="lazy" decoding="async" width="729" height="1600"/><figcaption><span>Frame</span><span>13 / 13</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-01.webp" alt="Photograph 01 from the personal archive" loading="lazy" decoding="async" width="1600" height="900"/><figcaption><span>Frame</span><span>01 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-02.webp" alt="Photograph 02 from the personal archive" loading="lazy" decoding="async" width="1600" height="725"/><figcaption><span>Frame</span><span>02 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-03.webp" alt="Photograph 03 from the personal archive" loading="lazy" decoding="async" width="1600" height="722"/><figcaption><span>Frame</span><span>03 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-04.webp" alt="Photograph 04 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>04 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-05.webp" alt="Photograph 05 from the personal archive" loading="lazy" decoding="async" width="729" height="1600"/><figcaption><span>Frame</span><span>05 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-06.webp" alt="Photograph 06 from the personal archive" loading="lazy" decoding="async" width="900" height="1600"/><figcaption><span>Frame</span><span>06 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-07.webp" alt="Photograph 07 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>07 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-08.webp" alt="Photograph 08 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>08 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-09.webp" alt="Photograph 09 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>09 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-10.webp" alt="Photograph 10 from the personal archive" loading="lazy" decoding="async" width="725" height="1600"/><figcaption><span>Frame</span><span>10 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-11.webp" alt="Photograph 11 from the personal archive" loading="lazy" decoding="async" width="729" height="1600"/><figcaption><span>Frame</span><span>11 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-12.webp" alt="Photograph 12 from the personal archive" loading="lazy" decoding="async" width="1600" height="900"/><figcaption><span>Frame</span><span>12 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="https://deepbat.github.io/db/gallery-13.webp" alt="Photograph 13 from the personal archive" loading="lazy" decoding="async" width="729" height="1600"/><figcaption><span>Frame</span><span>13 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="gallery-14.webp" alt="Photograph 14 from the personal archive" loading="lazy" decoding="async" width="1600" height="1200"/><figcaption><span>Frame</span><span>14 / 31</span></figcaption></figure>
+<figure class="ph rv ph-stack" data-full="gallery-15.webp,gallery-16.webp"><img src="gallery-15.webp" alt="Photograph 15 from the personal archive" loading="lazy" decoding="async" width="1600" height="725"/><span class="ph-chip">2 shots</span><figcaption><span>Stack</span><span>15 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="gallery-17.webp" alt="Photograph 17 from the personal archive" loading="lazy" decoding="async" width="899" height="1599"/><figcaption><span>Frame</span><span>17 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="gallery-18.webp" alt="Photograph 18 from the personal archive" loading="lazy" decoding="async" width="1200" height="1600"/><figcaption><span>Frame</span><span>18 / 31</span></figcaption></figure>
+<figure class="ph rv ph-stack" data-full="gallery-19.webp,gallery-20.webp"><img src="gallery-19.webp" alt="Photograph 19 from the personal archive" loading="lazy" decoding="async" width="1600" height="1200"/><span class="ph-chip">2 shots</span><figcaption><span>Stack</span><span>19 / 31</span></figcaption></figure>
+<figure class="ph rv ph-stack" data-full="gallery-21.webp,gallery-22.webp"><img src="gallery-21.webp" alt="Photograph 21 from the personal archive" loading="lazy" decoding="async" width="729" height="1600"/><span class="ph-chip">2 shots</span><figcaption><span>Stack</span><span>21 / 31</span></figcaption></figure>
+<figure class="ph rv ph-stack" data-full="gallery-23.webp,gallery-24.webp"><img src="gallery-23.webp" alt="Photograph 23 from the personal archive" loading="lazy" decoding="async" width="1200" height="1600"/><span class="ph-chip">2 shots</span><figcaption><span>Stack</span><span>23 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="gallery-25.webp" alt="Photograph 25 from the personal archive" loading="lazy" decoding="async" width="974" height="1600"/><figcaption><span>Frame</span><span>25 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="gallery-26.webp" alt="Photograph 26 from the personal archive" loading="lazy" decoding="async" width="721" height="1600"/><figcaption><span>Frame</span><span>26 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="gallery-27.webp" alt="Photograph 27 from the personal archive" loading="lazy" decoding="async" width="1200" height="1600"/><figcaption><span>Frame</span><span>27 / 31</span></figcaption></figure>
+<figure class="ph rv ph-stack" data-full="gallery-28.webp,gallery-29.webp"><img src="gallery-28.webp" alt="Photograph 28 from the personal archive" loading="lazy" decoding="async" width="1600" height="729"/><span class="ph-chip">2 shots</span><figcaption><span>Stack</span><span>28 / 31</span></figcaption></figure>
+<figure class="ph rv"><img src="gallery-30.webp" alt="Photograph 30 from the personal archive" loading="lazy" decoding="async" width="1600" height="725"/><figcaption><span>Frame</span><span>30 / 31</span></figcaption></figure>
+<figure class="ph rv ph-clip" data-video="clip-01.mp4"><video src="clip-01.mp4" muted playsinline preload="metadata" width="478" height="850"></video><span class="ph-chip">Clip &middot; 7s</span><figcaption><span>Clip</span><span>31 / 31</span></figcaption></figure>
  </div>
  <p class="hint">Tap a frame to look closer</p>
 </section>
@@ -560,8 +575,8 @@ html.dark .arch-band .h-sec .hl{background:var(--lime);color:#052B42}
 <div id="tm-note" class="mono" role="status" aria-live="polite"></div>
 <dialog class="lb" id="lb" aria-label="Photograph viewer"><div class="lb-in">
  <div class="lb-bar"><span>Deepak Batra / Personal archive</span><button class="lb-close" id="lb-close" aria-label="Close viewer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
- <div class="lb-stage"><img id="lb-img" alt=""/><div class="lb-navs"><button class="lb-nav" id="lb-prev" aria-label="Previous photograph"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button class="lb-nav" id="lb-next" aria-label="Next photograph"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
- <div class="lb-count" id="lb-count">01 / 13</div></div></dialog>
+ <div class="lb-stage"><img id="lb-img" alt=""/><video id="lb-vid" playsinline controls preload="metadata" style="display:none"></video><div class="lb-navs"><button class="lb-nav" id="lb-prev" aria-label="Previous photograph"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button class="lb-nav" id="lb-next" aria-label="Next photograph"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
+ <div class="lb-count" id="lb-count">01 / 31</div></div></dialog>
 <script>
 (function(){'use strict';
 var d=document,root=d.documentElement,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -582,11 +597,17 @@ $('#copy-mail').addEventListener('click',function(){var b=this,m=b.dataset.mail;
 /* reveal */
 var rvs=$$('.rv');if('IntersectionObserver' in window&&!reduce){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});rvs.forEach(function(el){io.observe(el)})}else rvs.forEach(function(el){el.classList.add('in')});
 /* lightbox */
-var lb=$('#lb'),li=$('#lb-img'),lc=$('#lb-count'),ph=$$('.ph'),cur=0;
-function show(i){cur=(i+ph.length)%ph.length;var im=$('img',ph[cur]);li.src=im.src;li.alt=im.alt;lc.textContent=String(cur+1).padStart(2,'0')+' / '+ph.length}
-ph.forEach(function(b,i){b.addEventListener('click',function(){show(i);lb.showModal?lb.showModal():lb.setAttribute('open','')})});
-$('#lb-close').addEventListener('click',function(){lb.close()});$('#lb-prev').addEventListener('click',function(){show(cur-1)});$('#lb-next').addEventListener('click',function(){show(cur+1)});
-lb.addEventListener('click',function(e){if(e.target===lb)lb.close()});
+var lb=$('#lb'),li=$('#lb-img'),lv=$('#lb-vid'),lc=$('#lb-count'),ph=$$('.ph'),cur=0,items=[];
+ph.forEach(function(f){f._i0=items.length;
+ if(f.hasAttribute('data-video'))items.push({v:f.getAttribute('data-video')});
+ else{var cv=$('img',f),fu=(f.getAttribute('data-full')||cv.getAttribute('src')).split(',');fu.forEach(function(u){items.push({src:u.trim(),alt:cv.alt})})}});
+function show(i){cur=(i+items.length)%items.length;var it=items[cur];
+ if(it.v){li.style.display='none';lv.style.display='block';if(lv.getAttribute('src')!==it.v)lv.src=it.v;try{lv.currentTime=0}catch(e){}var pr=lv.play();if(pr&&pr.catch)pr.catch(function(){})}
+ else{lv.pause();lv.style.display='none';li.style.display='block';li.src=it.src;li.alt=it.alt}
+ lc.textContent=String(cur+1).padStart(2,'0')+' / '+items.length}
+ph.forEach(function(b){b.addEventListener('click',function(){show(b._i0);lb.showModal?lb.showModal():lb.setAttribute('open','')})});
+$('#lb-close').addEventListener('click',function(){lv.pause();lb.close()});$('#lb-prev').addEventListener('click',function(){show(cur-1)});$('#lb-next').addEventListener('click',function(){show(cur+1)});
+lb.addEventListener('click',function(e){if(e.target===lb){lv.pause();lb.close()}});
 addEventListener('keydown',function(e){if(!lb.open)return;if(e.key==='ArrowLeft')show(cur-1);if(e.key==='ArrowRight')show(cur+1)});
 /* back to top + current section */
 var tt=$('#top-btn'),links=$$('#navlinks a'),tg=links.map(function(a){return $(a.getAttribute('href'))});
