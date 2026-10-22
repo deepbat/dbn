@@ -700,7 +700,6 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
   update();
  }
  function update(){
-  busy=false;
   var hr=clamp((cur-heroTop)/Math.max(1,hero.offsetHeight-innerHeight*.55),0,1),h=smooth(hr),mobile=innerWidth<700,sw=Math.sin(T*.9),sw2=Math.cos(T*.7);
   lines[0].style.transform='translate3d('+(-h*(mobile?38:145)+sw*5)+'px,'+(-h*14+sw2*3)+'px,'+(-h*90)+'px) rotateY('+(h*24+sw*2.5)+'deg) rotateZ('+(-h*4)+'deg)';
   lines[1].style.transform='translate3d('+(h*(mobile?38:145)-sw*5)+'px,'+(h*20-sw2*3)+'px,'+(-h*65)+'px) rotateY('+(-h*22-sw*2.5)+'deg) rotateZ('+(h*4)+'deg)';
