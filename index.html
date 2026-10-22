@@ -361,6 +361,8 @@ html.dark section.band[style]{background:#041B2A!important}
 html.dark .arch-band .h-sec .hl{background:var(--lime);color:#052B42}
 .motion-3d .archive-stage>.wrap{width:100%}
 
+.band .pcard .p-tags{color:var(--muted)}
+
 </style>
 </head>
 <body>
@@ -700,10 +702,10 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
   panel.style.transform='rotateX('+(-pp*15)+'deg) rotateY('+(pp*10)+'deg) translateZ(12px)';
   var p=progress(work),x=p*workDist;
   grid.style.transform='translate3d('+(-x)+'px,0,0)';
-  cards.forEach(function(e,i){var c=metrics[i],v=clamp((c.x-x+c.w/2-(innerWidth/2-parseFloat(getComputedStyle(q('#work .wrap')).paddingLeft)))/innerWidth,-1.4,1.4);e.style.transform='perspective(1100px) translate3d(0,'+(Math.abs(v)*16)+'px,'+(-Math.abs(v)*80)+'px) rotateY('+(-v*24)+'deg) rotateZ('+(v*2)+'deg)';});
+  cards.forEach(function(e,i){var c=metrics[i],v=clamp((c.x-x+c.w/2-(innerWidth/2-parseFloat(getComputedStyle(q('#work .wrap')).paddingLeft)))/innerWidth,-1.4,1.4);e.style.transform='perspective(1100px) translate3d(0,'+(Math.abs(v)*16)+'px,'+(90-Math.abs(v)*60)+'px) rotateY('+(-v*24)+'deg) rotateZ('+(v*2)+'deg)';});
   meter.style.transform='scaleX('+p+')';counter.textContent=String(Math.min(7,Math.round(p*6)+1)).padStart(2,'0')+' / 07';
   var gp=progress(archive),gx=gp*photoDist;sheet.style.transform='translate3d('+(-gx)+'px,0,0)';
-  photos.forEach(function(e){var v=clamp((e.offsetLeft-gx+e.offsetWidth/2-innerWidth/2)/innerWidth,-1.3,1.3);e.style.transform='perspective(1000px) translateZ('+(-Math.abs(v)*70)+'px) rotateY('+(-v*20)+'deg) rotateZ('+(v*3)+'deg)';});
+  photos.forEach(function(e){var v=clamp((e.offsetLeft-gx+e.offsetWidth/2-innerWidth/2)/innerWidth,-1.3,1.3);e.style.transform='perspective(1000px) translateZ('+(85-Math.abs(v)*50)+'px) rotateY('+(-v*20)+'deg) rotateZ('+(v*3)+'deg)';});
   about.forEach(function(e,i){var r=e.getBoundingClientRect(),v=clamp((r.top-innerHeight*.35)/innerHeight,-.7,1);e.style.transform='perspective(1200px) rotateX('+(v*10)+'deg) rotateY('+(v*(i%2? -7:7))+'deg)';});
   heads.forEach(function(e){var r=e.getBoundingClientRect(),v=clamp((r.top-innerHeight*.65)/innerHeight,0,1);e.style.transform='rotateX('+(v*45)+'deg) translateY('+(v*18)+'px)';});
  }
