@@ -717,7 +717,8 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
   heads.forEach(function(e){var r=e.getBoundingClientRect(),v=clamp((r.top-innerHeight*.65)/innerHeight,0,1);e.style.transform='rotateX('+(v*45)+'deg) translateY('+(v*18)+'px)';});
  }
  /* One continuous loop: scroll is eased (inertia) and ambient float never stops. */
- function tick(ts){T=ts/1000;var d=scrollY-cur;cur=Math.abs(d)<.3?scrollY:cur+d*.085;update();requestAnimationFrame(tick)}
+ var lastT=0;
+ function tick(ts){var t=ts/1000,dt=Math.min(.25,t-lastT||.016);lastT=t;T=t;var d=scrollY-cur;cur=Math.abs(d)<.3?scrollY:cur+d*(1-Math.exp(-dt*6.5));update();requestAnimationFrame(tick)}
  requestAnimationFrame(tick);addEventListener('resize',measure,{passive:true});
  qa('#sheet img').forEach(function(im){im.addEventListener('load',measure,{once:true})});
  if(document.fonts)document.fonts.ready.then(measure);measure();
