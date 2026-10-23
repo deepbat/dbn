@@ -819,14 +819,16 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
   update();
  }
  function update(){
-  /* The hero follows native scroll: no pinned runway, delayed exit or growing portrait. */
-  var h=clamp((scrollY-heroTop)/Math.max(1,hero.offsetHeight),0,1),mobile=innerWidth<700,sw=Math.sin(T*.9),sw2=Math.cos(T*.7);
+  /* Scroll-driven hero: the page scrolls natively (no pinned runway or hold) while the
+     portrait grows toward the viewer and the name splits apart in depth. */
+  var h=smooth(clamp((scrollY-heroTop)/Math.max(1,hero.offsetHeight),0,1)),mobile=innerWidth<700,sw=Math.sin(T*.9),sw2=Math.cos(T*.7);
   var rawDelta=scrollY-prevScrollY;prevScrollY=scrollY;scrollVel=scrollVel*.75+rawDelta*.25;
-  lines[0].style.transform='translate3d('+(-h*(mobile?18:45)+mouseX*-5)+'px,'+(h*15)+'px,'+(-h*35)+'px) rotateY('+(h*8)+'deg)';
-  lines[1].style.transform='translate3d('+(h*(mobile?18:45)+mouseX*5)+'px,'+(h*8)+'px,'+(-h*25)+'px) rotateY('+(-h*8)+'deg)';
-  portrait.style.transform='translate3d('+(mouseX*5)+'px,'+(-h*18)+'px,'+(-h*35)+'px) rotateY('+(h*9+mouseX*3)+'deg) rotateZ('+(-4+h*4)+'deg)';
-  sky.style.transform='translate3d(0,'+(h*28)+'px,0)';
-  var gridEl=q('.h-grid');if(gridEl)gridEl.style.transform='translate3d(0,'+(h*12)+'px,0)';
+  lines[0].style.transform='translate3d('+(-h*(mobile?38:145)+sw*5+mouseX*-12)+'px,'+(-h*14+sw2*3+mouseY*-8)+'px,'+(-h*90)+'px) rotateY('+(h*24+sw*2.5+mouseX*4)+'deg) rotateZ('+(-h*4)+'deg)';
+  lines[1].style.transform='translate3d('+(h*(mobile?38:145)-sw*5+mouseX*12)+'px,'+(h*20-sw2*3+mouseY*8)+'px,'+(-h*65)+'px) rotateY('+(-h*22-sw*2.5+mouseX*-4)+'deg) rotateZ('+(h*4)+'deg)';
+  portrait.style.transform='translate3d('+(mouseX*10)+'px,'+(sw2*7+mouseY*8)+'px,'+(h*160)+'px) rotateY('+(-h*24+sw*6+mouseX*6)+'deg) rotateZ('+(-4+h*10+sw2*1.2)+'deg) scale('+(1+h*.24)+')';
+  sky.style.transform='translate3d('+(sw*10+mouseX*18)+'px,'+(h*70+mouseY*12)+'px,0)';
+  var gridEl=q('.h-grid');if(gridEl)gridEl.style.transform='translate3d('+(sw*-6+mouseX*-8)+'px,'+(h*40+mouseY*-6)+'px,0) rotateX('+(h*8)+'deg)';
+  var sunEl=q('.h-sun'),moonEl=q('.h-moon');if(sunEl)sunEl.style.transform='translate3d('+(sw*14+mouseX*26)+'px,'+(-h*30+mouseY*18)+'px,'+(h*60)+'px)';if(moonEl)moonEl.style.transform='translate3d('+(sw*-10+mouseX*-20)+'px,'+(-h*20+mouseY*-14)+'px,'+(h*40)+'px)';
   var pr=panel.getBoundingClientRect(),pp=clamp((innerHeight*.55-(pr.top+pr.height/2))/innerHeight,-1,1);
   if(!panel.matches(':hover'))panel.style.transform='rotateX('+(-pp*15+mouseY*-6)+'deg) rotateY('+(pp*10+mouseX*8)+'deg) translateZ(12px)';
   var p=ease(pg(workTop,work,0),cards.length),position=p*(cards.length-1);
