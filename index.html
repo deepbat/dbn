@@ -106,7 +106,7 @@ section{padding:clamp(3.5rem,8vw,6.5rem) 0}
 /* hero: the old split-name + photo + living sky, in the tarang navy/lime language */
 .hero{position:relative;padding:0 0 clamp(3rem,7vw,5rem);overflow:hidden;background:var(--bg)}
 .h-sky{position:absolute;inset:0;overflow:hidden;pointer-events:none;
- background:linear-gradient(180deg,var(--s1,#f7d9b8) 0%,var(--s2,#fff6e6) 100%);opacity:.5;
+ background:linear-gradient(180deg,var(--s1,#d9a05e) 0%,var(--s2,#ffe9c4) 100%);opacity:.5;
  -webkit-mask-image:linear-gradient(180deg,#000 45%,transparent 88%);mask-image:linear-gradient(180deg,#000 45%,transparent 88%)}
 html.dark .h-sky{opacity:.35}
 .h-grid{position:absolute;inset:0;pointer-events:none;
@@ -125,7 +125,7 @@ html.dark .h-grid{background:linear-gradient(90deg,transparent 0 23px,rgba(238,2
 .h-cl{position:absolute;inset:-10% -30%;opacity:var(--ca,.9)}
 .h-cl i{position:absolute;display:block;border-radius:50%;filter:blur(2px);
  background:radial-gradient(closest-side,#ffffffe6 0%,#ffffff80 55%,transparent 75%)}
-html.dark .h-cl i{background:radial-gradient(closest-side,#5d647da6 0%,#3c415766 55%,transparent 75%)}
+html.dark .h-cl i{background:radial-gradient(closest-side,#655a8aa6 0%,#453d6366 55%,transparent 75%)}
 .h-c1{animation:drift 46s ease-in-out infinite alternate}
 .h-c2{animation:drift 64s ease-in-out infinite alternate-reverse}
 @keyframes drift{to{transform:translateX(9%)}}
@@ -715,13 +715,13 @@ go('dbn-gh',20*6e4,'https://api.github.com/users/deepbat/events/public?per_page=
 /* hero sky: real Jalandhar time of day, sunrise to night (the old sky, hero-scoped) */
 (function(){var sky=$('.h-sky'),lbl=$('#sky-lbl');if(!sky)return;
 var stops=[
- [6.5,'#f7a77a','#ffe3c2',0,'Sunrise'],
- [9,'#9fd0f5','#fff2d6',0,'Office hours'],
- [13,'#7fc0f2','#e9f6ff',0,'Lunch'],
- [17,'#f3c27a','#ffe6bd',0,'Excel o\u2019clock'],
- [19,'#e8806a','#f7c079',.1,'Chai time'],
- [21,'#2a2f6b','#6b4a86',.9,'Software Building'],
- [24,'#0b0d2a','#1c1740',1,'Curiosity hours']];
+ [6.5,'#c98add','#ffd9a3',0,'Sunrise'],
+ [9,'#b49ae0','#ffe9c4',0,'Office hours'],
+ [13,'#a68cd8','#f3e9ff',0,'Lunch'],
+ [17,'#d9a05e','#ffe6bd',0,'Excel o\u2019clock'],
+ [19,'#e07a5f','#f7b95c',.1,'Chai time'],
+ [21,'#35245f','#7a4a86',.9,'Software Building'],
+ [24,'#150d29','#2d1b4e',1,'Curiosity hours']];
 function hex(h){h=h.replace('#','');var o=[],i;for(i=0;i<3;i++)o.push(parseInt(h.substr(i*2,2),16));return o}
 function mix(a,b,t){var A=hex(a),B=hex(b),o=[];for(var i=0;i<3;i++)o.push(Math.round(A[i]+(B[i]-A[i])*t));return 'rgb('+o[0]+','+o[1]+','+o[2]+')'}
 var fH=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',hour:'numeric',minute:'numeric',hour12:false});
