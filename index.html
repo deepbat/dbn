@@ -735,8 +735,8 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
    back.innerHTML='<h3>'+(h3?h3.textContent:'')+'</h3>'+(tags?'<p class="p-tags">'+tags.textContent+'</p>':'')+(desc?'<p class="d">'+desc.textContent+'</p>':'')+(note?note.outerHTML:'');
    inner.appendChild(front);inner.appendChild(back);card.appendChild(inner);
  });
- qa('section.about,section.contact,section.band').forEach(function(e){e.classList.add('sec3d')});
- qa('.h-line').forEach(function(line){
+ qa('section.about,section.contact,section.band:not(#work)').forEach(function(e){e.classList.add('sec3d')});
+ try{qa('.h-line').forEach(function(line){
    var walker=document.createTreeWalker(line,NodeFilter.SHOW_TEXT,null,false);
    var nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
    nodes.forEach(function(node){
@@ -746,11 +746,11 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
        if(ch===' '){frag.appendChild(document.createTextNode(' '));i++;return}
        var span=document.createElement('span');span.className='char';span.style.setProperty('--i',i);span.textContent=ch;frag.appendChild(span);i++;
      });
-     node.parentNode.replaceChild(frag,node);
+     if(node.parentNode)node.parentNode.replaceChild(frag,node);
    });
- });
+ })}catch(e){}
  setTimeout(function(){qa('.h-line .char').forEach(function(c){c.classList.add('in')})},160);
- if('IntersectionObserver' in window){var sio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in3d');sio.unobserve(e.target)}})},{threshold:.12});qa('section.sec3d').forEach(function(e){sio.observe(e)})}
+ if('IntersectionObserver' in window){var sio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in3d');sio.unobserve(e.target)}})},{threshold:.12});qa('section.sec3d').forEach(function(e){sio.observe(e)})}setTimeout(function(){qa('section.sec3d').forEach(function(e){e.classList.add('in3d')})},1800)
 
  var cards=qa('.pcard'),photos=qa('.ph'),lines=qa('.h-lock>.h-line'),portrait=q('.h-photo'),panel=q('.panel'),sky=q('.h-sky'),heads=qa('main .h-sec .hl'),about=qa('.a-grid .card'),meter=q('.runway-meter i'),counter=q('#runway-count'),cube=q('#progress-cube .cube');
  var workDist=0,photoDist=0,metrics=[],pad=0,cur=scrollY,heroTop=0,workTop=0,archTop=0,T=0,prevScrollY=scrollY,scrollVel=0,mouseX=0,mouseY=0;
