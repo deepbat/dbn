@@ -288,6 +288,7 @@ footer ul a:hover{color:var(--lime)}
 #tm-note.on{opacity:1;transform:translate(-50%,0)}
 /* reveal */
 .rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.motion-3d .rv{transform:perspective(1000px) translate3d(0,34px,-90px) rotateX(16deg)}
 .rv.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
 @media(max-width:760px){
@@ -313,6 +314,7 @@ footer ul a:hover{color:var(--lime)}
 .motion-3d .h-photo{position:relative;z-index:2}
 .motion-3d .hero-grid{perspective:1400px}
 .motion-3d .panel{transform-origin:50% 50%;will-change:transform;transition:none}
+.motion-3d .tk,.motion-3d .socials a{transform-style:preserve-3d}
 .motion-3d .a-grid{perspective:1400px}
 .motion-3d .a-grid>.card,.motion-3d .tk{will-change:transform;transition:none}
 .motion-3d #work{padding:0;position:relative;height:var(--runway,4000px)}
@@ -364,6 +366,26 @@ html.dark .arch-band .h-sec .hl{background:var(--lime);color:#052B42}
 .motion-3d .archive-stage>.wrap{width:100%}
 
 .band .pcard .p-tags{color:var(--muted)}
+
+
+/* === extra 3D enhancements === */
+.motion-3d .h-line .char{display:inline-block;opacity:0;transform:translate3d(0,.95em,-80px) rotateX(82deg);transition:opacity .75s ease,transform .75s ease}
+.motion-3d .h-line .char.in{opacity:1;transform:none}
+.motion-3d .pcard{perspective:1200px}
+.motion-3d .pcard-inner{position:relative;transform-style:preserve-3d;transition:transform .6s ease;min-height:100%}
+.motion-3d .pcard .pcard-front,.motion-3d .pcard .pcard-back{backface-visibility:hidden}
+.motion-3d .pcard .pcard-back{position:absolute;inset:0;transform:rotateY(180deg);background:var(--card);border:var(--bd);border-radius:var(--r);box-shadow:var(--sh);padding:1.3rem;display:flex;flex-direction:column;gap:.7rem;justify-content:center;overflow:auto}
+.motion-3d .pcard:hover .pcard-inner{transform:rotateY(180deg)}
+.motion-3d section.sec3d{opacity:0;transform:perspective(1200px) translate3d(0,70px,-150px) rotateX(18deg);transition:opacity .9s ease,transform .9s ease}
+.motion-3d section.sec3d.in3d{opacity:1;transform:none}
+#progress-cube{position:fixed;right:1rem;bottom:5.6rem;z-index:48;width:44px;height:44px;pointer-events:none;perspective:700px}
+#progress-cube .cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;transform:rotateX(-20deg) rotateY(0deg)}
+#progress-cube i{position:absolute;inset:0;border:1.5px solid var(--navy);background:rgba(240,251,41,.12);backface-visibility:hidden}
+#progress-cube .f{transform:translateZ(22px)}#progress-cube .b{transform:rotateY(180deg) translateZ(22px)}
+#progress-cube .r{transform:rotateY(90deg) translateZ(22px)}#progress-cube .l{transform:rotateY(-90deg) translateZ(22px)}
+#progress-cube .t{transform:rotateX(90deg) translateZ(22px)}#progress-cube .bt{transform:rotateX(-90deg) translateZ(22px)}
+#hero-particles{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.75}
+.hero > *:not(#hero-particles){position:relative;z-index:1}
 
 </style>
 </head>
@@ -572,6 +594,8 @@ html.dark .arch-band .h-sec .hl{background:var(--lime);color:#052B42}
 </footer>
 <button id="top-btn" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <div id="tm-note" class="mono" role="status" aria-live="polite"></div>
+<div id="progress-cube" aria-hidden="true"><div class="cube"><i class="f"></i><i class="b"></i><i class="r"></i><i class="l"></i><i class="t"></i><i class="bt"></i></div></div>
+<canvas id="hero-particles" aria-hidden="true"></canvas>
 <dialog class="lb" id="lb" aria-label="Photograph viewer"><div class="lb-in">
  <div class="lb-bar"><span>Deepak Batra / Personal archive</span><button class="lb-close" id="lb-close" aria-label="Close viewer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
  <div class="lb-stage"><img id="lb-img" alt=""/><video id="lb-vid" playsinline controls preload="metadata" style="display:none"></video><div class="lb-navs"><button class="lb-nav" id="lb-prev" aria-label="Previous photograph"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button class="lb-nav" id="lb-next" aria-label="Next photograph"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
@@ -701,7 +725,7 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  qa('.pcard,.ph,.panel,.a-grid .card').forEach(function(e){e.classList.add('in');e.classList.remove('rv')});
  root.classList.add('motion-3d');
  var cards=qa('.pcard'),photos=qa('.ph'),lines=qa('.h-lock>.h-line'),portrait=q('.h-photo'),panel=q('.panel'),sky=q('.h-sky'),heads=qa('main .h-sec .hl'),about=qa('.a-grid .card'),meter=q('.runway-meter i'),counter=q('#runway-count');
- var workDist=0,photoDist=0,metrics=[],pad=0,cur=scrollY,heroTop=0,workTop=0,archTop=0,T=0;
+ var workDist=0,photoDist=0,metrics=[],pad=0,cur=scrollY,heroTop=0,workTop=0,archTop=0,T=0,prevScrollY=scrollY,scrollVel=0;
  var clamp=function(v,a,b){return Math.min(b,Math.max(a,v))},progress=function(el){var r=el.getBoundingClientRect();return clamp(-r.top/(el.offsetHeight-innerHeight+80),0,1)};
  var smooth=function(t){return t*t*(3-2*t)};
  /* ease(): never stops. Slows near each rest point (slope .4) but keeps moving, so nothing looks frozen. */
@@ -721,19 +745,22 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  }
  function update(){
   var hr=clamp((cur-heroTop)/Math.max(1,hero.offsetHeight-innerHeight*.55),0,1),h=smooth(hr),mobile=innerWidth<700,sw=Math.sin(T*.9),sw2=Math.cos(T*.7);
+  var rawDelta=scrollY-prevScrollY;prevScrollY=scrollY;scrollVel=scrollVel*.75+rawDelta*.25;
   lines[0].style.transform='translate3d('+(-h*(mobile?38:145)+sw*5)+'px,'+(-h*14+sw2*3)+'px,'+(-h*90)+'px) rotateY('+(h*24+sw*2.5)+'deg) rotateZ('+(-h*4)+'deg)';
   lines[1].style.transform='translate3d('+(h*(mobile?38:145)-sw*5)+'px,'+(h*20-sw2*3)+'px,'+(-h*65)+'px) rotateY('+(-h*22-sw*2.5)+'deg) rotateZ('+(h*4)+'deg)';
   portrait.style.transform='translate3d(0,'+(sw2*7)+'px,'+(h*130)+'px) rotateY('+(-h*28+sw*6)+'deg) rotateZ('+(-4+h*12+sw2*1.2)+'deg) scale('+(1+h*.16)+')';
   sky.style.transform='translate3d('+(sw*10)+'px,'+(h*95)+'px,0)';
+  var gridEl=q('.h-grid');if(gridEl)gridEl.style.transform='translate3d('+(sw*-6)+'px,'+(h*40)+'px,0) rotateX('+(h*8)+'deg)';
+  var sunEl=q('.h-sun'),moonEl=q('.h-moon');if(sunEl)sunEl.style.transform='translate3d('+(sw*14)+'px,'+(-h*30)+'px,'+(h*60)+'px)';if(moonEl)moonEl.style.transform='translate3d('+(sw*-10)+'px,'+(-h*20)+'px,'+(h*40)+'px)';
   var pr=panel.getBoundingClientRect(),pp=clamp((innerHeight*.55-(pr.top+pr.height/2))/innerHeight,-1,1);
-  panel.style.transform='rotateX('+(-pp*15)+'deg) rotateY('+(pp*10)+'deg) translateZ(12px)';
+  if(!panel.matches(':hover'))panel.style.transform='rotateX('+(-pp*15)+'deg) rotateY('+(pp*10)+'deg) translateZ(12px)';
   var p=ease(pg(workTop,work,80),cards.length),x=p*workDist;
   grid.style.transform='translate3d('+(-x)+'px,0,0)';
-  cards.forEach(function(e,i){var c=metrics[i],v=clamp((c.x-x+c.w/2-(innerWidth/2-pad))/innerWidth,-1.4,1.4);e.style.transform='perspective(1100px) translate3d(0,'+(Math.abs(v)*16+Math.sin(T*1.1+i*1.3)*6)+'px,'+(90-Math.abs(v)*60)+'px) rotateX('+(Math.cos(T*.8+i)*1.8)+'deg) rotateY('+(-v*24+Math.sin(T*.9+i*.8)*3)+'deg) rotateZ('+(v*2)+'deg)';});
+  cards.forEach(function(e,i){if(e.matches(':hover'))return;var c=metrics[i],v=clamp((c.x-x+c.w/2-(innerWidth/2-pad))/innerWidth,-1.4,1.4);e.style.transform='perspective(1100px) translate3d(0,'+(Math.abs(v)*16+Math.sin(T*1.1+i*1.3)*6)+'px,'+(90-Math.abs(v)*60)+'px) rotateX('+(Math.cos(T*.8+i)*1.8)+'deg) rotateY('+(-v*24+Math.sin(T*.9+i*.8)*3)+'deg) rotateZ('+(v*2)+'deg) skewY('+(Math.max(-4,Math.min(4,scrollVel*.02)))+'deg)';});
   meter.style.transform='scaleX('+p+')';counter.textContent=String(Math.min(7,Math.round(p*6)+1)).padStart(2,'0')+' / 07';
   var gp=ease(pg(archTop,archive,80),photos.length),gx=gp*photoDist;sheet.style.transform='translate3d('+(-gx)+'px,0,0)';
-  photos.forEach(function(e,i){var v=clamp((e.offsetLeft-gx+e.offsetWidth/2-innerWidth/2)/innerWidth,-1.3,1.3);e.style.transform='perspective(1000px) translate3d(0,'+(Math.sin(T*1+i*1.1)*7)+'px,'+(85-Math.abs(v)*50)+'px) rotateY('+(-v*20+Math.sin(T*.8+i)*3)+'deg) rotateZ('+(v*3)+'deg)';});
-  about.forEach(function(e,i){var r=e.getBoundingClientRect(),v=clamp((r.top-innerHeight*.35)/innerHeight,-.7,1);e.style.transform='perspective(1200px) rotateX('+(v*10)+'deg) rotateY('+(v*(i%2? -7:7))+'deg)';});
+  photos.forEach(function(e,i){if(e.matches(':hover'))return;var v=clamp((e.offsetLeft-gx+e.offsetWidth/2-innerWidth/2)/innerWidth,-1.3,1.3);e.style.transform='perspective(1000px) translate3d(0,'+(Math.sin(T*1+i*1.1)*7)+'px,'+(85-Math.abs(v)*50)+'px) rotateY('+(-v*20+Math.sin(T*.8+i)*3)+'deg) rotateZ('+(v*3)+'deg) scale('+(1-Math.abs(v)*.06)+')';});
+  about.forEach(function(e,i){if(e.matches(':hover'))return;var r=e.getBoundingClientRect(),v=clamp((r.top-innerHeight*.35)/innerHeight,-.7,1);e.style.transform='perspective(1200px) rotateX('+(v*10)+'deg) rotateY('+(v*(i%2? -7:7))+'deg)';});
   heads.forEach(function(e){var r=e.getBoundingClientRect(),v=clamp((r.top-innerHeight*.65)/innerHeight,0,1);e.style.transform='rotateX('+(v*45)+'deg) translateY('+(v*18)+'px)';});
  }
  /* One continuous loop: scroll is eased (inertia) and ambient float never stops. */
@@ -744,6 +771,17 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  if(document.fonts)document.fonts.ready.then(measure);measure();
  // Keep keyboard focus visible through the horizontal scene.
  cards.forEach(function(c,i){c.addEventListener('focusin',function(){var p=i/(cards.length-1);window.scrollTo({top:work.offsetTop+p*(work.offsetHeight-innerHeight+80),behavior:'auto'})})});
+ function attachTilt(sel){qa(sel).forEach(function(el){
+    el.addEventListener('mousemove',function(e){
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+      var r=el.getBoundingClientRect();
+      var x=(e.clientX-r.left)/r.width-0.5;
+      var y=(e.clientY-r.top)/r.height-0.5;
+      el.style.transform='perspective(1100px) rotateX('+(y*-10)+'deg) rotateY('+(x*12)+'deg) translateZ(26px)';
+    });
+    el.addEventListener('mouseleave',function(){el.style.transform='';});
+  });}
+  attachTilt('.pcard,.ph,.panel,.a-grid .card,.tk,.socials a');
  media.addEventListener('change',function(){location.reload()});
 })();
 
