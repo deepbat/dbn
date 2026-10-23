@@ -388,6 +388,54 @@ html.dark .arch-band .h-sec .hl{background:var(--lime);color:#052B42}
 .hero > .h-sky,.hero > .h-grid,.hero > .h-top,.hero > .h-stack,.hero > .wrap{position:relative;z-index:1}
 .hero > #hero-particles{z-index:0}
 
+
+/* Thread-inspired colour/depth stack. Kept separate from the hero and archive scenes. */
+.motion-3d #work{--stack-hue:221;background:radial-gradient(ellipse at 50% 60%,hsl(var(--stack-hue) 65% 38% / .28),transparent 66%),#052B42}
+.motion-3d #work .work-stage{top:72px;height:calc(100svh - 72px);min-height:660px;overflow:hidden;padding:1.1rem 0}
+.motion-3d #work .h-sec{font-size:clamp(2rem,3.6vw,3rem)}
+.motion-3d #work .work-stage>.wrap>p:not(.eyebrow){max-width:65ch;font-size:.82rem}
+.motion-3d #work .w-grid{position:relative;display:block;width:min(440px,100% - 24px);height:380px;margin:4.7rem auto 0;perspective:1400px;transform:none!important;isolation:isolate}
+.motion-3d #work .pcard{position:absolute;inset:0;width:100%;min-height:0;padding:1.35rem 1.5rem;gap:.65rem;transform-origin:50% 0;border:1px solid hsl(var(--card-hue) 65% 91% / .8);border-radius:20px;background:linear-gradient(155deg,hsl(var(--card-hue) 90% 88%),hsl(calc(var(--card-hue) + 16) 80% 74%));color:#102039;box-shadow:0 28px 55px -22px #0009,inset 0 1px 0 #fff9;transition:none;will-change:transform,opacity}
+.motion-3d #work .pcard:after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(130deg,#ffffff40,transparent 50%,#23365c20);opacity:.7}
+.motion-3d #work .pcard>*{position:relative;z-index:1;opacity:var(--face-opacity,1)}
+.motion-3d #work .pcard .p-top{transform:none}
+.motion-3d #work .pcard .ic{background:#ffffff70;border:1px solid #10203922}
+.motion-3d #work .pcard .ic svg{stroke:#102039}
+.motion-3d #work .pcard h3{color:#102039;font-size:1.5rem;transform:none;line-height:1.15;margin-top:.35rem}
+.motion-3d #work .pcard .p-tags,.motion-3d #work .pcard .p-num{color:#354965}
+.motion-3d #work .pcard .d{color:#223954;font-size:.86rem;line-height:1.55}
+.motion-3d #work .pcard .p-note{color:#304660;border-color:#10203930;font-size:.75rem}
+.motion-3d #work .pcard .p-note b{color:#102039}
+.motion-3d #work .pcard .p-link{transform:none}
+.motion-3d #work .pcard .p-link a{color:#102039;position:relative;z-index:2}
+.motion-3d #work .pcard .p-link svg{stroke:currentColor}
+.motion-3d #work .runway-footer{max-width:760px;margin:1.6rem auto 0;gap:1rem}
+.stack-buttons{display:flex;gap:.5rem}
+.stack-button{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;border:1px solid #b9cad680;background:#ffffff0a;color:#fff;font:1.2rem var(--f-sans);cursor:pointer}
+.stack-button:hover,.stack-button:focus-visible{background:var(--lime);color:#052B42;outline:2px solid #fff;outline-offset:3px}
+.stack-button:disabled{opacity:.3;cursor:default}
+@media(max-width:700px){
+ .motion-3d #work .work-stage{top:70px;height:calc(100svh - 70px);min-height:660px;padding:1rem 0}
+ .motion-3d #work .h-sec{font-size:2rem}
+ .motion-3d #work .w-grid{width:calc(100% - 28px);max-width:390px;height:390px;margin-top:4.3rem}
+ .motion-3d #work .pcard{padding:1.1rem;gap:.55rem}
+ .motion-3d #work .pcard h3{font-size:1.32rem}
+ .motion-3d #work .pcard .d{font-size:.8rem;line-height:1.5}
+ .motion-3d #work .pcard .p-note{font-size:.7rem}
+ .motion-3d #work .runway-footer>span:first-child{max-width:12ch;line-height:1.5}
+}
+@media(max-height:740px){
+ .motion-3d #work .work-stage{min-height:0;top:68px;height:calc(100svh - 68px)}
+ .motion-3d #work .work-stage>.wrap>p:not(.eyebrow){display:none}
+ .motion-3d #work .w-grid{height:min(370px,calc(100svh - 270px));margin-top:3.5rem}
+ .motion-3d #work .pcard{padding:.9rem 1.1rem;gap:.35rem;overflow:auto}
+ .motion-3d #work .pcard h3{font-size:1.2rem;margin-top:0}
+ .motion-3d #work .pcard .ic{width:30px;height:30px}
+ .motion-3d #work .pcard .d{font-size:.78rem;line-height:1.4}
+ .motion-3d #work .pcard .p-note{font-size:.67rem}
+ .motion-3d #work .runway-footer{margin-top:1rem}
+}
+
 </style>
 </head>
 <body>
@@ -725,16 +773,15 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  q('.arch-head .mono').textContent='Scroll to move through the archive';
  qa('.pcard,.ph,.panel,.a-grid .card').forEach(function(e){e.classList.add('in');e.classList.remove('rv')});
  root.classList.add('motion-3d');
- qa('.pcard').forEach(function(card){
-   if(card.querySelector('.pcard-inner'))return;
-   var inner=document.createElement('div');inner.className='pcard-inner';
-   var front=document.createElement('div');front.className='pcard-front';
-   while(card.firstChild)front.appendChild(card.firstChild);
-   var back=document.createElement('div');back.className='pcard-back';
-   var h3=front.querySelector('h3');var tags=front.querySelector('.p-tags');var desc=front.querySelector('p.d');var note=front.querySelector('.p-note');
-   back.innerHTML='<h3>'+(h3?h3.textContent:'')+'</h3>'+(tags?'<p class="p-tags">'+tags.textContent+'</p>':'')+(desc?'<p class="d">'+desc.textContent+'</p>':'')+(note?note.outerHTML:'');
-   inner.appendChild(front);inner.appendChild(back);card.appendChild(inner);
- });
+ /* Keep project faces and their real links intact; depth comes from the stack, not a hover flip. */
+ var cardHues=[221,202,258,174,238,285,213];
+ qa('.pcard').forEach(function(card,i){card.style.setProperty('--card-hue',cardHues[i%cardHues.length])});
+ q('.runway-footer').insertAdjacentHTML('beforeend','<div class="stack-buttons"><button class="stack-button" id="stack-prev" type="button" aria-label="Previous project">&#8592;</button><button class="stack-button" id="stack-next" type="button" aria-label="Next project">&#8594;</button></div>');
+ q('.runway-footer>span').textContent='Scroll to turn the cards';
+ var activeCard=0;
+ function goCard(i){i=Math.max(0,Math.min(qa('.pcard').length-1,i));window.scrollTo({top:workTop+i/(qa('.pcard').length-1)*(work.offsetHeight-innerHeight),behavior:'auto'})}
+ q('#stack-prev').addEventListener('click',function(){goCard(activeCard-1)});
+ q('#stack-next').addEventListener('click',function(){goCard(activeCard+1)});
  qa('section.about,section.contact,section.band:not(#work)').forEach(function(e){e.classList.add('sec3d')});
  try{qa('.h-line').forEach(function(line){
    var walker=document.createTreeWalker(line,NodeFilter.SHOW_TEXT,null,false);
@@ -762,9 +809,9 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  /* dwell(): scroll progress with a hold at every item - each card/photo rests centered before the scene moves on. */
  var dwell=function(p,n,hold){if(n<2)return smooth(p);var seg=1/(n-1),i=Math.min(n-2,Math.floor(p/seg)),t=(p-i*seg)/seg,m=t<hold?0:(t-hold)/(1-hold);return clamp(i*seg+smooth(m)*seg,0,1)};
  function measure(){
-  workDist=Math.max(0,grid.scrollWidth-(innerWidth>1200?1200:innerWidth)+2*parseFloat(getComputedStyle(q('#work .wrap')).paddingLeft));
+  workDist=(cards.length-1)*innerHeight*.95;
   photoDist=Math.max(0,sheet.scrollWidth-innerWidth);
-  work.style.setProperty('--runway',Math.round(innerHeight+workDist*3.4)+'px');
+  work.style.setProperty('--runway',Math.round(innerHeight+workDist)+'px');
   archive.style.setProperty('--gallery-runway',Math.round(innerHeight+photoDist*2.4)+'px');
   metrics=cards.map(function(e){return{x:e.offsetLeft,w:e.offsetWidth}});
   pad=parseFloat(getComputedStyle(q('#work .wrap')).paddingLeft);
@@ -782,11 +829,24 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
   var sunEl=q('.h-sun'),moonEl=q('.h-moon');if(sunEl)sunEl.style.transform='translate3d('+(sw*14+mouseX*26)+'px,'+(-h*30+mouseY*18)+'px,'+(h*60)+'px)';if(moonEl)moonEl.style.transform='translate3d('+(sw*-10+mouseX*-20)+'px,'+(-h*20+mouseY*-14)+'px,'+(h*40)+'px)';
   var pr=panel.getBoundingClientRect(),pp=clamp((innerHeight*.55-(pr.top+pr.height/2))/innerHeight,-1,1);
   if(!panel.matches(':hover'))panel.style.transform='rotateX('+(-pp*15+mouseY*-6)+'deg) rotateY('+(pp*10+mouseX*8)+'deg) translateZ(12px)';
-  var p=ease(pg(workTop,work,80),cards.length),x=p*workDist;
-  grid.style.transform='translate3d('+(-x)+'px,0,0) rotateY('+(-p*10)+'deg)';
-  cards.forEach(function(e,i){if(e.matches(':hover'))return;var c=metrics[i],v=clamp((c.x-x+c.w/2-(innerWidth/2-pad))/innerWidth,-1.4,1.4);e.style.transform='perspective(1100px) translate3d(0,'+(Math.abs(v)*16+Math.sin(T*1.1+i*1.3)*6)+'px,'+(90-Math.abs(v)*60)+'px) rotateX('+(Math.cos(T*.8+i)*1.8)+'deg) rotateY('+(-v*24+Math.sin(T*.9+i*.8)*3)+'deg) rotateZ('+(v*2)+'deg) skewY('+(Math.max(-4,Math.min(4,scrollVel*.02)))+'deg)';});
-  meter.style.transform='scaleX('+p+')';counter.textContent=String(Math.min(7,Math.round(p*6)+1)).padStart(2,'0')+' / 07';
-  if(cube){var prog=clamp(scrollY/(Math.max(1,document.documentElement.scrollHeight-innerHeight)),0,1);cube.style.transform='rotateX(-20deg) rotateY('+(prog*360)+'deg)';}
+  var p=ease(pg(workTop,work,0),cards.length),position=p*(cards.length-1);
+  activeCard=Math.round(position);
+  var hueA=cardHues[Math.floor(position)],hueB=cardHues[Math.min(cards.length-1,Math.floor(position)+1)];
+  work.style.setProperty('--stack-hue',hueA+(hueB-hueA)*(position%1));
+  cards.forEach(function(e,i){
+   var d=i-position,leaving=Math.max(0,-d),visible=d>-1&&d<3.5,isActive=i===activeCard;
+   e.style.visibility=visible?'visible':'hidden';
+   e.style.pointerEvents=isActive?'auto':'none';e.inert=!isActive;
+   e.setAttribute('aria-hidden',isActive?'false':'true');
+   e.style.zIndex=d<0?70:60-i;
+   e.style.setProperty('--face-opacity',d<0?Math.max(0,1-leaving*5):1);
+   e.style.opacity=visible?Math.min(1,d<0?Math.max(0,1-Math.max(0,leaving-.18)/.3):3.5-d):0;
+   e.style.transform=d<0?'translate3d(0,'+(-leaving*170)+'px,'+(-leaving*130)+'px) rotateX('+(leaving*30)+'deg) scale('+(1-leaving*.09)+')':'translate3d(0,'+(-d*23)+'px,'+(-d*65)+'px) rotateX('+(-d*2)+'deg) scale('+(1-d*.045)+')';
+  });
+  meter.style.transform='scaleX('+p+')';counter.textContent=String(activeCard+1).padStart(2,'0')+' / '+String(cards.length).padStart(2,'0');
+  q('#stack-prev').disabled=activeCard===0;q('#stack-next').disabled=activeCard===cards.length-1;
+  q('#top-btn').style.visibility=(cur>=workTop-80&&cur<=workTop+work.offsetHeight-innerHeight)?'hidden':'visible';
+  if(cube){cube.parentElement.style.visibility=(cur>=workTop-80&&cur<=workTop+work.offsetHeight-innerHeight)?'hidden':'visible';var prog=clamp(scrollY/(Math.max(1,document.documentElement.scrollHeight-innerHeight)),0,1);cube.style.transform='rotateX(-20deg) rotateY('+(prog*360)+'deg)';}
   var gp=ease(pg(archTop,archive,80),photos.length),gx=gp*photoDist;sheet.style.transform='translate3d('+(-gx)+'px,0,0) skewX('+(Math.max(-6,Math.min(6,scrollVel*.05)))+'deg)';
   photos.forEach(function(e,i){if(e.matches(':hover'))return;var v=clamp((e.offsetLeft-gx+e.offsetWidth/2-innerWidth/2)/innerWidth,-1.3,1.3);e.style.transform='perspective(1000px) translate3d(0,'+(Math.sin(T*1+i*1.1)*7)+'px,'+(85-Math.abs(v)*50)+'px) rotateY('+(-v*20+Math.sin(T*.8+i)*3)+'deg) rotateZ('+(v*3)+'deg) scale('+(1-Math.abs(v)*.06)+')';e.style.filter=Math.abs(v)>.38?'blur('+((Math.abs(v)-.38)*5).toFixed(1)+'px)':'none';});
   about.forEach(function(e,i){if(e.matches(':hover'))return;var r=e.getBoundingClientRect(),v=clamp((r.top-innerHeight*.35)/innerHeight,-.7,1);e.style.transform='perspective(1200px) rotateX('+(v*10)+'deg) rotateY('+(v*(i%2? -7:7))+'deg)';});
@@ -802,7 +862,7 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  qa('#sheet img').forEach(function(im){im.addEventListener('load',measure,{once:true})});
  if(document.fonts)document.fonts.ready.then(measure);measure();
  // Keep keyboard focus visible through the horizontal scene.
- cards.forEach(function(c,i){c.addEventListener('focusin',function(){var p=i/(cards.length-1);window.scrollTo({top:work.offsetTop+p*(work.offsetHeight-innerHeight+80),behavior:'auto'})})});
+ cards.forEach(function(c,i){c.addEventListener('focusin',function(){var p=i/(cards.length-1);window.scrollTo({top:work.offsetTop+p*(work.offsetHeight-innerHeight),behavior:'auto'})})});
  function attachTilt(sel){qa(sel).forEach(function(el){
     el.addEventListener('mousemove',function(e){
       if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
