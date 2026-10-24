@@ -358,6 +358,12 @@ footer ul a:hover{color:var(--lime)}
 }
 @media(max-height:700px) and (min-width:701px){.motion-3d .work-stage{top:70px;min-height:0;height:calc(100svh - 70px)}.motion-3d .pcard{min-height:300px;padding:1rem;gap:.45rem}.motion-3d #work .work-stage>.wrap>p:not(.eyebrow){display:none}.motion-3d .runway-footer{margin-top:1rem}}
 @media(prefers-reduced-motion:reduce){.scroll-cue{display:none}}
+/* Touch: swap the scroll-scrubbed card deck for a native swipe carousel (scroll-snap). */
+html.cards-swipe .motion-3d #work{height:auto!important;min-height:0}
+html.cards-swipe .motion-3d .work-stage{position:static;height:auto;min-height:0;overflow:visible;display:block;padding:0 0 1rem}
+html.cards-swipe .motion-3d #work .w-grid{display:flex;position:static;width:auto;height:auto;margin:1.6rem calc(-1 * var(--pad)) 0;padding:.4rem var(--pad) 1.1rem;gap:14px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;perspective:none;isolation:auto;transform:none}
+html.cards-swipe .motion-3d #work .w-grid::-webkit-scrollbar{display:none}
+html.cards-swipe .motion-3d #work .pcard{position:relative;inset:auto;flex:0 0 min(78%,340px);min-height:330px;scroll-snap-align:center;scroll-snap-stop:always;transform:none;opacity:1;visibility:visible;pointer-events:auto;will-change:auto}
 .motion-3d #work .h-sec .hl{margin-left:.15em}
 /* Keep the inherited dark bands legible in both themes. */
 html.dark section.band[style]{background:#0E081F!important}
@@ -778,13 +784,14 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  q('.arch-head .mono').textContent='Scroll to move through the archive';
  qa('.pcard,.ph,.panel,.a-grid .card').forEach(function(e){e.classList.add('in');e.classList.remove('rv')});
  root.classList.add('motion-3d');
+ var coarse=matchMedia('(pointer:coarse)').matches;if(coarse)root.classList.add('cards-swipe');
  /* Keep project faces and their real links intact; depth comes from the stack, not a hover flip. */
  var cardHues=[262,284,232,208,320,246,272];
  qa('.pcard').forEach(function(card,i){card.style.setProperty('--card-hue',cardHues[i%cardHues.length])});
  q('.runway-footer').insertAdjacentHTML('beforeend','<div class="stack-buttons"><button class="stack-button" id="stack-prev" type="button" aria-label="Previous project">&#8592;</button><button class="stack-button" id="stack-next" type="button" aria-label="Next project">&#8594;</button></div>');
- q('.runway-footer>span').textContent='Scroll to turn the cards';
+ q('.runway-footer>span').textContent=coarse?'Swipe sideways through the cards':'Scroll to turn the cards';
  var activeCard=0;
- function goCard(i){i=Math.max(0,Math.min(qa('.pcard').length-1,i));window.scrollTo({top:workTop+i/(qa('.pcard').length-1)*(work.offsetHeight-innerHeight),behavior:'auto'})}
+ function goCard(i){i=Math.max(0,Math.min(qa('.pcard').length-1,i));if(coarse){var c=qa('.pcard')[i];grid.scrollTo({left:c.offsetLeft-(grid.clientWidth-c.offsetWidth)/2,behavior:'smooth'})}else{window.scrollTo({top:workTop+i/(qa('.pcard').length-1)*(work.offsetHeight-innerHeight),behavior:'auto'})}}
  q('#stack-prev').addEventListener('click',function(){goCard(activeCard-1)});
  q('#stack-next').addEventListener('click',function(){goCard(activeCard+1)});
  qa('section.about,section.contact,section.band:not(#work)').forEach(function(e){e.classList.add('sec3d')});
@@ -806,6 +813,24 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
 
  var cards=qa('.pcard'),photos=qa('.ph'),lines=qa('.h-lock>.h-line'),portrait=q('.h-photo'),panel=q('.panel'),sky=q('.h-sky'),heads=qa('main .h-sec .hl'),about=qa('.a-grid .card'),meter=q('.runway-meter i'),counter=q('#runway-count'),cube=q('#progress-cube .cube');
  var workDist=0,photoDist=0,metrics=[],pad=0,cur=scrollY,heroTop=0,workTop=0,archTop=0,T=0,prevScrollY=scrollY,scrollVel=0,mouseX=0,mouseY=0;
+ if(coarse){
+  cards.forEach(function(e){e.inert=false;e.setAttribute('aria-hidden','false');e.style.transition='transform .2s ease-out,opacity .2s ease-out'});
+  var swipePending=false;
+  var swipeUpdate=function(){
+   swipePending=false;
+   var cx=grid.scrollLeft+grid.clientWidth/2,best=0,bd=1e18;
+   cards.forEach(function(e,i){var c=e.offsetLeft+e.offsetWidth/2,dd=Math.abs(c-cx);if(dd<bd){bd=dd;best=i}var near=Math.max(0,1-Math.abs(c-cx)/grid.clientWidth);e.style.transform='scale('+(0.94+0.06*near).toFixed(3)+')';e.style.opacity=(0.55+0.45*near).toFixed(2)});
+   activeCard=best;
+   var max=grid.scrollWidth-grid.clientWidth,frac=max>0?grid.scrollLeft/max:0;
+   meter.style.transform='scaleX('+frac+')';
+   counter.textContent=String(best+1).padStart(2,'0')+' / '+String(cards.length).padStart(2,'0');
+   work.style.setProperty('--stack-hue',cardHues[best]);
+   q('#stack-prev').disabled=best===0;q('#stack-next').disabled=best===cards.length-1;
+  };
+  grid.addEventListener('scroll',function(){if(!swipePending){swipePending=true;requestAnimationFrame(swipeUpdate)}},{passive:true});
+  addEventListener('resize',swipeUpdate,{passive:true});
+  swipeUpdate();
+ }
  var clamp=function(v,a,b){return Math.min(b,Math.max(a,v))},progress=function(el){var r=el.getBoundingClientRect();return clamp(-r.top/(el.offsetHeight-innerHeight+80),0,1)};
  var smooth=function(t){return t*t*(3-2*t)};
  /* ease(): never stops. Slows near each rest point (slope .4) but keeps moving, so nothing looks frozen. */
@@ -837,7 +862,7 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
   var cue=q('.scroll-cue');if(cue)cue.style.opacity=Math.max(0,1-h*2.5);
   var pr=panel.getBoundingClientRect(),pp=clamp((innerHeight*.55-(pr.top+pr.height/2))/innerHeight,-1,1);
   if(!panel.matches(':hover'))panel.style.transform='rotateX('+(-pp*15+mouseY*-6)+'deg) rotateY('+(pp*10+mouseX*8)+'deg) translateZ(12px)';
-  var p=ease(pg(workTop,work,0),cards.length),position=p*(cards.length-1);
+  if(!coarse){var p=ease(pg(workTop,work,0),cards.length),position=p*(cards.length-1);
   activeCard=Math.round(position);
   var hueA=cardHues[Math.floor(position)],hueB=cardHues[Math.min(cards.length-1,Math.floor(position)+1)];
   work.style.setProperty('--stack-hue',hueA+(hueB-hueA)*(position%1));
@@ -852,7 +877,7 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
    e.style.transform=d<0?'translate3d(0,'+(-leaving*170)+'px,'+(-leaving*130)+'px) rotateX('+(leaving*30)+'deg) scale('+(1-leaving*.09)+')':'translate3d(0,'+(-d*23)+'px,'+(-d*65)+'px) rotateX('+(-d*2)+'deg) scale('+(1-d*.045)+')';
   });
   meter.style.transform='scaleX('+p+')';counter.textContent=String(activeCard+1).padStart(2,'0')+' / '+String(cards.length).padStart(2,'0');
-  q('#stack-prev').disabled=activeCard===0;q('#stack-next').disabled=activeCard===cards.length-1;
+  q('#stack-prev').disabled=activeCard===0;q('#stack-next').disabled=activeCard===cards.length-1;}
   q('#top-btn').style.visibility=(cur>=workTop-80&&cur<=workTop+work.offsetHeight-innerHeight)?'hidden':'visible';
   if(cube){cube.parentElement.style.visibility=(cur>=workTop-80&&cur<=workTop+work.offsetHeight-innerHeight)?'hidden':'visible';var prog=clamp(scrollY/(Math.max(1,document.documentElement.scrollHeight-innerHeight)),0,1);cube.style.transform='rotateX(-20deg) rotateY('+(prog*360)+'deg)';}
   var gp=ease(pg(archTop,archive,80),photos.length),gx=gp*photoDist;sheet.style.transform='translate3d('+(-gx)+'px,0,0) skewX('+(Math.max(-6,Math.min(6,scrollVel*.05)))+'deg)';
@@ -870,7 +895,7 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  qa('#sheet img').forEach(function(im){im.addEventListener('load',measure,{once:true})});
  if(document.fonts)document.fonts.ready.then(measure);measure();
  // Keep keyboard focus visible through the horizontal scene.
- cards.forEach(function(c,i){c.addEventListener('focusin',function(){var p=i/(cards.length-1);window.scrollTo({top:work.offsetTop+p*(work.offsetHeight-innerHeight),behavior:'auto'})})});
+ if(!coarse)cards.forEach(function(c,i){c.addEventListener('focusin',function(){var p=i/(cards.length-1);window.scrollTo({top:work.offsetTop+p*(work.offsetHeight-innerHeight),behavior:'auto'})})});
  function attachTilt(sel){qa(sel).forEach(function(el){
     el.addEventListener('mousemove',function(e){
       if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
@@ -914,4 +939,3 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
 </script>
 </body>
  </html>
-
