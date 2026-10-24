@@ -815,9 +815,7 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  var workDist=0,photoDist=0,metrics=[],pad=0,cur=scrollY,heroTop=0,workTop=0,archTop=0,T=0,prevScrollY=scrollY,scrollVel=0,mouseX=0,mouseY=0;
  if(coarse){
   cards.forEach(function(e){e.inert=false;e.setAttribute('aria-hidden','false');e.style.transition='transform .2s ease-out,opacity .2s ease-out'});
-  var swipePending=false;
   var swipeUpdate=function(){
-   swipePending=false;
    var cx=grid.scrollLeft+grid.clientWidth/2,best=0,bd=1e18;
    cards.forEach(function(e,i){var c=e.offsetLeft+e.offsetWidth/2,dd=Math.abs(c-cx);if(dd<bd){bd=dd;best=i}var near=Math.max(0,1-Math.abs(c-cx)/grid.clientWidth);e.style.transform='scale('+(0.94+0.06*near).toFixed(3)+')';e.style.opacity=(0.55+0.45*near).toFixed(2)});
    activeCard=best;
@@ -827,7 +825,7 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
    work.style.setProperty('--stack-hue',cardHues[best]);
    q('#stack-prev').disabled=best===0;q('#stack-next').disabled=best===cards.length-1;
   };
-  grid.addEventListener('scroll',function(){if(!swipePending){swipePending=true;requestAnimationFrame(swipeUpdate)}},{passive:true});
+  grid.addEventListener('scroll',swipeUpdate,{passive:true});
   addEventListener('resize',swipeUpdate,{passive:true});
   swipeUpdate();
  }
