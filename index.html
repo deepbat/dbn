@@ -364,6 +364,8 @@ html.cards-swipe.motion-3d .work-stage{position:static;height:auto;min-height:0;
 html.cards-swipe.motion-3d #work .w-grid{display:flex;position:static;width:auto;height:auto;margin:1.6rem calc(-1 * var(--pad)) 0;padding:.4rem var(--pad) 1.1rem;gap:14px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;perspective:none;isolation:auto;transform:none}
 html.cards-swipe.motion-3d #work .w-grid::-webkit-scrollbar{display:none}
 html.cards-swipe.motion-3d #work .pcard{position:relative;inset:auto;flex:0 0 min(78%,340px);min-height:330px;scroll-snap-align:center;scroll-snap-stop:always;transform:none;opacity:1;visibility:visible;pointer-events:auto;will-change:auto}
+html.cards-swipe.motion-3d #work .pcard:first-child{scroll-snap-align:start}
+html.cards-swipe.motion-3d #work .pcard:last-child{scroll-snap-align:end}
 .motion-3d #work .h-sec .hl{margin-left:.15em}
 /* Keep the inherited dark bands legible in both themes. */
 html.dark section.band[style]{background:#0E081F!important}
