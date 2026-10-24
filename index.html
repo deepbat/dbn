@@ -791,7 +791,7 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  q('.runway-footer').insertAdjacentHTML('beforeend','<div class="stack-buttons"><button class="stack-button" id="stack-prev" type="button" aria-label="Previous project">&#8592;</button><button class="stack-button" id="stack-next" type="button" aria-label="Next project">&#8594;</button></div>');
  q('.runway-footer>span').textContent=coarse?'Swipe sideways through the cards':'Scroll to turn the cards';
  var activeCard=0;
- function goCard(i){i=Math.max(0,Math.min(qa('.pcard').length-1,i));if(coarse){var c=qa('.pcard')[i];grid.style.scrollSnapType='none';grid.scrollTo({left:c.offsetLeft-(grid.clientWidth-c.offsetWidth)/2,behavior:'smooth'});clearTimeout(grid._snapT);grid._snapT=setTimeout(function(){grid.style.scrollSnapType=''},700)}else{window.scrollTo({top:workTop+i/(qa('.pcard').length-1)*(work.offsetHeight-innerHeight),behavior:'auto'})}}
+ function goCard(i){i=Math.max(0,Math.min(qa('.pcard').length-1,i));if(coarse){var c=qa('.pcard')[i];grid.scrollTo({left:c.offsetLeft-(grid.clientWidth-c.offsetWidth)/2,behavior:'auto'})}else{window.scrollTo({top:workTop+i/(qa('.pcard').length-1)*(work.offsetHeight-innerHeight),behavior:'auto'})}}
  q('#stack-prev').addEventListener('click',function(){goCard(activeCard-1)});
  q('#stack-next').addEventListener('click',function(){goCard(activeCard+1)});
  qa('section.about,section.contact,section.band:not(#work)').forEach(function(e){e.classList.add('sec3d')});
