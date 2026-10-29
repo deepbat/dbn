@@ -380,7 +380,7 @@ html.dark .arch-band .h-sec .hl{background:var(--lime);color:#052B42}
 .motion-3d .pcard.is-centre{box-shadow:14px 14px 0 rgba(5,43,66,.22)}
 html.dark .motion-3d .pcard.is-centre{box-shadow:14px 14px 0 rgba(0,0,0,.5)}
 .motion-3d .ph.is-centre{box-shadow:12px 12px 0 rgba(5,43,66,.2)}
-.flip-btn{margin-top:auto;align-self:flex-start;border:2px solid var(--navy);background:var(--card);color:var(--navy);border-radius:8px;padding:.45rem .8rem;font-family:var(--f-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.flip-btn{margin-top:auto;align-self:flex-start;position:relative;z-index:5;transform:translateZ(40px);border:2px solid var(--navy);background:var(--card);color:var(--navy);border-radius:8px;padding:.45rem .8rem;font-family:var(--f-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
 .flip-btn:hover{border-color:var(--lime-2);background:var(--lime);color:#052B42}
 #depth-label{position:fixed;right:1rem;bottom:4.3rem;z-index:48;font-family:var(--f-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);pointer-events:none}
 @media(max-width:700px){#depth-label{display:none}}
@@ -893,4 +893,4 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
 })();
 </script>
 </body>
-  </html>
+</html>
