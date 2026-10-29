@@ -371,17 +371,7 @@ html.dark .arch-band .h-sec .hl{background:var(--lime);color:#052B42}
 /* === extra 3D enhancements === */
 .motion-3d .h-line .char{display:inline-block;opacity:0;transform:translate3d(0,.95em,-80px) rotateX(82deg);transition:opacity .75s ease,transform .75s ease}
 .motion-3d .h-line .char.in{opacity:1;transform:none}
-.motion-3d .pcard{perspective:1200px}
-.motion-3d .pcard-inner{position:relative;transform-style:preserve-3d;transition:transform .6s ease;min-height:100%}
-.motion-3d .pcard .pcard-front,.motion-3d .pcard .pcard-back{backface-visibility:hidden}
-.motion-3d .pcard .pcard-back{position:absolute;inset:0;transform:rotateY(180deg);background:var(--card);border:var(--bd);border-radius:var(--r);box-shadow:var(--sh);padding:1.3rem;display:flex;flex-direction:column;gap:.7rem;justify-content:center;overflow:auto}
-.motion-3d .pcard .pcard-back .back-note{font-size:.9rem;color:var(--ink-2)}
-.motion-3d .pcard.flipped .pcard-inner{transform:rotateY(180deg)}
-.motion-3d .pcard.is-centre{box-shadow:14px 14px 0 rgba(5,43,66,.22)}
-html.dark .motion-3d .pcard.is-centre{box-shadow:14px 14px 0 rgba(0,0,0,.5)}
 .motion-3d .ph.is-centre{box-shadow:12px 12px 0 rgba(5,43,66,.2)}
-.flip-btn{margin-top:auto;align-self:flex-start;position:relative;z-index:5;border:2px solid var(--navy);background:var(--card);color:var(--navy);border-radius:8px;padding:.45rem .8rem;font-family:var(--f-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
-.flip-btn:hover{border-color:var(--lime-2);background:var(--lime);color:#052B42}
 #depth-label{position:fixed;right:1rem;bottom:4.3rem;z-index:48;font-family:var(--f-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);pointer-events:none}
 @media(max-width:700px){#depth-label{display:none}}
 .motion-3d section.sec3d{opacity:0;transform:perspective(1200px) translate3d(0,70px,-150px) rotateX(18deg);transition:opacity .9s ease,transform .9s ease}
@@ -393,6 +383,52 @@ html.dark .motion-3d .pcard.is-centre{box-shadow:14px 14px 0 rgba(0,0,0,.5)}
 #progress-cube .r{transform:rotateY(90deg) translateZ(22px)}#progress-cube .l{transform:rotateY(-90deg) translateZ(22px)}
 #progress-cube .t{transform:rotateX(90deg) translateZ(22px)}#progress-cube .bt{transform:rotateX(-90deg) translateZ(22px)}
 #hero-particles{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.75}
+/* Thread-inspired colour/depth stack. Kept separate from the hero and archive scenes. */
+.motion-3d #work{--stack-hue:262;background:radial-gradient(ellipse at 50% 60%,hsl(var(--stack-hue) 65% 38% / .28),transparent 66%),#052B42}
+.motion-3d #work .work-stage{top:72px;height:calc(100svh - 72px);min-height:660px;overflow:hidden;padding:1.1rem 0}
+.motion-3d #work .h-sec{font-size:clamp(2rem,3.6vw,3rem)}
+.motion-3d #work .work-stage>.wrap>p:not(.eyebrow){max-width:65ch;font-size:.82rem}
+.motion-3d #work .w-grid{position:relative;display:block;width:min(440px,100% - 24px);height:380px;margin:4.7rem auto 0;perspective:1400px;transform:none!important;isolation:isolate}
+.motion-3d #work .pcard{position:absolute;inset:0;width:100%;min-height:0;padding:1.35rem 1.5rem;gap:.65rem;transform-origin:50% 0;border:1px solid hsl(var(--card-hue) 65% 91% / .8);border-radius:20px;background:linear-gradient(155deg,hsl(var(--card-hue) 90% 88%),hsl(calc(var(--card-hue) + 16) 80% 74%));color:#241634;box-shadow:0 28px 55px -22px #0009,inset 0 1px 0 #fff9;transition:none;will-change:transform,opacity}
+.motion-3d #work .pcard:after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(130deg,#ffffff40,transparent 50%,#3D2B6620);opacity:.7}
+.motion-3d #work .pcard>*{position:relative;z-index:1;opacity:var(--face-opacity,1)}
+.motion-3d #work .pcard .p-top{transform:none}
+.motion-3d #work .pcard .ic{background:#ffffff70;border:1px solid #24163422}
+.motion-3d #work .pcard .ic svg{stroke:#241634}
+.motion-3d #work .pcard h3{color:#241634;font-size:1.5rem;transform:none;line-height:1.15;margin-top:.35rem}
+.motion-3d #work .pcard .p-tags,.motion-3d #work .pcard .p-num{color:#4A3A63}
+.motion-3d #work .pcard .d{color:#3A2A52;font-size:.86rem;line-height:1.55}
+.motion-3d #work .pcard .p-note{color:#443360;border-color:#24163430;font-size:.75rem}
+.motion-3d #work .pcard .p-note b{color:#241634}
+.motion-3d #work .pcard .p-link{transform:none}
+.motion-3d #work .pcard .p-link a{color:#241634;position:relative;z-index:2}
+.motion-3d #work .pcard .p-link svg{stroke:currentColor}
+.motion-3d #work .runway-footer{max-width:760px;margin:1.6rem auto 0;gap:1rem}
+.stack-buttons{display:flex;gap:.5rem}
+.stack-button{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;border:1px solid #B9CAD680;background:#ffffff0a;color:#fff;font:1.2rem var(--f-sans);cursor:pointer}
+.stack-button:hover,.stack-button:focus-visible{background:var(--lime);color:#052B42;outline:2px solid #fff;outline-offset:3px}
+.stack-button:disabled{opacity:.3;cursor:default}
+@media(max-width:700px){
+ .motion-3d #work .work-stage{top:70px;height:calc(100svh - 70px);min-height:660px;padding:1rem 0}
+ .motion-3d #work .h-sec{font-size:2rem}
+ .motion-3d #work .w-grid{width:calc(100% - 28px);max-width:390px;height:390px;margin-top:4.3rem}
+ .motion-3d #work .pcard{padding:1.1rem;gap:.55rem}
+ .motion-3d #work .pcard h3{font-size:1.32rem}
+ .motion-3d #work .pcard .d{font-size:.8rem;line-height:1.5}
+ .motion-3d #work .pcard .p-note{font-size:.7rem}
+ .motion-3d #work .runway-footer>span:first-child{max-width:12ch;line-height:1.5}
+}
+@media(max-height:740px){
+ .motion-3d #work .work-stage{min-height:0;top:68px;height:calc(100svh - 68px)}
+ .motion-3d #work .work-stage>.wrap>p:not(.eyebrow){display:none}
+ .motion-3d #work .w-grid{height:min(370px,calc(100svh - 270px));margin-top:3.5rem}
+ .motion-3d #work .pcard{padding:.9rem 1.1rem;gap:.35rem;overflow:auto}
+ .motion-3d #work .pcard h3{font-size:1.2rem;margin-top:0}
+ .motion-3d #work .pcard .ic{width:30px;height:30px}
+ .motion-3d #work .pcard .d{font-size:.78rem;line-height:1.4}
+ .motion-3d #work .pcard .p-note{font-size:.67rem}
+ .motion-3d #work .runway-footer{margin-top:1rem}
+}
 .hero > .h-sky,.hero > .h-grid,.hero > .h-top,.hero > .h-stack,.hero > .wrap{position:relative;z-index:1}
 .hero > #hero-particles{z-index:0}
 
@@ -717,8 +753,8 @@ var f=$('#cform');if(f){var MAIL='deepak.batra@outlook.com',WA='919779777570',st
 navigator.serviceWorker.addEventListener('message',function(e){var d=e.data||{};if(d.type==='dbn-sw-takeover'&&swc0){try{if(sessionStorage.getItem('dbn-swv')===d.v)return;sessionStorage.setItem('dbn-swv',d.v)}catch(x){}location.reload()}});
 addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{scope:'./'}).then(function(r){if(r&&r.waiting)r.waiting.postMessage('dbn-skip')}).catch(function(){})})}</script>
 <script>
-/* Scroll-linked 3D scenes, improved. Native scrolling, no external libraries, no Three.js:
-   dwell/snap runways, true camera depth, per-section rendering only, click-to-flip cards. */
+/* Scroll-linked 3D scenes. Native scrolling, no external libraries, no Three.js:
+   dwell/snap runways, true camera depth, per-section rendering only, colourful stacked work cards. */
 (function(){
  'use strict';
  var media=matchMedia('(prefers-reduced-motion: reduce)');
@@ -734,29 +770,16 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  q('.arch-head .mono').textContent='Scroll to move through the archive';
  qa('.pcard,.ph,.panel,.a-grid .card').forEach(function(e){e.classList.add('in');e.classList.remove('rv')});
  root.classList.add('motion-3d');
- qa('.pcard').forEach(function(card){
-   if(card.querySelector('.pcard-inner'))return;
-   var inner=document.createElement('div');inner.className='pcard-inner';
-   var front=document.createElement('div');front.className='pcard-front';
-   while(card.firstChild)front.appendChild(card.firstChild);
-   var back=document.createElement('div');back.className='pcard-back';
-   var h3=front.querySelector('h3');var tags=front.querySelector('.p-tags');var link=front.querySelector('.p-link a');
-   var title=h3?h3.textContent:'';
-   back.innerHTML='<h3>'+title+'</h3>'+(tags?'<p class="p-tags">'+tags.textContent+'</p>':'')
-     +'<p class="back-note">Tap “Back” to return, or follow the link to see it live.</p>'
-     +(link?'<div class="p-link"><a href="'+link.getAttribute('href')+'" target="_blank" rel="noopener">'+link.textContent.replace(/\s+/g,' ').trim()+'</a></div>'
-              :'<div class="p-link"><a href="#contact">Ask me about this project</a></div>');
-   inner.appendChild(front);inner.appendChild(back);card.appendChild(inner);
-   card.setAttribute('tabindex','0');
-   var flip=document.createElement('button');flip.type='button';flip.className='flip-btn';flip.textContent='Details \u21bb';
-   flip.setAttribute('aria-label','Show details for '+title);
-   flip.addEventListener('click',function(ev){ev.stopPropagation();card.classList.toggle('flipped');flip.textContent=card.classList.contains('flipped')?'Back \u21bb':'Details \u21bb';});
-   front.appendChild(flip);
-   var flipBack=document.createElement('button');flipBack.type='button';flipBack.className='flip-btn';flipBack.textContent='Back \u21bb';
-   flipBack.setAttribute('aria-label','Back to '+title);
-   flipBack.addEventListener('click',function(ev){ev.stopPropagation();card.classList.remove('flipped');flip.textContent='Details \u21bb';});
-   back.appendChild(flipBack);
- });
+ var coarse=matchMedia('(pointer:coarse)').matches;
+ /* Keep project faces and their real links intact; depth comes from the stack, not a hover flip. */
+ var cardHues=[262,284,232,208,320,246,272];
+ qa('.pcard').forEach(function(card,i){card.style.setProperty('--card-hue',cardHues[i%cardHues.length])});
+ q('.runway-footer').insertAdjacentHTML('beforeend','<div class="stack-buttons"><button class="stack-button" id="stack-prev" type="button" aria-label="Previous project">&#8592;</button><button class="stack-button" id="stack-next" type="button" aria-label="Next project">&#8594;</button></div>');
+ q('.runway-footer>span').textContent=coarse?'Swipe up to turn the cards':'Scroll to turn the cards';
+ var activeCard=0;
+ function goCard(i){var n=qa('.pcard').length;i=Math.max(0,Math.min(n-1,i));window.scrollTo({top:workTop+i/(n-1)*(work.offsetHeight-innerHeight),behavior:'auto'})}
+ q('#stack-prev').addEventListener('click',function(){goCard(activeCard-1)});
+ q('#stack-next').addEventListener('click',function(){goCard(activeCard+1)});
  qa('section.about,section.contact,section.band:not(#work)').forEach(function(e){e.classList.add('sec3d')});
  try{qa('.h-line').forEach(function(line){
    var walker=document.createTreeWalker(line,NodeFilter.SHOW_TEXT,null,false);
@@ -794,9 +817,9 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  /* dwell(): scroll progress with a hold at every item - each card/photo rests centered before the scene moves on. */
  var dwell=function(p,n,hold){if(n<2)return smooth(p);var seg=1/(n-1),i=Math.min(n-2,Math.floor(p/seg)),t=(p-i*seg)/seg,m=t<hold?0:(t-hold)/(1-hold);return clamp(i*seg+smooth(m)*seg,0,1)};
  function measure(){
-  workDist=Math.max(0,grid.scrollWidth-(innerWidth>1200?1200:innerWidth)+2*parseFloat(getComputedStyle(q('#work .wrap')).paddingLeft));
+  workDist=(cards.length-1)*innerHeight*(coarse?.62:.95);
   photoDist=Math.max(0,sheet.scrollWidth-innerWidth);
-  work.style.setProperty('--runway',Math.round(innerHeight+workDist*3.4)+'px');
+  work.style.setProperty('--runway',Math.round(innerHeight+workDist)+'px');
   archive.style.setProperty('--gallery-runway',Math.round(innerHeight+photoDist*2.4)+'px');
   metrics=cards.map(function(e){return{x:e.offsetLeft,w:e.offsetWidth}});
   pad=parseFloat(getComputedStyle(q('#work .wrap')).paddingLeft);
@@ -816,13 +839,28 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
   var pr=panel.getBoundingClientRect(),pp=clamp((innerHeight*.55-(pr.top+pr.height/2))/innerHeight,-1,1);
   if(!panel.matches(':hover'))panel.style.transform='rotateX('+(-pp*15+mouseY*-6)+'deg) rotateY('+(pp*10+mouseX*8)+'deg) translateZ(12px)';
   }
-  var p=0,x=0,gp=0,gx=0;
+  var p=0,gp=0,gx=0;
   if(vis.work){
-  p=dwell(pg(workTop,work,80),cards.length,.35);x=p*workDist;
-  grid.style.transform='translate3d('+(-x)+'px,0,0) rotateY('+(-p*10)+'deg)';
-  /* IMPROVED camera: centred card dollies forward and grows, side cards recede and fade. No blur filter. */
-  cards.forEach(function(e,i){var c=metrics[i],v=clamp((c.x-x+c.w/2-(innerWidth/2-pad))/innerWidth,-1.4,1.4),depth=1-Math.min(1,Math.abs(v));e.style.transform='perspective(1100px) translate3d(0,'+(Math.abs(v)*16+Math.sin(T*1.1+i*1.3)*6)+'px,'+(-60+depth*220)+'px) rotateX('+(Math.cos(T*.8+i)*1.8)+'deg) rotateY('+(-v*24+Math.sin(T*.9+i*.8)*3)+'deg) rotateZ('+(v*2)+'deg) scale('+(0.92+depth*.14)+') skewY('+(coarse?0:Math.max(-4,Math.min(4,scrollVel*.02)))+'deg)';e.style.opacity=(0.55+depth*.45).toFixed(2);e.classList.toggle('is-centre',Math.abs(v)<.25);});
-  meter.style.transform='scaleX('+p+')';counter.textContent=String(Math.min(7,Math.round(p*6)+1)).padStart(2,'0')+' / 07';
+  var wp=coarse?clamp((scrollY-workTop)/Math.max(1,work.offsetHeight-innerHeight),0,1):pg(workTop,work,0);
+  p=coarse?dwell(wp,cards.length,.42):ease(wp,cards.length);
+  var position=p*(cards.length-1);
+  activeCard=Math.round(position);
+  var hueA=cardHues[Math.floor(position)],hueB=cardHues[Math.min(cards.length-1,Math.floor(position)+1)];
+  work.style.setProperty('--stack-hue',hueA+(hueB-hueA)*(position%1));
+  cards.forEach(function(e,i){
+   var d=i-position,leaving=Math.max(0,-d),visible=d>-1&&d<3.5,isActive=i===activeCard;
+   e.style.visibility=visible?'visible':'hidden';
+   e.style.pointerEvents=isActive?'auto':'none';e.inert=!isActive;
+   e.setAttribute('aria-hidden',isActive?'false':'true');
+   e.style.zIndex=d<0?70:60-i;
+   e.style.setProperty('--face-opacity',d<0?Math.max(0,1-leaving*5):1);
+   e.style.opacity=visible?Math.min(1,d<0?Math.max(0,1-Math.max(0,leaving-.18)/.3):3.5-d):0;
+   e.style.transform=d<0?'translate3d(0,'+(-leaving*170)+'px,'+(-leaving*130)+'px) rotateX('+(leaving*30)+'deg) scale('+(1-leaving*.09)+')':'translate3d(0,'+(-d*23)+'px,'+(-d*65)+'px) rotateX('+(-d*2)+'deg) scale('+(1-d*.045)+')';
+  });
+  meter.style.transform='scaleX('+p+')';counter.textContent=String(activeCard+1).padStart(2,'0')+' / '+String(cards.length).padStart(2,'0');
+  q('#stack-prev').disabled=activeCard===0;q('#stack-next').disabled=activeCard===cards.length-1;
+  q('#top-btn').style.visibility=(cur>=workTop-80&&cur<=workTop+work.offsetHeight-innerHeight)?'hidden':'visible';
+  if(cube)cube.parentElement.style.visibility=(cur>=workTop-80&&cur<=workTop+work.offsetHeight-innerHeight)?'hidden':'visible';
   }
   if(cube){var prog=clamp(scrollY/(Math.max(1,document.documentElement.scrollHeight-innerHeight)),0,1);cube.style.transform='rotateX(-20deg) rotateY('+(prog*360)+'deg)';}
   if(vis.archive){
@@ -849,7 +887,7 @@ addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{sco
  qa('#sheet img').forEach(function(im){im.addEventListener('load',measure,{once:true})});
  if(document.fonts)document.fonts.ready.then(measure);measure();
  // Keep keyboard focus visible through the horizontal scene.
- cards.forEach(function(c,i){c.addEventListener('focusin',function(){var p=i/(cards.length-1);window.scrollTo({top:work.offsetTop+p*(work.offsetHeight-innerHeight+80),behavior:'auto'})})});
+ if(!coarse)cards.forEach(function(c,i){c.addEventListener('focusin',function(){var p=i/(cards.length-1);window.scrollTo({top:work.offsetTop+p*(work.offsetHeight-innerHeight),behavior:'auto'})})});
  function attachTilt(sel){qa(sel).forEach(function(el){
     el.addEventListener('mousemove',function(e){
       if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
