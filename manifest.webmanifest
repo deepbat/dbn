@@ -1,26 +1,51 @@
 {
+
   "name": "Deepak Batra",
+
   "short_name": "Deepak",
+
   "description": "Office mind. Maker spirit. Personal site of Deepak Batra.",
+
   "id": "/dbn/",
+
   "start_url": "./?source=pwa",
+
   "scope": "./",
+
   "display": "standalone",
+
   "orientation": "portrait",
-  "background_color": "#071F30",
-  "theme_color": "#071F30",
+
+  "background_color": "#f3edda",
+
+  "theme_color": "#f3edda",
+
   "icons": [
+
     {
+
       "src": "icon.svg",
+
       "sizes": "any",
+
       "type": "image/svg+xml",
+
       "purpose": "any"
+
     },
+
     {
+
       "src": "icon.svg",
+
       "sizes": "any",
+
       "type": "image/svg+xml",
+
       "purpose": "maskable"
+
     }
+
   ]
+
 }
