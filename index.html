@@ -883,8 +883,9 @@ addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationF
 onScroll();
 
 /* reveal */
-var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
-[].slice.call(document.querySelectorAll('.rv')).forEach(function(el){io.observe(el)});
+var rvAll=[].slice.call(document.querySelectorAll('.rv'));
+function rvCheck(){var lim=innerHeight*0.92;rvAll.forEach(function(el){if(!el.classList.contains('in')&&el.getBoundingClientRect().top<lim)el.classList.add('in')})}
+addEventListener('scroll',rvCheck,{passive:true});addEventListener('resize',rvCheck);rvCheck();
 
 /* station rail */
 var railSt=[].slice.call(document.querySelectorAll('#rail .st'));
