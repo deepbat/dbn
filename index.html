@@ -702,7 +702,7 @@ function tickClock(){
   document.getElementById('st-time').innerHTML=p.time+'<small>IST · UTC +5:30</small>';
   document.getElementById('st-date').innerHTML=p.date+'<small>DD/MM/YY</small>';
   document.getElementById('j-time').textContent=p.time;
-  var now=p.hr>=5&&p.hr<7?'early chai before the day':p.hr<9?'morning rush, office-bound':p.hr<13?'office hours, deep in files':p.hr<14?'lunch break, probably rajma-chawal':p.hr<18?'office hours, one eye on a side project':p.hr<21?'evening chai + build time':p.hr<23?'web series or one more commit':'recharging for tomorrow';
+  var now=p.hr>=5&&p.hr<7?'early chai before the day':p.hr>=7&&p.hr<9?'morning rush, office-bound':p.hr>=9&&p.hr<13?'office hours, deep in files':p.hr>=13&&p.hr<14?'lunch break, probably rajma-chawal':p.hr>=14&&p.hr<18?'office hours, one eye on a side project':p.hr>=18&&p.hr<21?'evening chai + build time':p.hr>=21&&p.hr<23?'web series or one more commit':'recharging for tomorrow';
   document.getElementById('st-now').innerHTML=now+'<small>A GOOD GUESS, BY THE CLOCK</small>';
 }
 tickClock();setInterval(tickClock,20000);
@@ -941,4 +941,4 @@ if('serviceWorker' in navigator)addEventListener('load',function(){navigator.ser
 })();
 </script>
 </body>
-       </html>
+</html>
