@@ -327,10 +327,10 @@ footer .base a{color:#e8b64c;text-decoration:none}
     <span class="who"><b>Deepak Batra</b><span>JUC · PLATFORM 1</span></span>
   </a>
   <nav class="mainnav" aria-label="Sections">
-    <a href="#about"><small>JUC</small>ABOUT</a>
-    <a href="#homeland"><small>PB</small>HOMETOWN</a>
-    <a href="#work"><small>LDH</small>WORK</a>
-    <a href="#archive"><small>ASR</small>ARCHIVE</a>
+    <a href="#about"><small>LDH</small>ABOUT</a>
+    <a href="#homeland"><small>UMB</small>HOMETOWN</a>
+    <a href="#work"><small>KKDE</small>WORK</a>
+    <a href="#archive"><small>PNP</small>ARCHIVE</a>
     <a href="#contact"><small>DLI</small>CONTACT</a>
   </nav>
   <a class="btn" href="#contact" style="padding:9px 18px;font-size:12px">Say hello</a>
@@ -359,10 +359,10 @@ footer .base a{color:#e8b64c;text-decoration:none}
 <nav id="rail" aria-label="Journey progress">
   <svg id="rail-train" viewBox="0 0 24 24" width="15" height="15" fill="#a83226"><path d="M12 2c-3 0-6 .5-6 2v9c0 1.7 1.3 3 3 3l-1.7 2.6c-.3.4 0 1 .5 1h.7c.3 0 .5-.1.7-.4L11 17h2l1.8 2.2c.2.2.4.4.7.4h.7c.5 0 .8-.6.5-1L15 16c1.7 0 3-1.3 3-3V4c0-1.5-3-2-6-2zm-4 4c0-.6.4-1 1-1h6c.6 0 1 .4 1 1v3c0 .6-.4 1-1 1H9c-.6 0-1-.4-1-1V6zm1 7c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1zm6 0c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1z"/></svg>
   <a class="st" href="#top" data-sec="hero">JUC</a>
-  <a class="st" href="#about" data-sec="about">JUC</a>
-  <a class="st" href="#homeland" data-sec="homeland">PB</a>
-  <a class="st" href="#work" data-sec="work">LDH</a>
-  <a class="st" href="#archive" data-sec="archive">ASR</a>
+  <a class="st" href="#about" data-sec="about">LDH</a>
+  <a class="st" href="#homeland" data-sec="homeland">UMB</a>
+  <a class="st" href="#work" data-sec="work">KKDE</a>
+  <a class="st" href="#archive" data-sec="archive">PNP</a>
   <a class="st" href="#contact" data-sec="contact">DLI</a>
 </nav>
 
@@ -598,7 +598,7 @@ var intro=document.getElementById('intro'), opened=false, gone=false;
   var h=+(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata',hour:'numeric',hour12:false}));
   var sky=document.getElementById('door-sky');
   sky.className='door-sky '+(h>=5&&h<7?'dawn':h>=7&&h<17?'day':h>=17&&h<20?'dusk':'night');
-  if(reduced||qs.has('skipintro')||location.hash.length>2||sessionStorage.getItem('dbn-boarded')){intro.style.display='none';gone=true;startFlap(true);}
+  if(reduced||qs.has('skipintro')||location.hash.length>2||sessionStorage.getItem('dbn-boarded')){intro.style.display='none';gone=true;setTimeout(function(){startFlap(true)},0);}
   else document.body.style.overflow='hidden';
 })();
 function dismissIntro(){
@@ -627,6 +627,18 @@ flapRows.forEach(function(row){
   }
 });
 var flapStarted=false;
+function fitFlap(){
+  var board=document.querySelector('.flap-board');if(!board)return;
+  board.style.transform='';var avail=board.parentElement.clientWidth;
+  var need=board.scrollWidth;
+  var sc=Math.min(1,avail/need);
+  board.style.transformOrigin='top left';
+  board.style.transform='scale('+sc+')';
+  board.style.marginBottom=(-(board.offsetHeight*(1-sc)))+'px';
+}
+addEventListener('resize',fitFlap);
+addEventListener('load',fitFlap);
+setTimeout(fitFlap,50);
 function startFlap(instant){
   if(flapStarted)return;flapStarted=true;
   var tiles=[].slice.call(document.querySelectorAll('.flap'));
@@ -678,7 +690,7 @@ function istParts(){
   var dd=now.toLocaleDateString('en-GB',{timeZone:'Asia/Kolkata',day:'2-digit'});
   var mm=now.toLocaleDateString('en-GB',{timeZone:'Asia/Kolkata',month:'2-digit'});
   var yy=now.toLocaleDateString('en-GB',{timeZone:'Asia/Kolkata',year:'2-digit'});
-  var hr=+(now.toLocaleString('en-US',{timeZone:'Asia/Kolkata',hour:'numeric',hour12:false}));
+  var hr=(+(now.toLocaleString('en-GB',{timeZone:'Asia/Kolkata',hour:'numeric',hour12:false,hourCycle:'h23'})))%24;
   return {time:time,date:dd+'/'+mm+'/'+yy,hr:hr};
 }
 function tickClock(){
