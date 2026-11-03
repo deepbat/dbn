@@ -4,7 +4,7 @@
 
    page to itself once, so no phone can stay stuck on a stale shell. */
 
-var VERSION='dbn-v45-all12',SHELL=['./','index.html','lenis.js','manifest.webmanifest','portrait-720.jpg','f-inter.woff2','f-instrument-serif.woff2','f-instrument-serif-italic.woff2','f-jetbrains-mono.woff2','icon.svg','icon-192.png','icon-512.png','preview-card.jpg'];
+var VERSION='dbn-v45-all12',SHELL=['./','index.html','lenis.js','manifest.webmanifest','portrait-720.jpg','f-inter.woff2','f-instrument-serif.woff2','f-instrument-serif-italic.woff2','f-jetbrains-mono.woff2','icon.svg'];
 
 self.addEventListener('install',function(e){e.waitUntil(caches.open(VERSION).then(function(c){return c.addAll(SHELL)}).then(function(){return self.skipWaiting()}))});
 
