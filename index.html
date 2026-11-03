@@ -249,7 +249,9 @@ html,body{overflow-x:clip}
 .strip::-webkit-scrollbar{display:none}
 #archive.arch-live .arch-runway{position:relative}
 #archive.arch-live .arch-sticky{position:sticky;top:0;height:100svh;box-sizing:border-box;padding-top:calc(var(--hdr,64px) + 14px);padding-bottom:36px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-#archive.arch-live .strip{overflow:visible;width:max-content;padding:0 8vw 0 6vw;will-change:transform}
+#archive.arch-live .strip{perspective:none;overflow:visible;flex-shrink:0;width:max-content;padding:0;will-change:transform}
+#archive.arch-live .frame{width:min(360px,76vw);margin:0}
+#archive.arch-live .frame img,#archive.arch-live .frame video{display:block;height:min(480px,calc(100svh - var(--hdr,64px) - 160px));aspect-ratio:auto;object-fit:contain;background:#071e56}
 #archive.arch-live .strip-hint{position:absolute;bottom:20px;left:0;right:0;text-align:center;margin-top:0}
 .frame{flex:0 0 auto;width:min(300px,72vw);border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--cream);box-shadow:5px 5px 0 var(--ink);transition:box-shadow .2s;position:relative;will-change:transform}
 .frame:hover{box-shadow:7px 9px 0 var(--maroon)}
@@ -744,7 +746,7 @@ dialog.lightbox .lb-bar{gap:10px}
     </div>
     <p class="sec-sub">Frames from in and around Punjab - keep scrolling to move through them, tap one to look closer.</p>
   </div>
-  <div class="arch-runway" id="arch-runway"><div class="arch-sticky"><div class="strip rv3d" id="strip"></div><div class="strip-hint">keep scrolling - the archive glides past</div></div></div>
+  <div class="arch-runway" id="arch-runway"><div class="arch-sticky"><div class="strip rv3d" id="strip"></div><div class="strip-hint">scroll to explore · pause to centre a full photo</div></div></div>
 </section>
 
 <dialog class="lightbox" id="lightbox">
@@ -1340,7 +1342,7 @@ railMeasureAll();
 
 /* ---------- ARCHIVE ---------- */
 var FRAMES=[];
-[14,16,17,18,19,20,21,22,23,25,26,27,28,29,30].forEach(function(fn){FRAMES.push({src:'gallery-'+fn+'.webp',type:'img'})});
+[14,16,17,18,19,20,21,22,23,25,26,27,29,30].forEach(function(fn){FRAMES.push({src:'gallery-'+fn+'.webp',type:'img'})});
 FRAMES.push({src:'',type:'img',b64:'gallery-31.b64.txt'});
 FRAMES.push({src:'clip-01.mp4',type:'vid'});
 var strip=document.getElementById('strip');
@@ -1360,17 +1362,38 @@ FRAMES.forEach(function(f,i){
   if(f.b64){(function(ff,im){fetch(ff.b64).then(function(r){return r.text()}).then(function(t){ff.src='data:image/webp;base64,'+t.trim();im.src=ff.src}).catch(function(){})})(f,fig.querySelector('img'))}
   strip.appendChild(fig);frameEls.push({el:fig,cur:0});
 });
-/* vertical page scroll glides the strip through the pinned archive stage */
+/* Vertical page scrolling keeps the 3D journey; an idle stop centres a whole frame. */
 var archRun=document.getElementById('arch-runway');
-var archLive=!reduced2,archTotal=0,photoDist=0,gx=-1;
+var archStage=archRun.querySelector('.arch-sticky');
+var archLive=!reduced2,archTotal=0,photoDist=0,gx=-1,archOrigin=0;
+var archStops=[],archSnapTimer=0,archSnapping=false,archTouching=false;
 if(archLive)document.getElementById('archive').classList.add('arch-live');
 function archMeasure(){
   if(!archLive)return;
-  photoDist=Math.max(0,strip.scrollWidth-innerWidth+Math.round(innerWidth*.02));
-  archRun.style.height=Math.round(innerHeight+photoDist*(coarse?1.15:1.35))+'px';
+  archStops=frameEls.map(function(o){return o.el.offsetLeft+o.el.offsetWidth/2});
+  archOrigin=archStage.clientWidth/2-archStops[0];
+  photoDist=archStops[archStops.length-1]-archStops[0];
+  archRun.style.height=Math.round(innerHeight+photoDist*(coarse?1.35:1.5))+'px';
   archTotal=archRun.offsetHeight-innerHeight;
 }
 window.archMeasure=archMeasure;
+function archSnap(){
+  if(!archLive||archTouching||archSnapping||!archTotal||lb&&lb.open)return;
+  var top=archRun.getBoundingClientRect().top+scrollY;
+  var progress=(scrollY-top)/archTotal;
+  if(progress<0||progress>1)return;
+  var travel=progress*photoDist,closest=0;
+  archStops.forEach(function(c,i){if(Math.abs(c-archStops[0]-travel)<Math.abs(archStops[closest]-archStops[0]-travel))closest=i});
+  var y=top+(archStops[closest]-archStops[0])/photoDist*archTotal;
+  if(Math.abs(y-scrollY)<1)return;
+  archSnapping=true;
+  if(lenis)lenis.scrollTo(y,{duration:.42,force:true});
+  else scrollTo({top:y,behavior:'smooth'});
+  setTimeout(function(){archSnapping=false;clearTimeout(archSnapTimer);archSnapTimer=setTimeout(archSnap,240)},700);
+}
+addEventListener('scroll',function(){clearTimeout(archSnapTimer);if(!archSnapping)archSnapTimer=setTimeout(archSnap,220)},{passive:true});
+addEventListener('touchstart',function(){archTouching=true;clearTimeout(archSnapTimer)},{passive:true});
+['touchend','touchcancel'].forEach(function(name){addEventListener(name,function(){archTouching=false;clearTimeout(archSnapTimer);archSnapTimer=setTimeout(archSnap,240)},{passive:true})});
 function archUpdate(){
   if(!archLive||archTotal<=0)return;
   var r=archRun.getBoundingClientRect();
@@ -1378,13 +1401,13 @@ function archUpdate(){
   var p=Math.max(0,Math.min(1,-r.top/archTotal));
   var tgt=p*photoDist;
   if(gx<0)gx=tgt;
-  var dg=tgt-gx;gx+=dg*.13;if(Math.abs(dg)<.05)gx=tgt;
-  strip.style.transform='translate3d('+(-gx).toFixed(1)+'px,0,0)';
-  var mid=innerWidth/2;
+  var dg=tgt-gx;gx+=dg*.18;if(Math.abs(dg)<.05)gx=tgt;
+  strip.style.transform='translate3d('+(archOrigin-gx).toFixed(2)+'px,0,0)';
+  var mid=archStage.clientWidth/2;
   frameEls.forEach(function(o){
-    var cx2=o.el.offsetLeft-gx+o.el.offsetWidth/2;
+    var cx2=o.el.offsetLeft+archOrigin-gx+o.el.offsetWidth/2;
     var v=Math.max(-1.25,Math.min(1.25,(cx2-mid)/innerWidth));
-    var dv=v-o.cur;o.cur+=dv*.14;
+    var dv=v-o.cur;o.cur+=dv*.18;
     if(Math.abs(dv)>.001||!o.rest){
       o.el.style.transform='perspective(1000px) translate3d(0,0,'+(70-Math.abs(o.cur)*60).toFixed(1)+'px) rotateY('+(-o.cur*18).toFixed(2)+'deg)';
       o.el.style.opacity=Math.max(.3,1-Math.max(0,Math.abs(o.cur)-.8)*1.8).toFixed(2);
@@ -1539,4 +1562,4 @@ if(fine&&!reduced2){
   }).catch(function(){location.href='deepak-batra-profile.pdf'});
 });})();</script>
 </body>
-             </html>
+                          </html>
