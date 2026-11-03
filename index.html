@@ -404,7 +404,9 @@ body.t-night .flap-board{background:#040b26}
 #journey .bar .tk{position:absolute;top:0;width:2px;height:100%;background:#e6eeff;opacity:.45}
 #journey .bar .tk.hit{background:#FD91CC;opacity:1}
 /* 10 - install pill */
-#install-btn{position:fixed;left:auto;right:calc(4vw + 284px);bottom:22px;z-index:121;background:var(--cream);border:2px solid var(--ink);border-radius:999px;padding:10px 18px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;box-shadow:4px 4px 0 var(--ink);color:var(--ink)}
+#install-btn{position:fixed;left:auto;right:calc(4vw + 284px);bottom:22px;z-index:121;opacity:0;pointer-events:none;transform:translateY(24px);transition:opacity .4s,transform .45s cubic-bezier(.2,.8,.3,1)}
+body.past-hero #install-btn{opacity:1;pointer-events:auto;transform:none}
+#install-btn{background:var(--cream);border:2px solid var(--ink);border-radius:999px;padding:10px 18px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;box-shadow:4px 4px 0 var(--ink);color:var(--ink)}
 #install-btn:hover{box-shadow:6px 6px 0 var(--maroon)}
 @media(max-width:820px){#install-btn{bottom:54px;left:12px;right:auto;padding:8px 14px;font-size:9px}}
 /* 2 - arrival slip */
@@ -587,8 +589,8 @@ dialog.lightbox .lb-bar{gap:10px}
       <div class="flap-row" data-flap="BUILDER + OFFICE MIND" data-sm="1"></div>
       <div class="flap-row" data-flap="JALANDHAR JN" data-sm="1"></div>
     </div>
-    <p class="hero-sub"><b>Assistant Officer at F.C. Sondhi &amp; Co.</b> I build small tools for real work, and experiments for whatever happens to catch my attention - Python, Linux, APIs, local AI and a lot of chai.</p>
-    <div class="hero-tags"><span>PYTHON + APIS</span><span>LOCAL AI + CUDA</span><span>OFFICE AUTOMATION</span></div>
+    <p class="hero-sub"><b>Assistant Officer at F.C. Sondhi &amp; Co.</b> I build small tools for real work, and experiments for whatever happens to catch my attention - Python, Linux, APIs, AI experiments and a lot of chai.</p>
+    <div class="hero-tags"><span>PYTHON + APIS</span><span>NVIDIA AI API</span><span>OFFICE AUTOMATION</span></div>
     <code class="snip">{ <b>role</b>: <em>"Assistant Officer"</em>, <b>base</b>: <em>"Jalandhar"</em>, <b>building</b>: <em>true</em> }</code>
     <div class="pj-line" aria-live="off"><span class="gk" id="pj-gurm">&#2610;&#2596;&#2623;&#8205;&#2616;&#2608;&#2624;&#8195;&#2562;&#2582;&#2366;&#2620;</span><span class="pj-en" id="pj-en">sat sri akal &middot; a warm hello</span></div>
     <div class="hero-cta">
@@ -607,7 +609,7 @@ dialog.lightbox .lb-bar{gap:10px}
 </section>
 
 <div class="marquee" aria-hidden="true">
-  <div class="track" id="mq-track"><span>PYTHON <i>✦</i> LINUX <i>✦</i> APIS <i>✦</i> POWERSHELL <i>✦</i> OLLAMA <i>✦</i> CUDA <i>✦</i> GITHUB <i>✦</i> SUPABASE <i>✦</i> RENDER <i>✦</i> VERCEL <i>✦</i> EXCEL <i>✦</i> EMBEDDINGS <i>✦</i> CHAI <i>✦</i> </span></div>
+  <div class="track" id="mq-track"><span>PYTHON <i>✦</i> LINUX <i>✦</i> APIS <i>✦</i> POWERSHELL <i>✦</i> AI APIS <i>✦</i> NVIDIA <i>✦</i> GITHUB <i>✦</i> SUPABASE <i>✦</i> RENDER <i>✦</i> VERCEL <i>✦</i> EXCEL <i>✦</i> EMBEDDINGS <i>✦</i> CHAI <i>✦</i> </span></div>
 </div>
 
 <!-- NOW -->
@@ -635,7 +637,7 @@ dialog.lightbox .lb-bar{gap:10px}
   <div class="about-grid">
     <div class="about-text rv">
       <p>My everyday work covers <b>documents, finance, Excel, payments, grants, scholarships and reports</b> - the kind of work where one wrong cell at 5pm ruins an evening. <b>I love my work</b>, and I like making it smoother: AI tools like ChatGPT, Claude and Gemini handle the practical tasks, and I keep looking for ways to use technology to make work more fun and easier.</p>
-      <p>Outside office hours I build software with <b>Python, Linux and APIs</b>, and experiment with local language models, Ollama, OpenClaw, embeddings and NVIDIA CUDA. Beyond the screen: a good web series or movie, photography, family time, chai and music - usually something Punjabi playing in the background.</p>
+      <p>Outside office hours I build software with <b>Python, Linux and APIs</b>, and experiment with language models and embeddings through free AI APIs like NVIDIA's. Beyond the screen: a good web series or movie, photography, family time, chai and music - usually something Punjabi playing in the background.</p>
       <div class="sig">- Deepak, Jalandhar</div>
     </div>
     <div class="tag-card rv3d">
@@ -654,7 +656,7 @@ dialog.lightbox .lb-bar{gap:10px}
   <div class="toolcards">
     <div class="toolcard rv"><h3>Daily &amp; Office <small>COACH A</small></h3><div class="pills"><span>Windows</span><span>Office 365</span><span>PowerShell</span><span>Python</span><span>Linux</span><span>ChatGPT + Claude + Gemini</span></div></div>
     <div class="toolcard rv"><h3>Build &amp; Ship <small>COACH B</small></h3><div class="pills"><span>GitHub</span><span>Supabase</span><span>Render</span><span>Vercel</span><span>APIs</span></div></div>
-    <div class="toolcard rv"><h3>AI &amp; Local <small>COACH C</small></h3><div class="pills"><span>Ollama</span><span>OpenClaw</span><span>Embeddings</span><span>NVIDIA CUDA</span></div></div>
+    <div class="toolcard rv"><h3>AI &amp; APIs <small>COACH C</small></h3><div class="pills"><span>NVIDIA AI API</span><span>LLM APIs</span><span>Embeddings</span><span>ChatGPT &middot; Claude &middot; Gemini</span></div></div>
   </div>
 </section>
 
@@ -1110,8 +1112,8 @@ jd.addEventListener('click',function(){if(!zoomed)document.getElementById('map-z
 /* ---------- WORK DECK ---------- */
 var CARDS=[
  {n:'01',t:'Punjabi Rewind',tags:'VANILLA JS · WEBGL · MUSIC',d:'Hindi and Punjabi hits in an interactive, fluid-ink music experience. A browser experiment built around the songs I keep coming back to.',note:'The whole thing runs in the browser - no app, no account.',stack:'VANILLA JS · WEBGL FLUID SHADER · WEB AUDIO · GITHUB PAGES',demo:'ink',link:'https://deepbat.github.io/punjabi-rewind/',lt:'Open Punjabi Rewind ↗',bg:'#f2b035',light:false},
- {n:'02',t:'FCS Attendance',tags:'WORKPLACE TOOL · ATTENDANCE',d:'A workplace attendance project. One of the tools I build around the practical needs of everyday office work.',note:'In use, quietly improving one small thing at a time.',stack:'SUPABASE · VANILLA JS · GITHUB PAGES',demo:'check',bg:'#4a7dff',light:false},
- {n:'03',t:'Local LLM Experiments',tags:'OLLAMA · OPENCLAW · EMBEDDINGS · CUDA',d:'Experiments with locally-run language models, Ollama, OpenClaw and embeddings. I explore what local AI can actually do with NVIDIA CUDA and my own machines - no headline required.',note:'Because running it yourself is the only way to find out what it really does.',stack:'OLLAMA · OPENCLAW · EMBEDDINGS · NVIDIA CUDA · PYTHON',demo:'term',bg:'#09318D',light:true},
+ {n:'02',t:'FCS Attendance',tags:'WORKPLACE TOOL · ATTENDANCE',d:'A workplace attendance project. One of the tools I build around the practical needs of everyday office work.',note:'In use, quietly improving one small thing at a time.',stack:'SUPABASE · VANILLA JS · GITHUB PAGES',demo:'check',bg:'#4a7dff',light:true},
+ {n:'03',t:'LLM Experiments',tags:'NVIDIA AI API · LLM APIS · EMBEDDINGS',d:'Experiments with language models through free AI APIs like NVIDIA\'s, plus embeddings and prompt experiments. I explore what these models can actually do - no headline required.',note:'Because trying it yourself is the only way to find out what it really does.',stack:'NVIDIA AI API · LLM APIS · EMBEDDINGS · PYTHON',demo:'term',bg:'#09318D',light:true},
  {n:'04',t:'Software Building',tags:'PYTHON · APIS · DESKTOP APPS · AUTOMATION',d:'Small software projects built around Python and APIs. I make practical tools, desktop apps and experiments that solve problems in my day-to-day work.',note:'Built for my own workflow first. Everything else is a happy accident.',stack:'PYTHON · APIS · DESKTOP APPS · DAILY-DRIVER TOOLS',demo:'bricks',bg:'#3c6b4f',light:true},
  {n:'05',t:'Scholarship & Grant Software',tags:'WPF / .NET · SQLITE · PDF EXPORT',d:'A Windows desktop application for managing scholarship and grant records, applicant workflows and reporting. Built end-to-end as a practical tool I actually use.',note:'I wanted to turn a practical process into something orderly - and to learn what real desktop software takes: installers, migrations, error states and all.',stack:'WPF / .NET · SQLITE · PDF EXPORT · INSTALLERS + MIGRATIONS',demo:'doc',bg:'#4a6fa5',light:true},
  {n:'06',t:'Office Automation',tags:'POWERSHELL · PYTHON · OFFICE 365',d:'Small tools and scheduled scripts that quietly remove repetitive work from the week. Mostly PowerShell, some Apps Script.',note:'If something is repetitive and interesting enough to automate, I usually end up trying. Most of these live as small scripts that never needed a UI.',stack:'POWERSHELL · PYTHON · APPS SCRIPT · SCHEDULED TASKS',demo:'gears',bg:'#c96b9a',light:false},
@@ -1474,6 +1476,7 @@ if('serviceWorker' in navigator)addEventListener('load',function(){navigator.ser
 /* ---------- PWA INSTALL ---------- */
 var installEvt=null,installBtn=document.getElementById('install-btn');
 addEventListener('beforeinstallprompt',function(e){e.preventDefault();installEvt=e;if(installBtn)installBtn.hidden=false;});
+addEventListener('scroll',function(){document.body.classList.toggle('past-hero',scrollY>innerHeight*0.55)},{passive:true});
 if(installBtn)installBtn.addEventListener('click',function(){
   if(!installEvt)return;
   installEvt.prompt();
@@ -1536,4 +1539,4 @@ if(fine&&!reduced2){
   }).catch(function(){location.href='deepak-batra-profile.pdf'});
 });})();</script>
 </body>
-</html>
+             </html>
