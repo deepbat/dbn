@@ -1170,7 +1170,7 @@ function layout(){
 var deckPos=0,deckTotal=0,deckDrawn=-1;
 function deckMeasure(){
   if(reduced2){zone.style.height='auto';deckTotal=0;return}
-  var per=innerHeight*(coarse?0.85:0.7);
+  var per=innerHeight*(coarse?1.05:0.88);
   zone.style.height=Math.round(innerHeight+(N-1)*per)+'px';
   deckTotal=zone.offsetHeight-innerHeight;
 }
@@ -1373,7 +1373,7 @@ function archMeasure(){
   archStops=frameEls.map(function(o){return o.el.offsetLeft+o.el.offsetWidth/2});
   archOrigin=archStage.clientWidth/2-archStops[0];
   photoDist=archStops[archStops.length-1]-archStops[0];
-  archRun.style.height=Math.round(innerHeight+photoDist*(coarse?1.35:1.5))+'px';
+  archRun.style.height=Math.round(innerHeight+photoDist*(coarse?1.65:1.85))+'px';
   archTotal=archRun.offsetHeight-innerHeight;
 }
 window.archMeasure=archMeasure;
@@ -1562,4 +1562,4 @@ if(fine&&!reduced2){
   }).catch(function(){location.href='deepak-batra-profile.pdf'});
 });})();</script>
 </body>
-                          </html>
+                                                                                                     </html>
