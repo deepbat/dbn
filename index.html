@@ -312,6 +312,29 @@ body.cur-down #cring{width:26px;height:26px}
   .flap.sm{width:22px;height:30px;font-size:15px}
   .wcard{height:500px;padding:26px 24px}
 }
+
+/* ===== round 25: ambient background, parallax, gentle image entrance, mono accents ===== */
+#bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+#bgfx i{position:absolute;inset:-30%;will-change:transform;
+  background:radial-gradient(38% 34% at 22% 28%,rgba(232,118,45,.17),transparent 70%),radial-gradient(34% 32% at 78% 22%,rgba(168,50,38,.10),transparent 70%),radial-gradient(40% 36% at 70% 80%,rgba(224,163,46,.17),transparent 70%),radial-gradient(34% 30% at 18% 78%,rgba(60,107,79,.10),transparent 70%);
+  animation:bgdrift 48s ease-in-out infinite alternate}
+#bgfx i+i{animation-duration:71s;animation-direction:alternate-reverse;opacity:.7;transform:scaleX(-1)}
+@keyframes bgdrift{0%{transform:translate3d(-4%,-3%,0) rotate(0deg) scale(1)}50%{transform:translate3d(3%,4%,0) rotate(6deg) scale(1.08)}100%{transform:translate3d(5%,-4%,0) rotate(-5deg) scale(1.03)}}
+#bgfx i+i{animation-name:bgdrift2}
+@keyframes bgdrift2{0%{transform:scaleX(-1) translate3d(4%,3%,0) rotate(-4deg)}100%{transform:scaleX(-1) translate3d(-5%,-3%,0) rotate(5deg) scale(1.06)}}
+.px-ghost{position:absolute;right:3vw;top:50%;margin-top:-.5em;font-family:var(--mono);font-weight:700;font-size:clamp(120px,24vw,340px);line-height:1;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:2px rgba(34,28,20,.07);pointer-events:none;user-select:none;z-index:-1;will-change:transform;white-space:nowrap}
+#about,#homeland,#contact,#hero{isolation:isolate}
+.frame img,.frame video{opacity:0;transform:translateY(22px) scale(1.05);transition:opacity 1.3s ease,transform 1.7s cubic-bezier(.22,1,.3,1)}
+.frame .ld{opacity:1 !important;transform:none !important}
+#hero-photo{opacity:0;transition:opacity 1.4s ease .15s}
+#hero-photo.ld{opacity:1}
+.rv{transform:translateY(46px);transition:opacity 1.15s ease,transform 1.3s cubic-bezier(.22,1,.3,1)}
+.eyebrow::before{content:"//";width:auto;height:auto;background:none;color:var(--maroon);font-weight:700;letter-spacing:0}
+.eyebrow::after{content:"_";color:var(--maroon);font-weight:700;letter-spacing:0;animation:caret 1.3s steps(1) infinite}
+@keyframes caret{0%,55%{opacity:1}56%,100%{opacity:0}}
+.snip{display:inline-block;margin-top:20px;font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--ink2);background:rgba(35,40,48,.06);border:1px dashed var(--ink2);border-radius:10px;padding:9px 14px;max-width:100%;overflow-wrap:anywhere}
+.snip b{color:var(--maroon);font-weight:600}.snip em{font-style:normal;color:var(--green)}
+@media(prefers-reduced-motion:reduce){#bgfx i,.eyebrow::after{animation:none !important}.frame img,.frame video,#hero-photo{opacity:1;transform:none;transition:none}.px-ghost{display:none}}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
   html{scroll-behavior:auto}
@@ -319,6 +342,7 @@ body.cur-down #cring{width:26px;height:26px}
 </style>
 </head>
 <body>
+<div id="bgfx" aria-hidden="true"><i></i><i></i></div>
 <a class="skip" href="#about">Skip to content</a>
 <div id="cdot" aria-hidden="true"></div>
 <div id="cring" aria-hidden="true"><span></span></div>
@@ -406,6 +430,7 @@ body.cur-down #cring{width:26px;height:26px}
     </div>
     <p class="hero-sub"><b>Assistant Officer at F.C. Sondhi &amp; Co.</b> I build small tools for real work, and experiments for whatever happens to catch my attention - Python, Linux, APIs, local AI and a lot of chai.</p>
     <div class="hero-tags"><span>PYTHON + APIS</span><span>LOCAL AI + CUDA</span><span>OFFICE AUTOMATION</span></div>
+    <code class="snip">{ <b>role</b>: <em>"Assistant Officer"</em>, <b>base</b>: <em>"Jalandhar"</em>, <b>building</b>: <em>true</em> }</code>
     <div class="hero-cta">
       <a class="btn" href="#work">See the work ↓</a>
       <a class="btn alt" href="#contact">Get in touch</a>
@@ -948,6 +973,17 @@ t3.forEach(function(pair){var el=document.querySelector(pair[0]);if(el)t3Els.pus
 var mx=0,my=0,smx=0,smy=0;
 if(fine)addEventListener('mousemove',function(e){mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2},{passive:true});
 var lastHp=-1,lastSmx=0,lastSmy=0,lastPct=-1,lastNext='',lastBarW=-1;
+var pxEls=[];
+(function(){
+  var gh={about:'01',homeland:'02',contact:'06'};
+  Object.keys(gh).forEach(function(id){var sec=document.getElementById(id);if(!sec)return;
+    var g=document.createElement('span');g.className='px-ghost';g.setAttribute('aria-hidden','true');g.textContent='/'+gh[id];sec.insertBefore(g,sec.firstChild);
+    pxEls.push({el:g,ref:sec,k:.28,last:''});});
+  var hs=document.querySelector('.hero-photo-col');
+  [['.photo-glow',.12],['.photo-caption',-.05]].forEach(function(a){var e=document.querySelector(a[0]);if(e&&hs)pxEls.push({el:e,ref:hs,k:a[1],last:''})});
+  document.querySelectorAll('.sec-head .eyebrow').forEach(function(e){pxEls.push({el:e,ref:e.parentNode,k:-.06,last:''})});
+  var hp=document.getElementById('hero-photo');if(hp){var d=function(){hp.classList.add('ld')};if(hp.complete&&hp.naturalWidth)d();else{hp.addEventListener('load',d);hp.addEventListener('error',d)}setTimeout(d,2500)}
+})();
 function fx(){
   var target=scrollY, d=target-sY;
   sY+=d*.12; if(Math.abs(d)<.05)sY=target;
@@ -980,6 +1016,13 @@ function fx(){
       var tgt=Math.max(-1,Math.min(1,c))*o.max;
       var delta=tgt-o.cur;o.cur+=delta*.08;
       if(Math.abs(delta)>.002||!o.rest){o.el.style.transform='perspective(1000px) rotateX('+o.cur.toFixed(3)+'deg)';o.rest=Math.abs(delta)<=.002;}
+    });
+    pxEls.forEach(function(o){
+      var r=o.ref.getBoundingClientRect();
+      if(r.bottom<-200||r.top>vh+200)return;
+      var c=(r.top+r.height/2-vh/2);
+      var y=(-c*o.k).toFixed(1);
+      if(y!==o.last){o.el.style.transform='translate3d(0,'+y+'px,0)';o.last=y}
     });
     var dtp=deckTargetPos(),dd2=dtp-deckPos;
     deckPos+=dd2*.14;if(Math.abs(dd2)<.001)deckPos=dtp;
@@ -1025,6 +1068,10 @@ FRAMES.forEach(function(f,i){
   fig.innerHTML=media+'<figcaption class="cap"><span>'+(f.type==='vid'?'CLIP · 7S':'FRAME')+'</span><span>'+String(i+1).padStart(2,'0')+' / '+FRAMES.length+'</span></figcaption>';
   fig.setAttribute('data-cursor','VIEW');
   fig.addEventListener('click',function(){openLB(f,i)});
+  (function(m){if(!m)return;var d=function(){m.classList.add('ld')};
+    if(f.type==='img'){if(m.complete&&m.naturalWidth)setTimeout(d,60);else{m.addEventListener('load',d);m.addEventListener('error',d)}}
+    else{m.addEventListener('loadeddata',d);m.addEventListener('error',d)}
+    setTimeout(d,2800+i*120)})(fig.querySelector('img,video'));
   strip.appendChild(fig);frameEls.push({el:fig,cur:0});
 });
 /* vertical page scroll glides the strip through the pinned archive stage */
