@@ -4,7 +4,7 @@
 
    page to itself once, so no phone can stay stuck on a stale shell. */
 
-var VERSION='dbn-v39-railway',SHELL=['./','index.html','manifest.webmanifest','portrait-720.jpg','f-inter.woff2','f-instrument-serif.woff2','f-instrument-serif-italic.woff2','f-jetbrains-mono.woff2','icon.svg'];
+var VERSION='dbn-v40-glide',SHELL=['./','index.html','lenis.js','manifest.webmanifest','portrait-720.jpg','f-inter.woff2','f-instrument-serif.woff2','f-instrument-serif-italic.woff2','f-jetbrains-mono.woff2','icon.svg'];
 
 self.addEventListener('install',function(e){e.waitUntil(caches.open(VERSION).then(function(c){return c.addAll(SHELL)}).then(function(){return self.skipWaiting()}))});
 
@@ -17,4 +17,3 @@ self.addEventListener('fetch',function(e){var r=e.request;if(r.method!=='GET')re
  if(r.mode==='navigate'){e.respondWith(fetch(r,{cache:"no-cache"}).then(function(res){var cp=res.clone();caches.open(VERSION).then(function(c){c.put('index.html',cp)});return res}).catch(function(){return caches.match('index.html')}));return}
                                           
  e.respondWith(caches.match(r).then(function(hit){var net=fetch(r).then(function(res){if(res&&res.ok){var cp=res.clone();caches.open(VERSION).then(function(c){c.put(r,cp)})}return res}).catch(function(){return hit});return hit||net}))});
-
