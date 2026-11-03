@@ -1056,14 +1056,15 @@ secIds.forEach(function(id){var el=document.getElementById(id);if(el)secIO.obser
 
 /* ---------- ARCHIVE ---------- */
 var FRAMES=[];
-for(var fn=14;fn<=30;fn++)FRAMES.push({src:'gallery-'+fn+'.webp',type:'img'});
+[14,16,17,18,19,20,21,22,23,25,26,27,28,29,30].forEach(function(fn){FRAMES.push({src:'gallery-'+fn+'.webp',type:'img'})});
+FRAMES.push({src:'',type:'img',b64:'gallery-31.b64.txt'});
 FRAMES.push({src:'clip-01.mp4',type:'vid'});
 var strip=document.getElementById('strip');
 var frameEls=[];
 FRAMES.forEach(function(f,i){
   var fig=document.createElement('figure');fig.className='frame';
   var media=f.type==='img'
-    ?'<img src="'+f.src+'" alt="Archive frame '+(i+1)+'" loading="lazy">'
+    ?'<img '+(f.b64?'':'src="'+f.src+'" ')+'alt="Archive frame '+(i+1)+'" loading="lazy">'
     :'<video src="'+f.src+'" muted loop playsinline preload="metadata"></video>';
   fig.innerHTML=media+'<figcaption class="cap"><span>'+(f.type==='vid'?'CLIP · 7S':'FRAME')+'</span><span>'+String(i+1).padStart(2,'0')+' / '+FRAMES.length+'</span></figcaption>';
   fig.setAttribute('data-cursor','VIEW');
@@ -1072,6 +1073,7 @@ FRAMES.forEach(function(f,i){
     if(f.type==='img'){if(m.complete&&m.naturalWidth)setTimeout(d,60);else{m.addEventListener('load',d);m.addEventListener('error',d)}}
     else{m.addEventListener('loadeddata',d);m.addEventListener('error',d)}
     setTimeout(d,2800+i*120)})(fig.querySelector('img,video'));
+  if(f.b64){(function(ff,im){fetch(ff.b64).then(function(r){return r.text()}).then(function(t){ff.src='data:image/webp;base64,'+t.trim();im.src=ff.src}).catch(function(){})})(f,fig.querySelector('img'))}
   strip.appendChild(fig);frameEls.push({el:fig,cur:0});
 });
 /* vertical page scroll glides the strip through the pinned archive stage */
