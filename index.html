@@ -12,11 +12,11 @@
 <meta property="og:title" content="Deepak Batra — Office mind. Maker spirit.">
 <meta property="og:description" content="Assistant Officer at F.C. Sondhi & Co., builder of small tools and experiments. All aboard the DBN Express from Jalandhar, Punjab.">
 <meta property="og:url" content="https://deepak.my.id/">
-<meta property="og:image" content="https://deepak.my.id/preview-card.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image" content="https://deepak.my.id/portrait-720.jpg">
+<meta property="og:image:width" content="720">
+<meta property="og:image:height" content="720">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://deepak.my.id/preview-card.jpg">
+<meta name="twitter:image" content="https://deepak.my.id/portrait-720.jpg">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
@@ -770,7 +770,7 @@ dialog.lightbox .lb-bar{gap:10px}
         <a class="c-link" href="mailto:deepak.batra@outlook.com"><span>deepak.batra@outlook.com<small>EMAIL · REPLIES WITH CHAI</small></span><span>↗</span></a>
         <a class="c-link" href="https://wa.me/919779777570"><span>+91 97797 77570<small>WHATSAPP · FASTEST</small></span><span>↗</span></a>
         <button class="c-link" id="copy-email" style="text-align:left"><span>Copy my email<small>ONE TAP</small></span><span id="copy-state">⧉</span></button>
-        <a class="c-link" href="deepak-batra-profile.pdf" download><span>Download my profile<small>ONE PAGE &middot; PDF</small></span><span>&darr;</span></a>
+        <a class="c-link" id="profile-dl" href="deepak-batra-profile.pdf" download><span>Download my profile<small>ONE PAGE &middot; PDF</small></span><span>&darr;</span></a>
       </div>
     </div>
     <form class="msg-form rv3d" id="msg-form">
@@ -1526,5 +1526,14 @@ if(fine&&!reduced2){
 }
 })();
 </script>
+<script>(function(){var a=document.getElementById('profile-dl');if(!a)return;a.addEventListener('click',function(e){
+  e.preventDefault();
+  fetch('deepak-batra-profile.b64.txt').then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
+    var b=atob(t.trim()),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);
+    var url=URL.createObjectURL(new Blob([u],{type:'application/pdf'})),x=document.createElement('a');
+    x.href=url;x.download='deepak-batra-profile.pdf';document.body.appendChild(x);x.click();x.remove();
+    setTimeout(function(){URL.revokeObjectURL(url)},4000);
+  }).catch(function(){location.href='deepak-batra-profile.pdf'});
+});})();</script>
 </body>
 </html>
