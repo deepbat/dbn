@@ -72,6 +72,10 @@ section{padding:110px 6vw;position:relative;max-width:1460px;margin:0 auto}
 .welcome h2{font-size:30px;color:#3a2408;letter-spacing:-.02em}
 .welcome p{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:#8c4a12}
 #intro .skip-intro{background:none;border:none;color:#6b5f45;font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px}
+@media(max-width:520px){#intro .board-line{font-size:10px;letter-spacing:.2em;text-align:center;padding:0 4vw;line-height:1.7}}
+@keyframes handlePulse{0%,100%{transform:translateX(0)}50%{transform:translateX(-7px)}}
+#intro:not(.open) .door-handle{animation:handlePulse 1.8s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){#intro .door-handle{animation:none !important}}
 /* ============ TOP BAR ============ */
 #topbar{position:fixed;top:0;left:0;right:0;z-index:120;display:flex;align-items:center;justify-content:space-between;gap:14px;
   padding:10px 4vw;background:rgba(243,237,218,.88);backdrop-filter:blur(10px);border-bottom:2px solid var(--ink)}
@@ -232,7 +236,7 @@ html,body{overflow-x:clip}
 .strip{display:flex;gap:22px;overflow-x:auto;padding:10px 4px 26px;scrollbar-width:none}
 .strip::-webkit-scrollbar{display:none}
 #archive.arch-live .arch-runway{position:relative}
-#archive.arch-live .arch-sticky{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+#archive.arch-live .arch-sticky{position:sticky;top:0;height:100svh;box-sizing:border-box;padding-top:calc(var(--hdr,64px) + 14px);padding-bottom:36px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 #archive.arch-live .strip{overflow:visible;width:max-content;padding:0 8vw 0 6vw;will-change:transform}
 #archive.arch-live .strip-hint{position:absolute;bottom:20px;left:0;right:0;text-align:center;margin-top:0}
 .frame{flex:0 0 auto;width:min(300px,72vw);border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--cream);box-shadow:5px 5px 0 var(--ink);transition:box-shadow .2s;position:relative;will-change:transform}
@@ -301,7 +305,7 @@ body.cur-down #cring{width:26px;height:26px}
   .toolcards{grid-template-columns:1fr}
   .deck-stage{height:530px}
 }
-.deck-sticky{position:sticky;top:0;min-height:100svh;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.deck-sticky{position:sticky;top:0;min-height:100svh;box-sizing:border-box;padding-top:calc(var(--hdr,64px) + 14px);padding-bottom:10px;display:flex;flex-direction:column;justify-content:center;gap:8px}
 @media(max-width:899px){
   section{padding:80px 6vw}
   .deck-stage{width:100%}
@@ -359,7 +363,7 @@ body.cur-down #cring{width:26px;height:26px}
       </div>
       <div class="door-plate">DBN EXPRESS · COACH S1 · SEAT 31</div>
       <div class="door-handle"></div>
-      <div class="door-hint">PULL TO OPEN</div>
+      <div class="door-hint">PULL OR SCROLL TO OPEN</div>
       <div class="welcome">
         <div class="gk">ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ</div>
         <h2>Welcome<br>aboard.</h2>
@@ -645,25 +649,40 @@ body.cur-down #cring{width:26px;height:26px}
 var qs=new URLSearchParams(location.search), reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- INTRO ---------- */
+(function(){var tb=document.getElementById('topbar');function f(){if(tb)document.documentElement.style.setProperty('--hdr',tb.offsetHeight+'px')}f();addEventListener('resize',f);addEventListener('load',f)})();
 var intro=document.getElementById('intro'), opened=false, gone=false;
 (function(){
   var h=+(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata',hour:'numeric',hour12:false}));
   var sky=document.getElementById('door-sky');
   sky.className='door-sky '+(h>=5&&h<7?'dawn':h>=7&&h<17?'day':h>=17&&h<20?'dusk':'night');
-  if(reduced||qs.has('skipintro')||location.hash.length>2||sessionStorage.getItem('dbn-boarded')){intro.style.display='none';gone=true;setTimeout(function(){startFlap(true)},0);}
-  else document.body.style.overflow='hidden';
+  var isReload=false;try{var nv=performance.getEntriesByType('navigation')[0];isReload=!!nv&&nv.type==='reload'}catch(e){}
+  if(reduced||qs.has('skipintro')||(location.hash.length>2&&!isReload)){intro.style.display='none';gone=true;setTimeout(function(){startFlap(true)},0);}
+  else{document.body.style.overflow='hidden';try{history.scrollRestoration='manual'}catch(e){}scrollTo(0,0);if(location.hash.length>2)history.replaceState(null,'',location.pathname+location.search);}
 })();
+var introTimer=0;
 function dismissIntro(){
   if(gone)return;
-  if(!opened){opened=true;intro.classList.add('open');return;}
-  gone=true;sessionStorage.setItem('dbn-boarded','1');
-  intro.classList.add('away');document.body.style.overflow='';
-  setTimeout(function(){intro.style.display='none'},1100);
-  startFlap(false);
+  if(!opened){opened=true;intro.classList.add('open');}
+  if(introTimer)return;
+  /* the door swings open, then the platform lifts away on its own - no second tap needed */
+  introTimer=setTimeout(function(){
+    gone=true;
+    intro.classList.add('away');document.body.style.overflow='';scrollTo(0,0);
+    setTimeout(function(){intro.style.display='none'},1100);
+    startFlap(false);
+  },1250);
 }
 intro.addEventListener('click',dismissIntro);
-document.getElementById('skip-intro').addEventListener('click',function(e){e.stopPropagation();if(!opened){opened=true;intro.classList.add('open');}dismissIntro();});
-addEventListener('keydown',function(e){if(e.key==='Escape'&&!gone){opened=true;intro.classList.add('open');dismissIntro();}});
+document.getElementById('skip-intro').addEventListener('click',function(e){e.stopPropagation();dismissIntro();});
+/* scroll (wheel / touch drag / keys) opens the door as well as pulling it */
+(function(){var acc=0,ty=null;
+  function go(){if(!gone){dismissIntro()}}
+  addEventListener('wheel',function(e){if(gone||opened)return;acc+=Math.abs(e.deltaY)+Math.abs(e.deltaX);if(acc>24)go()},{passive:true});
+  addEventListener('touchstart',function(e){if(gone||opened)return;ty=e.touches[0].clientY},{passive:true});
+  addEventListener('touchmove',function(e){if(gone||opened||ty===null)return;if(Math.abs(e.touches[0].clientY-ty)>10)go()},{passive:true});
+  addEventListener('keydown',function(e){if(gone||opened)return;if(['ArrowDown','PageDown','ArrowRight',' ','Enter','End'].indexOf(e.key)>-1){e.preventDefault&&e.preventDefault();go()}});
+})();
+addEventListener('keydown',function(e){if(e.key==='Escape'&&!gone){dismissIntro()}});
 
 /* ---------- SPLIT FLAP ---------- */
 var CHARS='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+·- ';
