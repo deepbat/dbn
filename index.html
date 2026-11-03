@@ -201,10 +201,9 @@ html,body{overflow-x:clip}
 .map-facts .gk{font-family:var(--gurmukhi);letter-spacing:.05em;color:#e8b64c}
 /* ============ WORK DECK ============ */
 #work .deck-zone{position:relative}
-.deck-stage{position:relative;height:560px;max-width:760px;margin:0 auto;perspective:1200px;user-select:none;touch-action:pan-y}
+.deck-stage{position:relative;height:560px;width:100%;max-width:760px;margin:0 auto;perspective:1200px;user-select:none;touch-action:pan-y}
 .wcard{position:absolute;inset:0;margin:auto;max-width:600px;height:470px;border:3px solid var(--ink);border-radius:26px;padding:34px 36px;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;transition:transform .72s cubic-bezier(.19,1,.22,1),opacity .5s ease;will-change:transform;cursor:grab}
-.wcard:active{cursor:grabbing}
+  display:flex;flex-direction:column;will-change:transform}
 .wcard .num{font-family:var(--mono);font-size:11px;letter-spacing:.3em;display:flex;justify-content:space-between}
 .wcard h3{font-size:clamp(26px,3.4vw,40px);margin:14px 0 6px;letter-spacing:-.02em}
 .wcard .tags{font-family:var(--mono);font-size:10px;letter-spacing:.2em;opacity:.75;margin-bottom:16px}
@@ -230,9 +229,13 @@ html,body{overflow-x:clip}
 #rule p{font-size:17px;line-height:1.8;color:#f3d9c4;max-width:560px;margin:0 auto}
 #rule .who{margin-top:26px;font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:#e8b64c}
 /* ============ ARCHIVE ============ */
-.strip{display:flex;gap:22px;overflow-x:auto;padding:10px 4px 26px;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab}
+.strip{display:flex;gap:22px;overflow-x:auto;padding:10px 4px 26px;scrollbar-width:none}
 .strip::-webkit-scrollbar{display:none}
-.frame{flex:0 0 auto;width:min(300px,72vw);scroll-snap-align:center;border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--cream);box-shadow:5px 5px 0 var(--ink);transition:box-shadow .2s;position:relative;will-change:transform}
+#archive.arch-live .arch-runway{position:relative}
+#archive.arch-live .arch-sticky{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+#archive.arch-live .strip{overflow:visible;width:max-content;padding:0 8vw 0 6vw;will-change:transform}
+#archive.arch-live .strip-hint{position:absolute;bottom:20px;left:0;right:0;text-align:center;margin-top:0}
+.frame{flex:0 0 auto;width:min(300px,72vw);border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--cream);box-shadow:5px 5px 0 var(--ink);transition:box-shadow .2s;position:relative;will-change:transform}
 .frame:hover{box-shadow:7px 9px 0 var(--maroon)}
 .frame img,.frame video{width:100%;aspect-ratio:3/4;object-fit:cover}
 .frame .cap{font-family:var(--mono);font-size:9px;letter-spacing:.24em;padding:10px 14px;display:flex;justify-content:space-between;color:var(--ink2)}
@@ -298,14 +301,12 @@ body.cur-down #cring{width:26px;height:26px}
   .toolcards{grid-template-columns:1fr}
   .deck-stage{height:530px}
 }
+.deck-sticky{position:sticky;top:0;min-height:100svh;display:flex;flex-direction:column;justify-content:center;gap:8px}
 @media(max-width:899px){
   section{padding:80px 6vw}
-  .deck-zone-mobile{height:calc(100svh * 6.2)}
-  .deck-sticky{position:sticky;top:0;min-height:100svh;display:flex;flex-direction:column;justify-content:center;gap:8px}
   .deck-stage{width:100%}
   .deck-ctl{display:none}
 }
-@media(min-width:900px){.deck-zone-mobile{height:auto}}
 @media(max-width:520px){
   .flap{width:34px;height:48px;font-size:22px}
   .flap.sm{width:22px;height:30px;font-size:15px}
@@ -515,7 +516,7 @@ body.cur-down #cring{width:26px;height:26px}
         <span class="deck-count"><span id="deck-n">01</span> / 07</span>
         <button id="deck-next" aria-label="Next project">→</button>
       </div>
-      <div class="deck-hint" id="deck-hint">drag, or use the arrows - the stack turns like a deck of tickets</div>
+      <div class="deck-hint" id="deck-hint">keep scrolling - the stack turns as you go</div>
     </div>
   </div>
   <div class="work-links rv">
@@ -541,10 +542,9 @@ body.cur-down #cring{width:26px;height:26px}
       <div class="eyebrow">05 · The archive</div>
       <h2>Life, <span class="serif">unfiltered.</span></h2>
     </div>
-    <p class="sec-sub">Frames from in and around Punjab - drag or scroll sideways, tap one to look closer.</p>
+    <p class="sec-sub">Frames from in and around Punjab - keep scrolling to move through them, tap one to look closer.</p>
   </div>
-  <div class="strip rv3d" id="strip"></div>
-  <div class="strip-hint">drag or scroll sideways →</div>
+  <div class="arch-runway" id="arch-runway"><div class="arch-sticky"><div class="strip rv3d" id="strip"></div><div class="strip-hint">keep scrolling - the archive glides past</div></div></div>
 </section>
 
 <dialog class="lightbox" id="lightbox">
@@ -848,6 +848,9 @@ var CARDS=[
  {n:'07',t:'Personal Websites',tags:'HTML / CSS · THREE.JS · WEBGL',d:'Websites I have built as experiments in design, interaction and browser-native technology. Each version is a self-imposed brief - including the one you are reading.',note:'I like seeing how far a browser can be pushed while keeping it useful. No frameworks unless they earn their place.',bg:'#efe3c2',light:false}
 ];
 var stage=document.getElementById('deck-stage'), active=0, N=CARDS.length;
+/* vertical page scroll turns the stack on every device: the stage pins, scrolling drives it */
+var reduced2=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var coarse=matchMedia('(pointer:coarse)').matches;
 CARDS.forEach(function(c,i){
   var el=document.createElement('article');
   el.className='wcard'+(c.light?' light':'');
@@ -856,6 +859,8 @@ CARDS.forEach(function(c,i){
   stage.appendChild(el);
 });
 var cardEls=[].slice.call(stage.children);
+var zone=document.getElementById('deck-zone');
+/* static layout: reduced-motion / no-JS-motion path, stepped by the arrow buttons */
 function layout(){
   cardEls.forEach(function(el,i){
     var d=i-active;
@@ -863,38 +868,64 @@ function layout(){
     else{var vis=Math.min(d,4);
       el.style.transform='translate('+(vis*26)+'px,'+(vis*-14)+'px) rotate('+(vis*2.4)+'deg) scale('+(1-vis*0.045)+')';
       el.style.opacity=d>4?0:1;el.style.pointerEvents=d===0?'auto':'none';}
-    el.style.zIndex=String(50-Math.abs(d));
+    el.style.zIndex=String(d<0?70+i:50-i);
   });
   document.getElementById('deck-n').textContent='0'+(active+1);
 }
-function go(d){active=Math.max(0,Math.min(N-1,active+d));layout();}
-document.getElementById('deck-prev').addEventListener('click',function(){go(-1)});
-document.getElementById('deck-next').addEventListener('click',function(){go(1)});
-addEventListener('keydown',function(e){if(e.key==='ArrowLeft')go(-1);if(e.key==='ArrowRight')go(1)});
-var dragX=null;
-stage.addEventListener('pointerdown',function(e){if(e.target.closest('a'))return;dragX=e.clientX;try{stage.setPointerCapture(e.pointerId)}catch(x){}});
-stage.addEventListener('pointerup',function(e){if(dragX===null)return;var dx=e.clientX-dragX;dragX=null;if(dx<-55)go(1);else if(dx>55)go(-1)});
-stage.addEventListener('pointercancel',function(){dragX=null});
-/* mobile: vertical scroll turns the cards */
-var zone=document.getElementById('deck-zone');
-function mobileDeck(){
-  if(innerWidth>=900)return;
-  var r=zone.getBoundingClientRect(), vh2=innerHeight;
-  var total=r.height-vh2;
-  if(total<=0)return;
-  var p=Math.max(0,Math.min(1,-r.top/total));
-  var idx=Math.min(N-1,Math.floor(p*N));
-  if(idx!==active){active=idx;layout();}
+var deckPos=0,deckTotal=0,deckDrawn=-1;
+function deckMeasure(){
+  if(reduced2){zone.style.height='auto';deckTotal=0;return}
+  var per=innerHeight*(coarse?0.85:0.7);
+  zone.style.height=Math.round(innerHeight+(N-1)*per)+'px';
+  deckTotal=zone.offsetHeight-innerHeight;
 }
-function setDeckMode(){
-  var mobile=innerWidth<900;
-  document.getElementById('deck-hint').textContent=mobile?'keep scrolling - the stack turns as you go':'drag, or use the arrows - the stack turns like a deck of tickets';
+/* ease that breathes near each card but never stops dead (no hanging) */
+function deckEase(p){
+  var seg=1/(N-1),i=Math.min(N-2,Math.floor(p/seg)),t=(p-i*seg)/seg;
+  return Math.max(0,Math.min(1,i*seg+(t-.55*Math.sin(6.2832*t)/6.2832)*seg));
 }
-setDeckMode();layout();
-addEventListener('resize',setDeckMode);
+function deckTargetPos(){
+  if(deckTotal<=0)return 0;
+  var p=Math.max(0,Math.min(1,-zone.getBoundingClientRect().top/deckTotal));
+  return deckEase(p)*(N-1);
+}
+function deckRender(pos){
+  cardEls.forEach(function(el,i){
+    var d=i-pos;
+    if(d<0){
+      var ld=Math.min(1.15,-d),e=1-Math.pow(1-Math.min(1,ld),3);
+      el.style.transform='translate('+(-118*e).toFixed(2)+'%,'+(-46*e).toFixed(1)+'px) rotate('+(-14*e).toFixed(2)+'deg)';
+      el.style.opacity=Math.max(0,1-Math.max(0,(ld-.12)/.34)).toFixed(3);
+      el.style.pointerEvents='none';
+      el.style.zIndex=String(70+i);
+    }else{
+      var vis=Math.min(d,4);
+      el.style.transform='translate('+(vis*26).toFixed(1)+'px,'+(vis*-14).toFixed(1)+'px) rotate('+(vis*2.4).toFixed(2)+'deg) scale('+(1-vis*0.045).toFixed(3)+')';
+      el.style.opacity=d>4?0:1;
+      el.style.pointerEvents=d<.5?'auto':'none';
+      el.style.zIndex=String(50-i);
+    }
+  });
+  var ai=Math.max(0,Math.min(N-1,Math.round(pos)));
+  if(ai!==active){active=ai;document.getElementById('deck-n').textContent='0'+(active+1);}
+}
+function deckStep(d){
+  var i=Math.max(0,Math.min(N-1,active+d));
+  if(reduced2){active=i;layout();return}
+  if(deckTotal<=0)return;
+  var y=zone.getBoundingClientRect().top+scrollY+deckTotal*(i/(N-1))+2;
+  if(lenis)lenis.scrollTo(y,{duration:1.1});else scrollTo({top:y,behavior:'smooth'});
+}
+document.getElementById('deck-prev').addEventListener('click',function(){deckStep(-1)});
+document.getElementById('deck-next').addEventListener('click',function(){deckStep(1)});
+addEventListener('keydown',function(e){if(e.key==='ArrowLeft')deckStep(-1);if(e.key==='ArrowRight')deckStep(1)});
+deckMeasure();
+if(reduced2)layout();else deckRender(0);
+addEventListener('resize',function(){deckMeasure();if(window.archMeasure)window.archMeasure()});
+addEventListener('load',function(){deckMeasure();if(window.archMeasure)window.archMeasure()});
 
 /* ---------- SMOOTH SCROLL ENGINE ---------- */
-var lenis=null, reduced2=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var lenis=null;
 if(!reduced2&&typeof Lenis!=='undefined'){
   lenis=new Lenis({lerp:0.09,smoothWheel:true});
   (function lr(t){lenis.raf(t);requestAnimationFrame(lr)})(0);
@@ -911,25 +942,11 @@ var fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
 var docEl=document.documentElement, sY=scrollY;
 var hero=document.getElementById('hero'), pw=document.getElementById('photo-window');
 var jbar=document.getElementById('j-bar'),jpct=document.getElementById('j-pct'),jnext=document.getElementById('j-next');
-var t3=[['.map-frame',6],['.enquiry',6],['.tag-card',5],['.msg-form',5],['#deck-stage',3.5],['#strip',3]];
+var t3=[['.map-frame',6],['.enquiry',6],['.tag-card',5],['.msg-form',5],['#deck-stage',3.5]];
 var t3Els=[];
 t3.forEach(function(pair){var el=document.querySelector(pair[0]);if(el)t3Els.push({el:el,max:pair[1],cur:0});});
 var mx=0,my=0,smx=0,smy=0;
 if(fine)addEventListener('mousemove',function(e){mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2},{passive:true});
-var stripMoving=false;
-function strip3d(){
-  if(!strip)return;
-  var sr=strip.getBoundingClientRect();
-  if(sr.bottom<-80||sr.top>innerHeight+80)return;
-  var mid=sr.left+sr.width/2;
-  frameEls.forEach(function(o){
-    var r=o.el.getBoundingClientRect();
-    var off=((r.left+r.width/2)-mid)/sr.width;
-    var tgt=Math.max(-1,Math.min(1,off*2));
-    var dd=tgt-o.cur;o.cur+=dd*.12;
-    if(Math.abs(dd)>.002||!o.rest){o.el.style.transform='rotateY('+(-o.cur*17).toFixed(2)+'deg) translateZ('+(-Math.abs(o.cur)*44).toFixed(1)+'px)';o.rest=Math.abs(dd)<=.002;}
-  });
-}
 var lastHp=-1,lastSmx=0,lastSmy=0,lastPct=-1,lastNext='',lastBarW=-1;
 function fx(){
   var target=scrollY, d=target-sY;
@@ -964,12 +981,14 @@ function fx(){
       var delta=tgt-o.cur;o.cur+=delta*.08;
       if(Math.abs(delta)>.002||!o.rest){o.el.style.transform='perspective(1000px) rotateX('+o.cur.toFixed(3)+'deg)';o.rest=Math.abs(delta)<=.002;}
     });
-    if(moving||stripMoving)strip3d();
+    var dtp=deckTargetPos(),dd2=dtp-deckPos;
+    deckPos+=dd2*.14;if(Math.abs(dd2)<.001)deckPos=dtp;
+    if(Math.abs(deckPos-deckDrawn)>.0004){deckRender(deckPos);deckDrawn=deckPos;}
+    archUpdate();
   }
   requestAnimationFrame(fx);
 }
 requestAnimationFrame(fx);
-addEventListener('scroll',mobileDeck,{passive:true});
 
 /* reveal (deterministic, scroll-position based) */
 var rvAll=[].slice.call(document.querySelectorAll('.rv,.rv3d'));
@@ -1008,11 +1027,39 @@ FRAMES.forEach(function(f,i){
   fig.addEventListener('click',function(){openLB(f,i)});
   strip.appendChild(fig);frameEls.push({el:fig,cur:0});
 });
-var sx=null,sl=0;
-strip.addEventListener('pointerdown',function(e){sx=e.clientX;sl=strip.scrollLeft});
-strip.addEventListener('pointermove',function(e){if(sx!==null)strip.scrollLeft=sl-(e.clientX-sx)});
-strip.addEventListener('scroll',function(){stripMoving=true;clearTimeout(strip._sm);strip._sm=setTimeout(function(){stripMoving=false},200);if(!reduced2)strip3d()},{passive:true});
-['pointerup','pointercancel','pointerleave'].forEach(function(ev){strip.addEventListener(ev,function(){sx=null})});
+/* vertical page scroll glides the strip through the pinned archive stage */
+var archRun=document.getElementById('arch-runway');
+var archLive=!reduced2,archTotal=0,photoDist=0,gx=-1;
+if(archLive)document.getElementById('archive').classList.add('arch-live');
+function archMeasure(){
+  if(!archLive)return;
+  photoDist=Math.max(0,strip.scrollWidth-innerWidth+Math.round(innerWidth*.02));
+  archRun.style.height=Math.round(innerHeight+photoDist*(coarse?1.15:1.35))+'px';
+  archTotal=archRun.offsetHeight-innerHeight;
+}
+window.archMeasure=archMeasure;
+function archUpdate(){
+  if(!archLive||archTotal<=0)return;
+  var r=archRun.getBoundingClientRect();
+  if(r.bottom<0||r.top>innerHeight)return;
+  var p=Math.max(0,Math.min(1,-r.top/archTotal));
+  var tgt=p*photoDist;
+  if(gx<0)gx=tgt;
+  var dg=tgt-gx;gx+=dg*.13;if(Math.abs(dg)<.05)gx=tgt;
+  strip.style.transform='translate3d('+(-gx).toFixed(1)+'px,0,0)';
+  var mid=innerWidth/2;
+  frameEls.forEach(function(o){
+    var cx2=o.el.offsetLeft-gx+o.el.offsetWidth/2;
+    var v=Math.max(-1.25,Math.min(1.25,(cx2-mid)/innerWidth));
+    var dv=v-o.cur;o.cur+=dv*.14;
+    if(Math.abs(dv)>.001||!o.rest){
+      o.el.style.transform='perspective(1000px) translate3d(0,0,'+(70-Math.abs(o.cur)*60).toFixed(1)+'px) rotateY('+(-o.cur*18).toFixed(2)+'deg)';
+      o.el.style.opacity=Math.max(.3,1-Math.max(0,Math.abs(o.cur)-.8)*1.8).toFixed(2);
+      o.rest=Math.abs(dv)<=.001;
+    }
+  });
+}
+archMeasure();
 var lb=document.getElementById('lightbox'),lbm=document.getElementById('lb-media');
 function openLB(f,i){
   lbm.innerHTML=f.type==='img'?'<img src="'+f.src+'" alt="Archive frame '+(i+1)+'">':'<video src="'+f.src+'" controls autoplay playsinline></video>';
