@@ -533,7 +533,7 @@ dialog.lightbox .lb-bar{gap:10px}
 </style>
 </head>
 <body>
-<script>try{if(localStorage.getItem('dbn-theme')==='light'||/^(day|dawn|dusk)$/.test(new URLSearchParams(location.search).get('tod')||''))document.body.classList.add('theme-light')}catch(e){}</script>
+<script>try{if(localStorage.getItem('dbn-theme2')==='light'||/^(day|dawn|dusk)$/.test(new URLSearchParams(location.search).get('tod')||''))document.body.classList.add('theme-light')}catch(e){}</script>
 <div id="bgfx aria-hidden="true"><i></i><i></i></div>
 <a class="skip" href="#about">Skip to content</a>
 <div id="cdot" aria-hidden="true"></div>
@@ -1044,7 +1044,7 @@ function istParts(){
   return {time:time,date:dd+'/'+mm+'/'+yy,hr:hr};
 }
 var TODQS=qs.get('tod');
-var THEME_KEY='dbn-theme';
+var THEME_KEY='dbn-theme2';
 function getTheme(){
   if(TODQS)return TODQS==='night'?'dark':'light';
   try{var s=localStorage.getItem(THEME_KEY);if(s==='light'||s==='dark')return s}catch(e){}
@@ -1619,4 +1619,4 @@ if(fine&&!reduced2){
   }).catch(function(){location.href='deepak-batra-profile.pdf'});
 });})();</script>
 </body>
-</html>
+  </html>
