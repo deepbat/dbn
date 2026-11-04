@@ -530,10 +530,97 @@ dialog.lightbox .lb-bar{gap:10px}
 @media(max-width:520px){.lb-nav{width:36px;height:36px}}
 @media(prefers-reduced-motion:reduce){.bp-stamp{opacity:1;transform:rotate(-14deg) scale(1)}.wcard-in{transition:none}}
 
+/* ===== ENHANCED 3D & VISUAL UPGRADES ===== */
+
+/* --- Starfield canvas layer --- */
+#starfield{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.65}
+
+/* --- Aurora glow bands behind hero --- */
+#aurora{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora-band{position:absolute;width:160%;height:280px;border-radius:50%;filter:blur(80px);opacity:0;animation:auroraFloat 14s ease-in-out infinite}
+.aurora-band.a1{background:linear-gradient(90deg,rgba(253,145,204,.22),rgba(74,125,255,.18),transparent);top:8%;left:-30%;animation-delay:0s}
+.aurora-band.a2{background:linear-gradient(90deg,rgba(111,149,255,.14),rgba(253,145,204,.2),transparent);top:42%;left:-20%;animation-delay:-5s;animation-duration:17s}
+.aurora-band.a3{background:linear-gradient(90deg,transparent,rgba(253,145,204,.1),rgba(74,125,255,.2));top:68%;left:-10%;animation-delay:-9s;animation-duration:11s}
+@keyframes auroraFloat{0%,100%{opacity:0;transform:translateX(0) scaleY(1)}25%{opacity:1}50%{transform:translateX(14%) scaleY(1.14)}75%{opacity:.6;transform:translateX(-6%) scaleY(.92)}}
+
+/* --- Hero flap-board 3D depth on hover --- */
+.flap-board{transform-style:preserve-3d;transition:transform .6s cubic-bezier(.22,1,.3,1)}
+.flap-board:hover{transform:perspective(900px) rotateY(-4deg) rotateX(2deg) scale(1.012)}
+
+/* --- Toolcards enhanced 3D tilt on hover --- */
+.toolcard:hover{transform:translate(-3px,-3px) perspective(600px) rotateY(-5deg) rotateX(3deg);box-shadow:10px 10px 0 var(--maroon)}
+
+/* --- Holographic shimmer on work cards --- */
+.wcard::before{content:'';position:absolute;inset:0;border-radius:26px;background:linear-gradient(135deg,rgba(255,255,255,.13) 0%,transparent 40%,rgba(255,255,255,.07) 70%,transparent 100%);opacity:0;transition:opacity .4s;pointer-events:none;z-index:10}
+.wcard:hover::before{opacity:1}
+
+/* --- Glowing accent underline on section headings --- */
+.sec-head h2{position:relative}
+.sec-head h2::after{content:'';position:absolute;bottom:-8px;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--maroon),var(--saffron),transparent);border-radius:2px;transition:width 1.1s cubic-bezier(.22,1,.3,1)}
+.sec-head.in h2::after{width:60%}
+
+/* --- Neon cursor glow --- */
+#cdot{box-shadow:0 0 10px 3px rgba(253,145,204,.7),0 0 24px 6px rgba(253,145,204,.3)}
+#cring{box-shadow:0 0 8px 2px rgba(74,125,255,.35)}
+body.cur-hover #cring{box-shadow:0 0 16px 5px rgba(253,145,204,.4)}
+body.cur-label #cring{box-shadow:0 0 20px 7px rgba(253,145,204,.55)}
+
+/* --- Contact link shimmer on hover --- */
+.c-link{position:relative;overflow:hidden}
+.c-link::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,rgba(253,145,204,.12),rgba(74,125,255,.1),rgba(253,145,204,.12));opacity:0;z-index:-1;transition:opacity .3s}
+.c-link:hover::after{opacity:1}
+
+/* --- Live dot pulse ring --- */
+.ns-head .live-dot{animation:blink 1.8s infinite,livePulse 2.2s ease-out infinite}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(127,176,105,.55)}70%{box-shadow:0 0 0 7px rgba(127,176,105,0)}100%{box-shadow:0 0 0 0 rgba(127,176,105,0)}}
+
+/* --- Intro door extra depth glow --- */
+.coach-door{box-shadow:0 0 0 6px #040b26,0 0 70px rgba(253,145,204,.35),0 0 120px rgba(74,125,255,.12)}
+#intro.open .coach-door{box-shadow:0 0 0 6px #040b26,0 0 100px rgba(253,145,204,.6),0 0 180px rgba(74,125,255,.22)}
+
+/* --- Brand mark glow --- */
+.brand .mark{box-shadow:3px 3px 0 var(--ink),0 0 18px rgba(253,145,204,.35)}
+
+/* --- Journey progress bar glow --- */
+#journey .bar i{box-shadow:0 0 8px rgba(253,145,204,.5)}
+
+/* --- Photo window hover glow --- */
+.photo-window:hover{box-shadow:var(--shadow),0 0 60px rgba(253,145,204,.18),0 0 120px rgba(74,125,255,.1)}
+
+/* --- Map frame hover glow --- */
+.map-frame:hover{box-shadow:7px 7px 0 rgba(224,163,46,.85),0 0 60px rgba(253,145,204,.16)}
+
+/* --- 3D depth tilt on tag-card --- */
+.tag-card{transform-style:preserve-3d;transition:transform .3s cubic-bezier(.22,1,.3,1),box-shadow .25s}
+.tag-card:hover{transform:perspective(900px) rotateY(3deg) rotateX(-2deg) translateZ(8px);box-shadow:12px 12px 0 rgba(0,0,0,.55)}
+
+/* --- Floating badge bob --- */
+.photo-caption{animation:badgeBob 3.5s ease-in-out infinite}
+@keyframes badgeBob{0%,100%{transform:rotate(4deg) translateY(0)}50%{transform:rotate(4deg) translateY(-6px)}}
+
+/* --- Marquee star glow --- */
+.marquee .track i{text-shadow:0 0 12px rgba(253,145,204,.85)}
+
+/* --- Footer link hover glow --- */
+footer .col a{transition:color .2s,text-shadow .2s}
+footer .col a:hover{color:var(--mustard);text-shadow:0 0 12px rgba(253,145,204,.5)}
+
+/* --- Btn neon glow on hover --- */
+.btn:hover{box-shadow:6px 6px 0 var(--maroon),0 0 24px rgba(253,145,204,.22)}
+
+/* --- Eyebrow glow on scroll reveal --- */
+.rv.in .eyebrow,.rv3d.in .eyebrow{text-shadow:0 0 20px rgba(253,145,204,.3)}
+
+@media(prefers-reduced-motion:reduce){
+  .aurora-band,.photo-caption{animation:none !important}
+  .flap-board:hover,.tag-card:hover{transform:none !important}
+}
+
 </style>
 </head>
 <body>
 <script>try{if(localStorage.getItem('dbn-theme2')==='light'||/^(day|dawn|dusk)$/.test(new URLSearchParams(location.search).get('tod')||''))document.body.classList.add('theme-light')}catch(e){}</script>
+<canvas id="starfield" aria-hidden="true"></canvas>
 <div id="bgfx aria-hidden="true"><i></i><i></i></div>
 <a class="skip" href="#about">Skip to content</a>
 <div id="cdot" aria-hidden="true"></div>
@@ -625,7 +712,8 @@ dialog.lightbox .lb-bar{gap:10px}
 
 <main id="top">
 <!-- HERO -->
-<section id="hero">
+<section id="hero" style="position:relative">
+<div id="aurora" aria-hidden="true"><div class="aurora-band a1"></div><div class="aurora-band a2"></div><div class="aurora-band a3"></div></div>
   <div>
     <div class="hero-kicker"><span class="dot"></span> OFFICE MIND · MAKER SPIRIT — JALANDHAR, PUNJAB, INDIA</div>
     <div class="flap-board" aria-label="Deepak Batra. Builder and office mind, Jalandhar Junction.">
@@ -1618,5 +1706,58 @@ if(fine&&!reduced2){
     setTimeout(function(){URL.revokeObjectURL(url)},4000);
   }).catch(function(){location.href='deepak-batra-profile.pdf'});
 });})();</script>
+<script>
+/* ===== ENHANCED 3D & EFFECTS ===== */
+(function(){
+"use strict";
+var reduced3=matchMedia("(prefers-reduced-motion:reduce)").matches;
+var fine2=matchMedia("(hover:hover) and (pointer:fine)").matches;
+/* -- STARFIELD -- */
+var sf=document.getElementById("starfield");
+if(sf&&!reduced3){
+var ctx=sf.getContext("2d"),stars=[],W,H;
+function rsz(){W=sf.width=innerWidth;H=sf.height=innerHeight;}rsz();
+addEventListener("resize",rsz,{passive:true});
+for(var i=0;i<160;i++){stars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.3+.3,a:Math.random(),da:(Math.random()-.5)*.007});}
+(function loop(){ctx.clearRect(0,0,W,H);
+stars.forEach(function(s){s.a+=s.da;if(s.a<=0){s.a=0;s.da=Math.abs(s.da);}if(s.a>=1){s.a=1;s.da=-Math.abs(s.da);}
+ctx.save();ctx.globalAlpha=s.a*.85;
+var g=ctx.createRadialGradient(s.x*W,s.y*H,0,s.x*W,s.y*H,s.r*2.5);
+g.addColorStop(0,"rgba(253,145,204,1)");g.addColorStop(.5,"rgba(74,125,255,.5)");g.addColorStop(1,"rgba(74,125,255,0)");
+ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r*2.5,0,Math.PI*2);ctx.fill();ctx.restore();});
+requestAnimationFrame(loop)})();}
+/* -- 3D TILT on interactive cards -- */
+if(fine2&&!reduced3){
+[].slice.call(document.querySelectorAll(".toolcard,.tag-card,.msg-form,.enquiry")).forEach(function(el){
+el.addEventListener("mousemove",function(e){var r=el.getBoundingClientRect();
+var dx=(e.clientX-r.left-r.width/2)/(r.width/2),dy=(e.clientY-r.top-r.height/2)/(r.height/2);
+var mx2=el.classList.contains("toolcard")?8:5;
+el.style.transform="perspective(700px) rotateX("+(-dy*mx2).toFixed(2)+"deg) rotateY("+(dx*mx2).toFixed(2)+"deg) translateZ(6px)";
+el.style.transition="transform .05s linear,box-shadow .2s";});
+el.addEventListener("mouseleave",function(){el.style.transform="";el.style.transition="transform .5s cubic-bezier(.22,1,.3,1),box-shadow .2s";});});
+/* photo window tilt */
+var pw3=document.getElementById("photo-window");
+if(pw3){pw3.addEventListener("mousemove",function(e){var r=pw3.getBoundingClientRect();
+var dx=(e.clientX-r.left-r.width/2)/(r.width/2),dy=(e.clientY-r.top-r.height/2)/(r.height/2);
+pw3.style.transform="perspective(900px) rotateX("+(-dy*5).toFixed(2)+"deg) rotateY("+(dx*7).toFixed(2)+"deg) scale(1.03)";
+pw3.style.transition="transform .05s linear";});
+pw3.addEventListener("mouseleave",function(){pw3.style.transform="";pw3.style.transition="transform .6s cubic-bezier(.22,1,.3,1)";});}
+/* flap-board 3D mouse follow */
+var fb2=document.querySelector(".flap-board"),hr2=document.getElementById("hero");
+if(fb2&&hr2){hr2.addEventListener("mousemove",function(e){var r=hr2.getBoundingClientRect();
+var dx=(e.clientX-r.left)/r.width-.5,dy=(e.clientY-r.top)/r.height-.5;
+fb2.style.transform="perspective(900px) rotateY("+(-dx*10).toFixed(2)+"deg) rotateX("+(dy*5).toFixed(2)+"deg)";
+fb2.style.transition="transform .08s linear";});
+hr2.addEventListener("mouseleave",function(){fb2.style.transform="";fb2.style.transition="transform .6s cubic-bezier(.22,1,.3,1)";});}
+}
+/* -- .sec-head.in for heading underlines -- */
+var shs=[].slice.call(document.querySelectorAll(".sec-head"));
+function chkH(){var lim=innerHeight*.92;shs.forEach(function(el){if(!el.classList.contains("in")&&el.getBoundingClientRect().top<lim)el.classList.add("in");});}
+addEventListener("scroll",chkH,{passive:true});addEventListener("resize",chkH);chkH();
+/* -- marquee hover pause -- */
+var mqEl=document.querySelector(".marquee .track");
+if(mqEl&&fine2){var mqPar=mqEl.parentNode;mqPar.addEventListener("mouseenter",function(){mqEl.style.animationPlayState="paused";});mqPar.addEventListener("mouseleave",function(){mqEl.style.animationPlayState="";});}
+})();
+</script>
 </body>
   </html>
