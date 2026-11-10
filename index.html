@@ -450,7 +450,12 @@ body.theme-light #theme-toggle .tt-sun{color:#1E1B4B}
 body.past-hero #install-btn{opacity:1;pointer-events:auto;transform:none}
 #install-btn{background:var(--cream);border:2px solid var(--ink);border-radius:999px;padding:10px 18px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;box-shadow:4px 4px 0 var(--ink);color:var(--ink)}
 #install-btn:hover{box-shadow:6px 6px 0 var(--maroon)}
-@media(max-width:820px){#install-btn{bottom:54px;left:12px;right:auto;padding:8px 14px;font-size:9px}}
+@media(max-width:820px){#journey .r0{display:flex;justify-content:space-between;align-items:center;gap:10px}#install-btn{position:static;left:auto;right:auto;bottom:auto;transform:none;opacity:1;pointer-events:auto;padding:4px 10px;font-size:8px;letter-spacing:.14em;border-width:1.5px;box-shadow:2px 2px 0 var(--ink);flex-shrink:0}}
+/* floating quick nav: Gallery + back to top, mobile only */
+#quicknav{position:fixed;right:12px;bottom:58px;z-index:121;display:none;flex-direction:column;align-items:flex-end;gap:8px}
+#quicknav a,#quicknav button{background:var(--cream);border:2px solid var(--ink);border-radius:999px;box-shadow:3px 3px 0 var(--ink);color:var(--ink);font-family:var(--mono);font-size:9px;letter-spacing:.18em;padding:8px 13px;text-decoration:none;cursor:pointer}
+#quicknav button{width:38px;height:38px;padding:0;font-size:13px;line-height:1;display:grid;place-items:center}
+@media(max-width:820px){body.past-hero #quicknav{display:flex}}
 /* 2 - arrival slip */
 .arrive{margin-top:64px}
 .tick{background:var(--cream);border:2.5px solid var(--ink);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;position:relative}
@@ -495,9 +500,9 @@ body.past-hero #install-btn{opacity:1;pointer-events:auto;transform:none}
 .wd-chk:nth-child(2) i::after{animation-delay:1.2s}
 .wd-chk:nth-child(3) i::after{animation-delay:2.4s}
 @keyframes wdchk{0%,18%{transform:rotate(-45deg) scale(0)}26%,100%{transform:rotate(-45deg) scale(1)}}
-.wd-term{position:absolute;inset:9px 12px;background:rgba(0,0,0,.2);border-radius:9px;padding:8px 12px;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.wd-term{position:absolute;inset:9px 12px;background:rgba(0,0,0,.2);border-radius:9px;padding:8px 12px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;display:flex;flex-direction:column;gap:5px;justify-content:center}
 .wd-term span{white-space:nowrap;overflow:hidden;display:inline-block;max-width:100%}
-.wd-l1{animation:wdtype 3.2s steps(18) infinite alternate}
+.wd-l1{animation:wdtype 3.2s steps(18) .2s forwards}
 .wd-l2{opacity:.55;animation:wdl2 3.2s infinite}
 .wd-l3{animation:blink 1s steps(1) infinite}
 @keyframes wdtype{from{max-width:0}to{max-width:100%}}
@@ -752,11 +757,16 @@ body.wx-rain #rain-canvas,body.wx-storm #rain-canvas{opacity:1}
   <a class="btn" href="#contact" style="padding:9px 18px;font-size:12px">Say hello</a>
 </header>
 
-<button id="install-btn" hidden>INSTALL AS APP &#10515;</button>
+
 
 <!-- journey chip -->
+<div id="quicknav">
+  <a href="gallery.html">GALLERY &#8599;</a>
+  <button id="to-top" type="button" aria-label="Back to top">&#8593;</button>
+</div>
+
 <div id="journey" aria-live="off">
-  <div class="r0"><span id="j-station">PLATFORM · ALL ABOARD</span></div>
+  <div class="r0"><span id="j-station">PLATFORM · ALL ABOARD</span><button id="install-btn" hidden>INSTALL AS APP &#10515;</button></div>
   <div class="r1"><span><b>JUC → DLI</b> · DBN EXPRESS</span><span id="j-time">--:--</span></div>
   <div class="bar"><i id="j-bar"></i><span id="j-ticks"></span></div>
   <div class="r2"><span id="j-next">NEXT STOP: LDH · LUDHIANA</span><span id="j-pct">0%</span></div>
@@ -1683,6 +1693,10 @@ if(installBtn)installBtn.addEventListener('click',function(){
   installEvt.userChoice.then(function(){installBtn.hidden=true;installEvt=null;}).catch(function(){});
 });
 addEventListener('appinstalled',function(){if(installBtn)installBtn.hidden=true;installEvt=null;});
+
+/* ---------- QUICK NAV (back to top) ---------- */
+var toTopBtn=document.getElementById('to-top');
+if(toTopBtn)toTopBtn.addEventListener('click',function(){if(lenis)lenis.scrollTo(0);else scrollTo({top:0,behavior:'smooth'});});
 
 /* ---------- CUSTOM CURSOR + MAGNETIC ---------- */
 if(fine&&!reduced2){
