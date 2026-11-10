@@ -50,6 +50,23 @@ section{padding:110px 6vw;position:relative;max-width:1460px;margin:0 auto}
 .sec-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:20px 34px;margin-bottom:56px}
 .sec-head h2{font-size:clamp(42px,6vw,86px);line-height:.98}
 .sec-sub{font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink2);max-width:340px;padding-bottom:8px}
+/* soft halo keeps headings readable over the starfield, both themes */
+.sec-head h2{text-shadow:0 0 26px rgba(var(--fx1),.30),0 2px 30px rgba(0,0,0,.38)}
+#rule h2{text-shadow:0 0 20px rgba(255,253,247,.5)}
+body.theme-light .sec-head h2{text-shadow:0 0 24px rgba(var(--fx1),.20),0 2px 26px rgba(255,253,247,.65)}
+body.theme-light #rule h2{text-shadow:0 0 20px rgba(255,253,247,.5)}
+/* hero sky: scroll-driven day to night tint */
+#hero-sky{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.6}
+#hero>div{position:relative;z-index:1}
+#hero>#aurora,#hero>#hero-sky{position:absolute;z-index:0}
+/* journey readout row */
+#journey .r0{font-size:9px;letter-spacing:.16em;color:#93a4dd;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.theme-light #journey .r0{color:#C7D2FE}
+/* replay tour */
+#replay-hint{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(8px);z-index:122;background:var(--tile);color:#e6eeff;border:2px solid var(--ink);border-radius:999px;padding:8px 16px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+#replay-hint.on{opacity:1;transform:translateX(-50%)}
+@media(max-width:820px){#replay-hint{bottom:58px;font-size:9px}}
+@media(prefers-reduced-motion:reduce){#replay-btn{display:none}}
 /* ============ INTRO DOOR ============ */
 #intro{position:fixed;inset:0;z-index:300;background:#040b26;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:transform 1s cubic-bezier(.7,0,.2,1);cursor:pointer}
 #intro.away{transform:translateY(-101%)}
@@ -676,6 +693,7 @@ body.wx-rain #rain-canvas,body.wx-storm #rain-canvas{opacity:1}
 <div id="grain" aria-hidden="true"></div>
 <canvas id="rain-canvas" aria-hidden="true"></canvas>
 <div id="thunder-flash" aria-hidden="true"></div>
+<div id="replay-hint" aria-hidden="true">REPLAYING THE JOURNEY &middot; SCROLL, TAP OR PRESS A KEY TO TAKE BACK THE CONTROLS</div>
 <div id="chai-toast" aria-live="polite"><span class="cteam">☕</span><span id="chai-msg">Chai break!</span></div>
 <div id="bgfx aria-hidden="true"><i></i><i></i></div>
 <a class="skip" href="#about">Skip to content</a>
@@ -738,6 +756,7 @@ body.wx-rain #rain-canvas,body.wx-storm #rain-canvas{opacity:1}
 
 <!-- journey chip -->
 <div id="journey" aria-live="off">
+  <div class="r0"><span id="j-station">PLATFORM · ALL ABOARD</span></div>
   <div class="r1"><span><b>JUC → DLI</b> · DBN EXPRESS</span><span id="j-time">--:--</span></div>
   <div class="bar"><i id="j-bar"></i><span id="j-ticks"></span></div>
   <div class="r2"><span id="j-next">NEXT STOP: LDH · LUDHIANA</span><span id="j-pct">0%</span></div>
@@ -757,6 +776,7 @@ body.wx-rain #rain-canvas,body.wx-storm #rain-canvas{opacity:1}
 <main id="top">
 <!-- HERO -->
 <section id="hero" style="position:relative">
+<div id="hero-sky" aria-hidden="true"></div>
 <div id="aurora" aria-hidden="true"><div class="aurora-band a1"></div><div class="aurora-band a2"></div><div class="aurora-band a3"></div></div>
   <div>
     <div class="hero-kicker"><span class="dot"></span> OFFICE MIND · MAKER SPIRIT — JALANDHAR, PUNJAB, INDIA</div>
@@ -809,7 +829,7 @@ body.wx-rain #rain-canvas,body.wx-storm #rain-canvas{opacity:1}
       <div class="eyebrow">01 · The person</div>
       <h2>Office hours.<br><span class="serif">Curious</span> always.</h2>
     </div>
-    <p class="sec-sub">Behind the screen: documents by day, software by evening, chai throughout.</p>
+    <p class="sec-sub">Documents by day, software by evening, chai throughout.</p>
   </div>
   <div class="about-grid">
     <div class="about-text rv">
@@ -846,7 +866,7 @@ body.wx-rain #rain-canvas,body.wx-storm #rain-canvas{opacity:1}
       <div class="eyebrow">02 · The hometown</div>
       <h2 style="color:var(--cream)">Jalandhar,<br><span class="serif">Punjab.</span></h2>
     </div>
-    <p class="sec-sub" style="color:#b9c6f2">Every journey on this page starts here - a small dot in the top corner of the map, and the centre of everything I build.</p>
+    <p class="sec-sub" style="color:#b9c6f2">Every journey on this page starts here.</p>
   </div>
   <div class="map-grid">
     <div class="map-frame rv3d">
@@ -883,7 +903,7 @@ body.wx-rain #rain-canvas,body.wx-storm #rain-canvas{opacity:1}
       <div class="eyebrow">03 · The work &nbsp;·&nbsp; 07 experiments</div>
       <h2>Ideas become <span class="serif">things.</span></h2>
     </div>
-    <p class="sec-sub">Each one starts as a small itch - a repetitive task, a "what if", a song. These are the ones that made it out of the notes app.</p>
+    <p class="sec-sub">Seven small experiments that made it out of the notes app.</p>
   </div>
   <div class="deck-zone deck-zone-mobile" id="deck-zone">
     <div class="deck-sticky">
@@ -919,7 +939,7 @@ body.wx-rain #rain-canvas,body.wx-storm #rain-canvas{opacity:1}
       <div class="eyebrow">05 · The archive</div>
       <h2>Life, <span class="serif">unfiltered.</span></h2>
     </div>
-    <p class="sec-sub">Frames from in and around Punjab - keep scrolling to move through them, tap one to look closer.</p>
+    <p class="sec-sub">Frames from in and around Punjab - tap one to look closer.</p>
   </div>
   <div class="arch-runway" id="arch-runway"><div class="arch-sticky"><div class="strip rv3d" id="strip"></div><div class="strip-hint">scroll to explore · pause to centre a full photo</div></div></div>
 </section>
@@ -1002,7 +1022,7 @@ body.wx-rain #rain-canvas,body.wx-storm #rain-canvas{opacity:1}
   </div>
   <div class="base">
     <span>© 2026 DEEPAK BATRA · MADE OF CURIOSITY + CHAI</span>
-    <span><button id="term-btn" type="button" style="background:none;border:none;color:var(--mustard);font-family:var(--mono);font-size:10px;cursor:pointer;letter-spacing:.2em;padding:0;text-decoration:underline">TERMINAL ❯_</button> · <a href="https://github.com/deepbat/dbn">SOURCE</a> · <a href="#top">BACK TO THE PLATFORM ↑</a></span>
+    <span><button id="replay-btn" type="button" style="background:none;border:none;color:var(--mustard);font-family:var(--mono);font-size:10px;cursor:pointer;letter-spacing:.2em;padding:0;text-decoration:underline">REPLAY THE JOURNEY &#9656;</button> &middot; <button id="term-btn" type="button" style="background:none;border:none;color:var(--mustard);font-family:var(--mono);font-size:10px;cursor:pointer;letter-spacing:.2em;padding:0;text-decoration:underline">TERMINAL ❯_</button> · <a href="https://github.com/deepbat/dbn">SOURCE</a> · <a href="#top">BACK TO THE PLATFORM ↑</a></span>
   </div>
 </footer>
 <script src="lenis.js"></script>
@@ -1386,6 +1406,21 @@ var pxEls=[];
   document.querySelectorAll('.sec-head .eyebrow').forEach(function(e){pxEls.push({el:e,ref:e.parentNode,k:-.06,last:''})});
   var hp=document.getElementById('hero-photo');if(hp){var d=function(){hp.classList.add('ld')};if(hp.complete&&hp.naturalWidth)d();else{hp.addEventListener('load',d);hp.addEventListener('error',d)}setTimeout(d,2500)}
 })();
+/* scroll-linked station readout + hero sky (totality-inspired) */
+var jStation=document.getElementById('j-station'),lastStation='';
+var stationSecs=[['hero','PLATFORM · JALANDHAR JN'],['now','NOTICE BOARD · RIGHT NOW'],['about','STATION 01/06 · THE PERSON'],['homeland','STATION 02/06 · THE HOMETOWN'],['work','STATION 03/06 · THE WORK'],['rule','STATION 04/06 · THE RULE'],['archive','STATION 05/06 · THE ARCHIVE'],['contact','STATION 06/06 · ARRIVAL']].map(function(a){return {id:a[0],label:a[1],el:document.getElementById(a[0])};});
+var heroSky=document.getElementById('hero-sky'),lastSky='';
+var SKYPH={dawn:[[247,200,107],[232,135,90],[138,74,90]],day:[[120,170,250],[190,214,255],[253,233,184]],dusk:[[247,165,75],[201,79,54],[90,44,58]],night:[[40,60,130],[16,26,66],[6,12,34]]};
+var SKYNEXT={dawn:'day',day:'dusk',dusk:'night',night:'dawn'};
+function skyPhase(h){return h>=5&&h<7?'dawn':h>=7&&h<17?'day':h>=17&&h<20?'dusk':'night'}
+function skyHr(){return (+(new Date().toLocaleString('en-GB',{timeZone:'Asia/Kolkata',hour:'numeric',hour12:false,hourCycle:'h23'})))%24}
+function mix3(a,b,t){return [Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)]}
+function skyCss(t){
+  var ph=skyPhase(skyHr()),nx=SKYNEXT[ph];
+  var c0=mix3(SKYPH[ph][0],SKYPH[nx][0],t),c1=mix3(SKYPH[ph][1],SKYPH[nx][1],t),c2=mix3(SKYPH[ph][2],SKYPH[nx][2],t);
+  var lt=document.body.classList.contains('theme-light');
+  return 'linear-gradient(180deg,rgba('+c0.join(',')+','+(lt?.5:.55)+') 0%,rgba('+c1.join(',')+','+(lt?.32:.38)+') 55%,rgba('+c2.join(',')+','+(lt?.1:.14)+') 100%)';
+}
 function fx(){
   var target=scrollY, d=target-sY;
   sY+=d*.12; if(Math.abs(d)<.05)sY=target;
@@ -1410,6 +1445,17 @@ function fx(){
   var nxt=p>=.985?'ARRIVED · SAT SRI AKAL':next;
   if(nxt!==lastNext){jnext.textContent=nxt;lastNext=nxt;}
   railTick(p);
+  if(jStation){
+    var yLine=sY+innerHeight*.35,curSt=stationSecs[0].label,inWork=false;
+    for(var si=0;si<stationSecs.length;si++){var sc=stationSecs[si];if(sc.el&&sc.el.offsetTop<=yLine){curSt=sc.label;inWork=sc.id==='work';}}
+    if(inWork)curSt+=' · PROJECT '+(active+1)+'/7';
+    if(curSt!==lastStation){lastStation=curSt;jStation.textContent=curSt;}
+  }
+  if(heroSky){
+    var skt=reduced2?0:Math.max(0,Math.min(1,sY/(((hero&&hero.offsetHeight)||innerHeight)*1.15)));
+    var skyKey=(Math.round(skt*60)/60)+'|'+(document.body.classList.contains('theme-light')?'l':'d')+'|'+skyPhase(skyHr());
+    if(skyKey!==lastSky){lastSky=skyKey;heroSky.style.background=skyCss(skt);}
+  }
   if(!reduced2){
     var vh=innerHeight;
     t3Els.forEach(function(o){
@@ -1681,6 +1727,40 @@ if(fine&&!reduced2){
     requestAnimationFrame(cLoop);
   })();
 }
+
+/* ---------- REPLAY THE JOURNEY ---------- */
+var replayBtn=document.getElementById('replay-btn'),replaying=false,replayRAF=0;
+function stopReplay(){
+  if(!replaying)return;replaying=false;cancelAnimationFrame(replayRAF);
+  if(replayBtn)replayBtn.innerHTML='REPLAY THE JOURNEY &#9656;';
+  var h=document.getElementById('replay-hint');if(h)h.classList.remove('on');
+}
+function startReplay(){
+  if(replaying){stopReplay();return}
+  if(reduced2)return;
+  replaying=true;
+  if(replayBtn)replayBtn.innerHTML='STOP THE REPLAY &#10005;';
+  var h=document.getElementById('replay-hint');if(h)h.classList.add('on');
+  var introEl=document.getElementById('intro'),introUp=introEl&&getComputedStyle(introEl).display!=='none';
+  if(introUp)introEl.click();
+  var startT=performance.now()+(introUp?2100:0),DUR=75000;
+  var step=function(now){
+    if(!replaying)return;
+    var t=(now-startT)/DUR;
+    if(t<0){replayRAF=requestAnimationFrame(step);return}
+    var maxY=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    if(t>=1){if(lenis)lenis.scrollTo(maxY,{immediate:true});else scrollTo(0,maxY);stopReplay();return}
+    var y=t*maxY;
+    if(lenis)lenis.scrollTo(y,{immediate:true});else scrollTo(0,y);
+    replayRAF=requestAnimationFrame(step);
+  };
+  replayRAF=requestAnimationFrame(step);
+}
+if(replayBtn)replayBtn.addEventListener('click',startReplay);
+addEventListener('wheel',function(){stopReplay()},{passive:true});
+addEventListener('touchstart',function(e){if(replayBtn&&e.target===replayBtn)return;stopReplay()},{passive:true});
+addEventListener('mousedown',function(e){if(replayBtn&&e.target===replayBtn)return;stopReplay()});
+addEventListener('keydown',function(e){if(replaying&&(e.key==='Escape'||e.key===' '||e.key.indexOf('Arrow')===0||e.key==='PageDown'||e.key==='PageUp'||e.key==='Home'||e.key==='End'))stopReplay()});
 })();
 </script>
 <script>(function(){var a=document.getElementById('profile-dl');if(!a)return;a.addEventListener('click',function(e){
@@ -1704,17 +1784,21 @@ if(sf&&!reduced3){
 var ctx=sf.getContext("2d"),stars=[],W,H;
 var fx1="253,145,204",fx2="74,125,255";
 function rdFx(){try{var cs=getComputedStyle(document.body),v=cs.getPropertyValue("--fx1").trim();if(v)fx1=v;v=cs.getPropertyValue("--fx2").trim();if(v)fx2=v;}catch(e){}}
-rdFx();if(window.MutationObserver)new MutationObserver(rdFx).observe(document.body,{attributes:true,attributeFilter:["class"]});
+var sprite=document.createElement("canvas");sprite.width=sprite.height=32;var spriteKey="";
+function paintSprite(){var key=fx1+"|"+fx2;if(key===spriteKey)return;spriteKey=key;
+var s2=sprite.getContext("2d");s2.clearRect(0,0,32,32);
+var g=s2.createRadialGradient(16,16,0,16,16,16);
+g.addColorStop(0,"rgba("+fx1+",1)");g.addColorStop(.5,"rgba("+fx2+",.5)");g.addColorStop(1,"rgba("+fx2+",0)");
+s2.fillStyle=g;s2.fillRect(0,0,32,32);}
+rdFx();paintSprite();if(window.MutationObserver)new MutationObserver(function(){rdFx();paintSprite();}).observe(document.body,{attributes:true,attributeFilter:["class"]});
 window.__dbnFx=function(){return [fx1,fx2];};
 function rsz(){W=sf.width=innerWidth;H=sf.height=innerHeight;}rsz();
 addEventListener("resize",rsz,{passive:true});
 for(var i=0;i<160;i++){stars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.3+.3,a:Math.random(),da:(Math.random()-.5)*.007});}
 (function loop(){ctx.clearRect(0,0,W,H);
-stars.forEach(function(s){s.a+=s.da;if(s.a<=0){s.a=0;s.da=Math.abs(s.da);}if(s.a>=1){s.a=1;s.da=-Math.abs(s.da);}
-ctx.save();ctx.globalAlpha=s.a*.85;
-var g=ctx.createRadialGradient(s.x*W,s.y*H,0,s.x*W,s.y*H,s.r*2.5);
-g.addColorStop(0,"rgba("+fx1+",1)");g.addColorStop(.5,"rgba("+fx2+",.5)");g.addColorStop(1,"rgba("+fx2+",0)");
-ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r*2.5,0,Math.PI*2);ctx.fill();ctx.restore();});
+for(var i=0;i<stars.length;i++){var s=stars[i];s.a+=s.da;if(s.a<=0){s.a=0;s.da=Math.abs(s.da);}if(s.a>=1){s.a=1;s.da=-Math.abs(s.da);}
+var d=s.r*5;ctx.globalAlpha=s.a*.85;ctx.drawImage(sprite,s.x*W-d/2,s.y*H-d/2,d,d);}
+ctx.globalAlpha=1;
 requestAnimationFrame(loop)})();}
 /* -- 3D TILT on interactive cards -- */
 if(fine2&&!reduced3){
