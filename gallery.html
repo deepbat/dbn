@@ -79,7 +79,10 @@
       background-color: var(--bg);
       color: var(--fg);
       font-family: var(--font-sans);
+      /* clip (not hidden): overflow:hidden on html+body makes body the scroll
+         container, which silently disables position:sticky below (Android Chrome) */
       overflow-x: hidden;
+      overflow-x: clip;
       -webkit-font-smoothing: antialiased;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
@@ -124,6 +127,61 @@
     .topbar a:focus-visible,
     .gallery-item:focus-visible,
     .lightbox-close:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Floating quick nav: Home + Back to top (reachable from every scroll position) */
+    .quicknav {
+      position: fixed;
+      right: 14px;
+      bottom: 16px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .quicknav a,
+    .quicknav button {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg);
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.55rem 0.95rem;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(20, 16, 8, 0.14);
+      transition: background 0.2s ease, color 0.2s ease, opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .quicknav a:hover,
+    .quicknav button:hover {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    .quicknav #backToTop {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+    }
+
+    .quicknav #backToTop.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
+    }
+
+    .quicknav a:focus-visible,
+    .quicknav button:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
@@ -437,6 +495,12 @@
     <div class="editorial-grid" id="editorialGrid"></div>
   </main>
 
+  <!-- Floating quick nav: Home + Back to top -->
+  <div class="quicknav">
+    <a href="index.html">&larr; Home</a>
+    <button id="backToTop" type="button" aria-label="Back to top">&uarr; Top</button>
+  </div>
+
   <!-- Fullscreen Lightbox -->
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Expanded photo">
     <button class="lightbox-close" id="lightboxClose" aria-label="Close expanded photo">&times;</button>
@@ -566,6 +630,16 @@
     // 4. Escape closes the lightbox
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeLightbox();
+    });
+
+    // 5. Back-to-top floating button
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('show', window.scrollY > window.innerHeight * 1.2);
+    }, { passive: true });
+    backToTop.addEventListener('click', () => {
+      if (lenis) lenis.scrollTo(0);
+      else window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     });
 
     // NOTE: this page deliberately does NOT register sw.js.
