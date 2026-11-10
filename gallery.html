@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="editorial" data-view="scroll">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deepak Batra — Visual Archive &amp; Portfolio</title>
+  <meta name="description" content="A visual archive of Deepak Batra's photography — 15 frames in three views: editorial scroll, darkroom contact sheet and an infinite 2D canvas." />
+  <link rel="canonical" href="https://deepak.my.id/gallery.html" />
+
+  <!-- Social / link previews -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Deepak Batra" />
+  <meta property="og:title" content="Deepak Batra — Visual Archive" />
+  <meta property="og:description" content="15 frames, three views: editorial scroll, darkroom contact sheet and an infinite 2D canvas." />
+  <meta property="og:url" content="https://deepak.my.id/gallery.html" />
+  <meta property="og:image" content="https://deepak.my.id/gallery-16.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Deepak Batra — Visual Archive" />
+  <meta name="twitter:description" content="15 frames, three views: editorial scroll, darkroom contact sheet and an infinite 2D canvas." />
+  <meta name="twitter:image" content="https://deepak.my.id/gallery-16.webp" />
+
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <!-- Preload Local Fonts -->
+  <link rel="preload" href="f-instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="f-instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="f-inter.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="f-jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin />
+
+  <style>
+    @font-face {
+      font-family: 'Instrument Serif';
+      src: url('f-instrument-serif.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Instrument Serif';
+      src: url('f-instrument-serif-italic.woff2') format('woff2');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Inter';
+      src: url('f-inter.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('f-jetbrains-mono.woff2') format('woff2');
+      font-weight: 100 800;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #f6f4f0;
+      --fg: #141413;
+      --muted: #6e6d68;
+      --accent: #c84b31;
+      --border: rgba(20, 20, 19, 0.12);
+      --card-bg: rgba(255, 255, 255, 0.6);
+      --scroll-velocity: 0;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-mode="raw"] {
+      --bg: #0b0b0c;
+      --fg: #e4e4e0;
+      --muted: #7c7c77;
+      --accent: #00ff66;
+      --border: rgba(228, 228, 224, 0.14);
+      --card-bg: rgba(22, 22, 24, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), color 0.45s ease;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HUD Navigation Bar */
+    .hud-header {
+      position: fixed;
+      top: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.75rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+      max-width: 96vw;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hud-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.38rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .hud-btn:hover {
+      border-color: var(--border);
+    }
+
+    .hud-btn:focus-visible,
+    .gallery-item:focus-visible,
+    .contact-cell:focus-visible,
+    .lightbox-close:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .hud-btn.active {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    .hud-divider {
+      width: 1px;
+      height: 14px;
+      background: var(--border);
+      margin: 0 0.25rem;
+    }
+
+    /* Kinetic Velocity Distortion */
+    .kinetic-skew {
+      transform: skewY(calc(var(--scroll-velocity) * 0.14deg));
+      transition: transform 0.12s linear;
+      will-change: transform;
+    }
+
+    /* Hero & Scroll-Scrubbed Cinema */
+    .hero-cinema {
+      position: relative;
+      height: 240vh;
+    }
+
+    .cinema-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100svh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6rem 4vw 3rem;
+      overflow: hidden;
+    }
+
+    .cinema-video-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.28;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    [data-mode="raw"] .cinema-video-wrap {
+      opacity: 0.18;
+      filter: grayscale(100%) contrast(140%);
+    }
+
+    .cinema-video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-top {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .portrait-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.65rem;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+    }
+
+    .portrait-card img {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .portrait-meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+
+    .hero-title {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-serif);
+      font-size: clamp(3.5rem, 10vw, 9rem);
+      font-weight: 400;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    [data-mode="raw"] .hero-title {
+      font-family: var(--font-mono);
+      font-size: clamp(2rem, 5.5vw, 4.5rem);
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .cinema-scrub-bar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    /* VIEW 1: Editorial Scroll & RAW Table */
+    .archive-section {
+      padding: 4rem 4vw 8rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 2.5rem 1.5rem;
+    }
+
+    .gallery-item {
+      grid-column: span 4;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .gallery-item:nth-child(5n+1) {
+      grid-column: span 8;
+    }
+
+    .gallery-item:nth-child(7n+3) {
+      grid-column: span 6;
+    }
+
+    @media (max-width: 900px) {
+      .gallery-item,
+      .gallery-item:nth-child(5n+1),
+      .gallery-item:nth-child(7n+3) {
+        grid-column: span 12;
+      }
+    }
+
+    .img-frame {
+      position: relative;
+      overflow: hidden;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+    }
+
+    .img-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+    }
+
+    .gallery-item:hover .img-frame img {
+      transform: scale(1.04);
+    }
+
+    .item-caption {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .item-caption .serif-label {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--fg);
+    }
+
+    /* RAW Index Table Mode */
+    [data-mode="raw"] .editorial-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    [data-mode="raw"] .gallery-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+
+    [data-mode="raw"] .gallery-item:hover {
+      background: rgba(0, 255, 102, 0.06);
+    }
+
+    [data-mode="raw"] .img-frame {
+      width: 90px;
+      height: 56px;
+      flex-shrink: 0;
+    }
+
+    [data-mode="raw"] .img-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    [data-mode="raw"] .item-caption {
+      flex: 1;
+      margin-top: 0;
+      margin-left: 1.5rem;
+    }
+
+    /* VIEW 2: Darkroom Contact Sheet & Loupe */
+    .contact-sheet-view {
+      display: none;
+      min-height: 100vh;
+      padding: 7rem 4vw 4rem;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .contact-cell {
+      border: 1px solid var(--border);
+      padding: 0.5rem;
+      background: var(--card-bg);
+      cursor: crosshair;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), z-index 0s;
+      position: relative;
+    }
+
+    .contact-cell img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(115%);
+      transition: filter 0.3s ease;
+    }
+
+    @media (hover: hover) {
+      .contact-cell:hover {
+        transform: scale(1.85);
+        z-index: 50;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+        background: var(--bg);
+      }
+
+      .contact-cell:hover img {
+        filter: grayscale(0%) contrast(100%);
+      }
+    }
+
+    .contact-cell:focus-visible {
+      z-index: 50;
+    }
+
+    .contact-cell:focus-visible img {
+      filter: grayscale(0%) contrast(100%);
+    }
+
+    .contact-code {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* VIEW 3: Infinite 2D Moodboard Canvas */
+    .canvas-view {
+      display: none;
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      -webkit-user-select: none;
+    }
+
+    .canvas-view:active {
+      cursor: grabbing;
+    }
+
+    .canvas-plane {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 3200px;
+      height: 2400px;
+      transform: translate(-50%, -50%);
+      will-change: transform;
+    }
+
+    .canvas-node {
+      position: absolute;
+      width: 280px;
+      padding: 0.6rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      transition: box-shadow 0.25s ease;
+    }
+
+    .canvas-node:hover {
+      z-index: 20;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+    }
+
+    .canvas-node img {
+      width: 100%;
+      border-radius: 4px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .canvas-node-meta {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      margin-top: 0.45rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .canvas-hud-coords {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 900;
+      padding: 0.5rem 0.85rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    /* View Switching Rules */
+    [data-view="contact"] .scroll-view-wrapper { display: none; }
+    [data-view="contact"] .contact-sheet-view { display: flex; }
+
+    [data-view="canvas"] .scroll-view-wrapper { display: none; }
+    [data-view="canvas"] .canvas-view { display: block; }
+
+    /* Lightbox Modal */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(10, 10, 12, 0.92);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      cursor: zoom-out;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    body.lightbox-locked {
+      overflow: hidden;
+    }
+
+    /* Reduced motion: no skew, no smooth scroll, no hover zoom, calmer video */
+    @media (prefers-reduced-motion: reduce) {
+      html, body {
+        transition: none;
+      }
+      .kinetic-skew {
+        transform: none !important;
+        transition: none;
+        will-change: auto;
+      }
+      .img-frame img,
+      .contact-cell,
+      .contact-cell img,
+      .cinema-video-wrap {
+        transition: none;
+      }
+      .gallery-item:hover .img-frame img {
+        transform: none;
+      }
+      @media (hover: hover) {
+        .contact-cell:hover {
+          transform: none;
+        }
+      }
+      .hero-cinema {
+        height: 100vh;
+        height: 100svh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating HUD Controls -->
+  <nav class="hud-header" aria-label="Experience Controls">
+    <button class="hud-btn active" data-set-view="scroll">01. Scroll</button>
+    <button class="hud-btn" data-set-view="contact">02. Contact Sheet</button>
+    <button class="hud-btn" data-set-view="canvas">03. 2D Canvas</button>
+    <div class="hud-divider"></div>
+    <button class="hud-btn" id="modeToggle" title="Shortcut: Press M" aria-pressed="false">Mode: Editorial</button>
+    <button class="hud-btn" id="audioToggle" aria-pressed="false">Audio: Off</button>
+  </nav>
+
+  <!-- VIEW 1: Scroll-Scrubbed Cinema + Archive -->
+  <div class="scroll-view-wrapper">
+    <section class="hero-cinema" id="cinemaSection">
+      <div class="cinema-sticky">
+        <div class="cinema-video-wrap">
+          <video id="heroVideo" src="clip-01.mp4" muted playsinline preload="metadata" aria-hidden="true" tabindex="-1"></video>
+        </div>
+
+        <div class="hero-top">
+          <div class="portrait-card">
+            <picture>
+              <source srcset="portrait-720.jpg" media="(max-width: 768px)" />
+              <img src="assets/portrait.jpg" alt="Deepak Batra" />
+            </picture>
+            <div class="portrait-meta">
+              <div><strong>DEEPAK BATRA</strong></div>
+              <div>HOST // deepak.my.id</div>
+              <div id="liveVelocity">VEL // 0.00 px/f</div>
+            </div>
+          </div>
+          <div class="portrait-meta">[PRESS M FOR RAW ARCHIVE]</div>
+        </div>
+
+        <h1 class="hero-title kinetic-skew">
+          Selected <em>Visual</em><br />Works &amp; Index
+        </h1>
+
+        <div class="cinema-scrub-bar">
+          <span>CLIP-01.MP4 // SCROLL-SCRUBBED TIMELINE</span>
+          <span id="timecodeDisplay">TC 00:00.00</span>
+        </div>
+      </div>
+    </section>
+
+    <main class="archive-section">
+      <div class="editorial-grid" id="editorialGrid"></div>
+    </main>
+  </div>
+
+  <!-- VIEW 2: Darkroom Contact Sheet -->
+  <section class="contact-sheet-view" aria-label="Contact sheet">
+    <div class="contact-grid" id="contactGrid"></div>
+  </section>
+
+  <!-- VIEW 3: Infinite 2D Moodboard Canvas -->
+  <section class="canvas-view" id="canvasViewport" aria-label="Draggable moodboard canvas">
+    <div class="canvas-plane" id="canvasPlane"></div>
+    <div class="canvas-hud-coords" id="canvasCoords">X: 000 // Y: 000 (DRAG TO PAN)</div>
+  </section>
+
+  <!-- Fullscreen Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Expanded photo">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close expanded photo">&times;</button>
+    <img id="lightboxImg" src="" alt="" />
+  </div>
+
+  <!-- Local Smooth Scroll Library -->
+  <script src="lenis.js"></script>
+  <script>
+    // 1. Exact Gallery Manifest from Repository
+    const galleryIds = [14, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30];
+    const galleryItems = galleryIds.map((num, idx) => ({
+      id: `GAL-${num}`,
+      num: num,
+      src: `gallery-${num}.webp`,
+      title: `Archive Plate No. ${num}`,
+      coordX: ((idx % 5) - 2) * 480 + (idx % 2 === 0 ? 60 : -60),
+      coordY: (Math.floor(idx / 5) - 1) * 420 + (idx % 3 === 0 ? -50 : 50)
+    }));
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 2. Web Audio API Tactile Shutter Click
+    let audioEnabled = false;
+    let audioCtx = null;
+
+    function playTactileClick(freq = 800) {
+      if (!audioEnabled) return;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.025);
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.025);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.03);
+    }
+
+    // 3. Populate All 3 Views
+    const editorialGrid = document.getElementById('editorialGrid');
+    const contactGrid = document.getElementById('contactGrid');
+    const canvasPlane = document.getElementById('canvasPlane');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    let lenis = null;
+    let lastFocused = null;
+
+    function openLightbox(item) {
+      playTactileClick(1200);
+      lastFocused = document.activeElement;
+      lightboxImg.src = item.src;
+      lightboxImg.alt = item.title;
+      lightbox.classList.add('open');
+      document.body.classList.add('lightbox-locked');
+      if (lenis) lenis.stop();
+      lightboxClose.focus();
+    }
+
+    function closeLightbox() {
+      if (!lightbox.classList.contains('open')) return;
+      lightbox.classList.remove('open');
+      document.body.classList.remove('lightbox-locked');
+      if (lenis) lenis.start();
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target !== lightboxImg) closeLightbox();
+    });
+
+    function makeKeyboardOpenable(el, item) {
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', `Open ${item.title} full screen`);
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(item);
+        }
+      });
+    }
+
+    galleryItems.forEach((item) => {
+      // Populate Editorial / RAW Scroll View
+      const el = document.createElement('article');
+      el.className = 'gallery-item kinetic-skew';
+      el.innerHTML = `
+        <div class="img-frame">
+          <img src="${item.src}" alt="${item.title}" loading="lazy" decoding="async" />
+        </div>
+        <div class="item-caption">
+          <span class="serif-label">${item.title}</span>
+          <span>[${item.id} // WEBP]</span>
+        </div>
+      `;
+      el.addEventListener('mouseenter', () => playTactileClick(650));
+      el.addEventListener('click', () => openLightbox(item));
+      makeKeyboardOpenable(el, item);
+      editorialGrid.appendChild(el);
+
+      // Populate Darkroom Contact Sheet
+      const cell = document.createElement('div');
+      cell.className = 'contact-cell';
+      cell.innerHTML = `
+        <img src="${item.src}" alt="${item.title}" loading="lazy" decoding="async" />
+        <div class="contact-code">
+          <span>#${item.num}</span>
+          <span>RAW</span>
+        </div>
+      `;
+      cell.addEventListener('mouseenter', () => playTactileClick(950));
+      cell.addEventListener('click', () => openLightbox(item));
+      makeKeyboardOpenable(cell, item);
+      contactGrid.appendChild(cell);
+
+      // Populate 2D Infinite Canvas
+      const node = document.createElement('div');
+      node.className = 'canvas-node';
+      node.style.left = `calc(50% + ${item.coordX}px)`;
+      node.style.top = `calc(50% + ${item.coordY}px)`;
+      node.innerHTML = `
+        <img src="${item.src}" alt="${item.title}" loading="lazy" decoding="async" />
+        <div class="canvas-node-meta">
+          <span>${item.id}</span>
+          <span>(${item.coordX}, ${item.coordY})</span>
+        </div>
+      `;
+      node.addEventListener('dblclick', () => openLightbox(item));
+      canvasPlane.appendChild(node);
+    });
+
+    // 4. Lenis Smooth Scroll + Velocity Physics + Video Scrubbing
+    const video = document.getElementById('heroVideo');
+    const cinemaSection = document.getElementById('cinemaSection');
+    const timecodeDisplay = document.getElementById('timecodeDisplay');
+    const liveVelocity = document.getElementById('liveVelocity');
+
+    function formatTimecode(t) {
+      const s = Math.floor(t);
+      const f = Math.floor((t - s) * 100);
+      return `TC 00:${String(s).padStart(2, '0')}.${String(f).padStart(2, '0')}`;
+    }
+
+    if (!reduceMotion && typeof Lenis !== 'undefined') {
+      lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      let lastScrub = -1;
+      let lastScrubAt = 0;
+
+      lenis.on('scroll', ({ scroll, velocity }) => {
+        const clampedVel = Math.max(-25, Math.min(25, velocity));
+        document.documentElement.style.setProperty('--scroll-velocity', clampedVel.toFixed(2));
+        liveVelocity.textContent = `VEL // ${Math.abs(velocity).toFixed(2)} px/f`;
+
+        // Scrub clip-01.mp4 based on hero scroll progress (throttled: seek is decoder-heavy on phones)
+        if (video.duration) {
+          const maxScroll = cinemaSection.offsetHeight - window.innerHeight;
+          if (maxScroll > 0) {
+            const progress = Math.max(0, Math.min(1, scroll / maxScroll));
+            const target = progress * video.duration;
+            const now = performance.now();
+            if (Math.abs(target - lastScrub) > 0.15 || now - lastScrubAt > 250) {
+              video.currentTime = target;
+              lastScrub = target;
+              lastScrubAt = now;
+            }
+            timecodeDisplay.textContent = formatTimecode(target);
+          }
+        }
+      });
+    } else {
+      // Reduced motion (or no Lenis): hold a single still frame, no scrubbing
+      video.addEventListener('loadedmetadata', () => { video.currentTime = 0.01; });
+      liveVelocity.textContent = 'VEL // reduced motion';
+    }
+
+    // 5. Draggable 2D Canvas Logic
+    const canvasViewport = document.getElementById('canvasViewport');
+    const canvasCoords = document.getElementById('canvasCoords');
+    let isDragging = false, startX = 0, startY = 0, panX = 0, panY = 0, dragDist = 0;
+
+    canvasViewport.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      dragDist = 0;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const newPanX = e.clientX - startX;
+      const newPanY = e.clientY - startY;
+      dragDist = Math.max(dragDist, Math.abs(newPanX - panX) + Math.abs(newPanY - panY));
+      panX = newPanX;
+      panY = newPanY;
+      canvasPlane.style.transform = `translate(calc(-50% + ${panX}px), calc(-50% + ${panY}px))`;
+      canvasCoords.textContent = `X: ${Math.round(-panX)} // Y: ${Math.round(-panY)} (TAP OR DBL-CLICK TO ZOOM)`;
+    });
+
+    window.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      // Single tap (no real drag) on a node opens it - needed on touch, where dblclick is unreliable
+      if (dragDist < 8) {
+        const node = e.target.closest && e.target.closest('.canvas-node');
+        if (node) {
+          const idx = Array.prototype.indexOf.call(canvasPlane.children, node);
+          if (idx > -1) openLightbox(galleryItems[idx]);
+        }
+      }
+    });
+
+    // 6. View & Persona Mode Toggles
+    const htmlEl = document.documentElement;
+    const modeToggle = document.getElementById('modeToggle');
+    const audioToggle = document.getElementById('audioToggle');
+
+    function toggleMode() {
+      playTactileClick(520);
+      const next = htmlEl.getAttribute('data-mode') === 'editorial' ? 'raw' : 'editorial';
+      htmlEl.setAttribute('data-mode', next);
+      modeToggle.textContent = `Mode: ${next.toUpperCase()}`;
+      modeToggle.setAttribute('aria-pressed', next === 'raw' ? 'true' : 'false');
+    }
+
+    modeToggle.addEventListener('click', toggleMode);
+    window.addEventListener('keydown', (e) => {
+      const tag = (document.activeElement && document.activeElement.tagName) || '';
+      if (e.key === 'Escape') {
+        closeLightbox();
+        return;
+      }
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === 'm' || e.key === 'M') {
+        toggleMode();
+      }
+    });
+
+    document.querySelectorAll('[data-set-view]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playTactileClick(880);
+        document.querySelectorAll('[data-set-view]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        htmlEl.setAttribute('data-view', btn.getAttribute('data-set-view'));
+      });
+    });
+
+    audioToggle.addEventListener('click', () => {
+      audioEnabled = !audioEnabled;
+      audioToggle.textContent = `Audio: ${audioEnabled ? 'On' : 'Off'}`;
+      audioToggle.classList.toggle('active', audioEnabled);
+      audioToggle.setAttribute('aria-pressed', audioEnabled ? 'true' : 'false');
+      if (audioEnabled) playTactileClick(1000);
+    });
+
+    // NOTE: this page deliberately does NOT register sw.js.
+    // The site's service worker caches navigations under a single 'index.html'
+    // key, so registering it here would overwrite the homepage's offline copy.
+  </script>
+</body>
+</html>
