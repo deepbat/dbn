@@ -4,7 +4,7 @@
 
    page to itself once, so no phone can stay stuck on a stale shell. */
 
-var VERSION='dbn-v50-term-fx',SHELL=['./','index.html','lenis.js','manifest.webmanifest','portrait-720.jpg','f-inter.woff2','f-instrument-serif.woff2','f-instrument-serif-italic.woff2','f-jetbrains-mono.woff2','icon.svg'];
+var VERSION='dbn-v51-gallery',SHELL=['./','index.html','lenis.js','manifest.webmanifest','portrait-720.jpg','f-inter.woff2','f-instrument-serif.woff2','f-instrument-serif-italic.woff2','f-jetbrains-mono.woff2','icon.svg'];
 
 self.addEventListener('install',function(e){e.waitUntil(caches.open(VERSION).then(function(c){return c.addAll(SHELL)}).then(function(){return self.skipWaiting()}))});
 
@@ -14,6 +14,6 @@ self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(func
 
 self.addEventListener('fetch',function(e){var r=e.request;if(r.method!=='GET')return;var u=new URL(r.url);if(u.origin!==location.origin)return;
                                           
- if(r.mode==='navigate'){e.respondWith(fetch(r,{cache:"no-cache"}).then(function(res){var cp=res.clone();caches.open(VERSION).then(function(c){c.put('index.html',cp)});return res}).catch(function(){return caches.match('index.html')}));return}
+ if(r.mode==='navigate'){var isHome=u.pathname.endsWith('/')||u.pathname.endsWith('/index.html');var key=isHome?'index.html':u.pathname;e.respondWith(fetch(r,{cache:"no-cache"}).then(function(res){var cp=res.clone();caches.open(VERSION).then(function(c){c.put(key,cp)});return res}).catch(function(){return caches.match(key).then(function(h){return h||caches.match('index.html')})}));return}
                                           
  e.respondWith(caches.match(r).then(function(hit){var net=fetch(r).then(function(res){if(res&&res.ok){var cp=res.clone();caches.open(VERSION).then(function(c){c.put(r,cp)})}return res}).catch(function(){return hit});return hit||net}))});
