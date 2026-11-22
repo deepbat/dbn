@@ -43,6 +43,59 @@ img.closeup-shot{width:min(100%,330px);height:auto;border-radius:6px;box-shadow:
 img.closeup-shot:hover{transform:rotate(0) scale(1.04)}
 @media(max-width:600px){img.closeup-shot{width:min(100%,260px)}.closeup-note{font-size:16px}.photo.open figcaption{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.photo.open{animation:none!important}}
+
+/* site-wide depth pass (2026-11-22 eve): scroll-driven 3D through every section */
+.about,.work,.life,.contact{perspective:1300px}
+.about-layout{perspective:1200px}
+.skills{perspective:900px}
+.contact-links{perspective:1000px}
+.work-deck{perspective:1100px}
+.depth-in{opacity:0;transform:rotateX(22deg) translateY(64px);transform-origin:50% 100%;transition:opacity .7s ease,transform .85s cubic-bezier(.19,.7,.25,1)}
+.depth-in.seen{opacity:1;transform:none}
+.work-card{transform:rotate(var(--angle)) rotateX(var(--crx,0deg)) translateY(var(--cty,0px)) scale(var(--csc,1))}
+@media(max-width:600px){.work-card{transform:rotate(calc(var(--angle)*.5)) rotateX(var(--crx,0deg)) translateY(var(--cty,0px)) scale(var(--csc,1))}}
+.about-art{transform:rotateY(var(--ry,0deg))}
+.paper{transform:rotate(-7deg) translateZ(34px);transform-style:preserve-3d}
+.paper-stamp{transform:rotate(12deg) translateZ(60px)}
+.mug{transform:rotate(12deg) translateZ(70px)}
+.scribble{transform:rotate(-7deg) translateZ(48px)}
+.a1{transform:rotate(-9deg) translateY(var(--py,0px))}
+.a2{transform:rotate(4deg) translateY(var(--py,0px))}
+.a3{transform:rotate(11deg) translateY(var(--py,0px))}
+@media(max-width:600px){.a3{transform:rotate(-5deg) translateY(var(--py,0px))}}
+.album-photo{transition:opacity .7s ease,transform .18s ease-out}
+.album .album-photo{opacity:0}
+.album.seen .album-photo{opacity:1}
+.album.seen .a2{transition-delay:.12s}
+.album.seen .a3{transition-delay:.22s}
+.skills span{opacity:0;transform:translateY(26px) rotate(-4deg);transition:opacity .5s ease,transform .6s cubic-bezier(.19,.7,.25,1)}
+.skills.seen span{opacity:1;transform:none}
+.skills.seen span:nth-child(2){transition-delay:.05s}
+.skills.seen span:nth-child(3){transition-delay:.1s}
+.skills.seen span:nth-child(4){transition-delay:.15s}
+.skills.seen span:nth-child(5){transition-delay:.2s}
+.skills.seen span:nth-child(6){transition-delay:.25s}
+.contact-links a{opacity:0;transform:rotateX(38deg) translateY(44px);transform-origin:50% 100%;transition:opacity .6s ease,transform .75s cubic-bezier(.19,.7,.25,1),color .3s}
+.contact-links.seen a{opacity:1;transform:none}
+.contact-links.seen a:nth-child(2){transition-delay:.07s}
+.contact-links.seen a:nth-child(3){transition-delay:.14s}
+.contact-links.seen a:nth-child(4){transition-delay:.21s}
+.contact-links.seen a:hover{transform:translateY(-5px) rotateX(9deg)}
+.contact h2{text-shadow:0 2px 0 #0c2da0,0 4px 0 #0a2480,0 7px 0 #081c62,0 12px 26px #04103f}
+.hometown{overflow:hidden}
+.hometown p{transform:translateY(var(--hy,0px))}
+.hometown>span{display:inline-block;transform:translateY(var(--hy2,0px))}
+.record{animation:recordSway 12s ease-in-out infinite alternate}
+@keyframes recordSway{from{transform:rotate(-15deg) rotateY(-18deg)}to{transform:rotate(-15deg) rotateY(18deg)}}
+.demo-window{animation:winSway 14s ease-in-out infinite alternate}
+@keyframes winSway{from{transform:rotateY(-16deg) rotateZ(5deg)}to{transform:rotateY(-3deg) rotateZ(5deg)}}
+.demo-grid{animation:gridSway 13s ease-in-out infinite alternate}
+@keyframes gridSway{from{transform:rotate(-8deg) rotateY(-12deg)}to{transform:rotate(-8deg) rotateY(12deg)}}
+@media(prefers-reduced-motion:reduce){
+.depth-in,.contact-links a,.skills span,.album .album-photo{opacity:1!important;transform:none!important}
+.about-art,.hometown p,.hometown>span{transform:none!important}
+.record,.demo-window,.demo-grid{animation:none!important}
+}
 </style>
 </head>
 <body>
@@ -141,10 +194,32 @@ function clock(){document.getElementById('clock').textContent=new Intl.DateTimeF
 clock();setInterval(clock,60000);document.getElementById('year').textContent=new Date().getFullYear();
 const reduce=matchMedia('(prefers-reduced-motion: reduce)'),nav=document.querySelector('.nav');
 let busy=false;
-function update(){const y=scrollY;nav.classList.toggle('scrolled',y>50);document.body.classList.toggle('past-hero',y>600);if(!reduce.matches&&innerWidth>600){document.querySelectorAll('[data-depth]').forEach(el=>{let offset=Math.min(y,1000)*Number(el.dataset.depth)*.22;el.style.translate=`0 ${offset}px`})}busy=false;}
+function update(){const y=scrollY;nav.classList.toggle('scrolled',y>50);document.body.classList.toggle('past-hero',y>600);if(!reduce.matches){const hf=innerWidth>600?.22:.12;document.querySelectorAll('[data-depth]').forEach(el=>{let offset=Math.min(y,1000)*Number(el.dataset.depth)*hf;el.style.translate=`0 ${offset}px`});depthUpdate()}busy=false;}
 addEventListener('scroll',()=>{if(!busy){busy=true;requestAnimationFrame(update)}},{passive:true});update();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 let promptEvent;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;const b=document.createElement('button');b.textContent='Install as app ↗';b.className='pill';b.style.cssText='background:transparent;color:inherit;margin:30px 0;border-color:currentColor';b.onclick=async()=>{await promptEvent.prompt();b.remove()};document.querySelector('.contact-links').after(b)});
+
+/* site-wide depth pass (2026-11-22 eve) */
+var _ab,_ap,_ht,_hw;
+function depthUpdate(){const H=innerHeight,mob=innerWidth<=600;
+ if(!_ab)_ab=document.querySelector('.about-art');
+ if(!_ap)_ap=document.querySelectorAll('.album-photo');
+ if(!_ht)_ht=document.querySelector('.hometown p');
+ if(!_hw)_hw=document.querySelectorAll('.hometown>span');
+ if(_ab){const r=_ab.getBoundingClientRect();const p=Math.min(1,Math.max(0,1-(r.top+r.height/2)/H));_ab.style.setProperty('--ry',((p-.5)*(mob?9:15)).toFixed(2)+'deg')}
+ if(_ap&&_ap.length){const r=_ap[0].parentElement.getBoundingClientRect();const q=Math.min(1,Math.max(0,(H-r.top)/(H+r.height)));const f=mob?[-40,55,-30]:[-70,100,-50];_ap.forEach((el,i)=>el.style.setProperty('--py',((q-.5)*(f[i]||0)).toFixed(1)+'px'))}
+ if(_ht){const r=_ht.parentElement.getBoundingClientRect();const q=Math.min(1,Math.max(0,(H-r.top)/(H+r.height)));_ht.style.setProperty('--hy',((q-.5)*-46).toFixed(1)+'px');_hw.forEach(el=>el.style.setProperty('--hy2',((q-.5)*30).toFixed(1)+'px'))}
+ const wc=deck.children;
+ for(let i=0;i<wc.length;i++){const el=wc[i],r=el.getBoundingClientRect();
+  const p=Math.min(1,Math.max(0,(H-r.top)/(H*.55)));
+  let crx=(1-p)*14,cty=(1-p)*50,csc=1;
+  const stick=(mob?86:108)+i*(mob?5:10);
+  if(r.top<=stick+2&&i+1<wc.length){const nr=wc[i+1].getBoundingClientRect();const c=Math.min(1,Math.max(0,1-(nr.top-stick)/(H*.65)));csc=1-c*.07;crx=-c*5;cty=-c*12}
+  el.style.setProperty('--crx',crx.toFixed(2)+'deg');el.style.setProperty('--cty',cty.toFixed(1)+'px');el.style.setProperty('--csc',csc.toFixed(3))}
+}
+document.querySelectorAll('.section-label,.about h2,.about-copy,.work-heading,.life h2,.life-intro,.contact h2,.contact>p').forEach(el=>el.classList.add('depth-in'));
+const revIO=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('seen');revIO.unobserve(en.target)}}),{threshold:.12});
+document.querySelectorAll('.depth-in,.contact-links,.skills,.album').forEach(el=>revIO.observe(el));
 </script>
 </body></html>
