@@ -271,7 +271,7 @@ async function initWorld(){
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.75));
  renderer.outputColorSpace=THREE.SRGBColorSpace;
  const scene=new THREE.Scene();
- scene.fog=new THREE.FogExp2(0x070d2b,0.0145);
+ scene.fog=new THREE.FogExp2(0x070d2b,0.017);
  const cam=new THREE.PerspectiveCamera(58,1,.1,500);
  const F=Math.min(1,innerWidth/900);           // layout factor for small screens
  const bobbers=[];                              // {o,y,amp,sp,ph,rz}
@@ -285,7 +285,9 @@ async function initWorld(){
  const palette=[[1,.75,.9],[1,.85,.6],[.7,.8,1],[1,1,1],[1,.6,.75]];
  for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*70;pos[i*3+1]=(Math.random()-.5)*44;pos[i*3+2]=16-Math.random()*330;const c=palette[i%palette.length];col[i*3]=c[0];col[i*3+1]=c[1];col[i*3+2]=c[2]}
  const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pos,3));pg.setAttribute('color',new THREE.BufferAttribute(col,3));
- const stars=new THREE.Points(pg,new THREE.PointsMaterial({size:.3,vertexColors:true,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false}));
+ const pcv=document.createElement('canvas');pcv.width=pcv.height=32;const pctx=pcv.getContext('2d');const grd=pctx.createRadialGradient(16,16,0,16,16,16);grd.addColorStop(0,'rgba(255,255,255,1)');grd.addColorStop(.6,'rgba(255,255,255,.5)');grd.addColorStop(1,'rgba(255,255,255,0)');pctx.fillStyle=grd;pctx.beginPath();pctx.arc(16,16,16,0,7);pctx.fill();
+ const pTex=new THREE.CanvasTexture(pcv);
+ const stars=new THREE.Points(pg,new THREE.PointsMaterial({size:.34,map:pTex,vertexColors:true,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false,alphaTest:.01}));
  scene.add(stars);
  /* ---- HERO: the name in space, portrait, floating prints ---- */
  const name=canvasPlane(15,4.7,(x,W,H)=>{x.clearRect(0,0,W,H);x.textAlign='center';x.textBaseline='middle';x.shadowColor='rgba(255,95,168,.9)';x.shadowBlur=34;x.fillStyle='#fff6e8';x.font='600 300px "Instrument Serif", Georgia, serif';x.fillText('DEEPAK',W/2-30,H/2+16);x.shadowBlur=0;x.fillStyle='#ff5fa8';x.beginPath();x.arc(W-92,H-148,26,0,7);x.fill()});
@@ -314,25 +316,32 @@ async function initWorld(){
  const shotImgs={};
  CARDS.forEach((c,i)=>{if(c.shot){const im=new Image();im.src=c.shot;shotImgs[i]=im}});
  const panels=[];
- function panelCanvas(c){return(x,W,H)=>{
-  x.fillStyle=c.bg;x.fillRect(0,0,W,H);
-  const ink=c.light?'#fffaf0':'#202422';x.fillStyle=ink;
-  x.textBaseline='alphabetic';x.textAlign='left';
-  x.globalAlpha=.75;x.font='30px Mono, monospace';x.fillText(c.n+' / '+c.tags,44,64);x.globalAlpha=1;
-  if(c.shot&&shotImgs[c.n==='01'?0:6]&&shotImgs[c.n==='01'?0:6].complete&&shotImgs[c.n==='01'?0:6].naturalWidth){
-   const im=shotImgs[c.n==='01'?0:6];const bw=W-88,bh=H-220,bx=44,by=96;
-   x.font='76px "Instrument Serif", Georgia, serif';x.fillText(c.t,44,H-64);
-   x.fillStyle='#fffcf8';x.fillRect(bx-8,by-8,bw+16,bh+16);x.drawImage(im,bx,by,bw,bh);
-  }else{
-   let size=150;const maxW=W-88;const words=c.t.split(' ');
-   do{x.font=`400 ${size}px "Instrument Serif", Georgia, serif`;var lines=[],line='';for(const w of words){const t=line?line+' '+w:w;if(x.measureText(t).width>maxW&&line){lines.push(line);line=w}else line=t}lines.push(line);size-=8}while((lines.length>3||x.measureText(lines[0]).width>maxW)&&size>56);
-   let y=H/2-(lines.length-1)*size*.62+size*.3;for(const l of lines){x.fillText(l,44,y);y+=size*1.08}
-  }
-  if(!c.shot){x.globalAlpha=.6;x.font='26px Mono, monospace';x.fillText('BUILT WITH · '+c.stack,44,H-44);x.globalAlpha=1}
- }}
  CARDS.forEach((c,i)=>{
   const grp=new THREE.Group();
-  const body=canvasPlane(8.6,5.4,panelCanvas(c));
+  const cnv=document.createElement('canvas');cnv.width=1024;cnv.height=643;
+  const t=new THREE.CanvasTexture(cnv);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=2;
+  const draw=()=>{const x=cnv.getContext('2d'),W=cnv.width,H=cnv.height;
+   x.fillStyle=c.bg;x.fillRect(0,0,W,H);
+   const ink=c.light?'#fffaf0':'#202422';x.fillStyle=ink;
+   x.textBaseline='alphabetic';x.textAlign='left';
+   x.globalAlpha=.75;x.font='30px Mono, monospace';x.fillText(c.n+' / '+c.tags,44,64);x.globalAlpha=1;
+   const im=c.shot?shotImgs[i]:null;
+   if(im&&im.complete&&im.naturalWidth){
+    const bw=W-88,bh=H-220,bx=44,by=96;
+    x.font='76px "Instrument Serif", Georgia, serif';x.fillText(c.t,44,H-64);
+    x.fillStyle='#fffcf8';x.fillRect(bx-8,by-8,bw+16,bh+16);x.drawImage(im,bx,by,bw,bh);
+   }else if(!c.shot){
+    let size=150;const maxW=W-88;const words=c.t.split(' ');let lines=[];
+    do{x.font=`400 ${size}px "Instrument Serif", Georgia, serif`;lines=[];let line='';for(const w of words){const t2=line?line+' '+w:w;if(x.measureText(t2).width>maxW&&line){lines.push(line);line=w}else line=t2}lines.push(line);size-=8}while((lines.length>3||x.measureText(lines[0]).width>maxW)&&size>56);
+    let y=H/2-(lines.length-1)*size*.62+size*.3;for(const l of lines){x.fillText(l,44,y);y+=size*1.08}
+    x.globalAlpha=.6;x.font='26px Mono, monospace';x.fillText('BUILT WITH · '+c.stack,44,H-44);x.globalAlpha=1;
+   }else{
+    x.font='76px "Instrument Serif", Georgia, serif';x.fillText(c.t,44,H-64);
+   }
+  };
+  draw();
+  if(c.shot&&shotImgs[i]){shotImgs[i].onload=()=>{draw();t.needsUpdate=true}}
+  const body=new THREE.Mesh(new THREE.PlaneGeometry(8.6,5.4),new THREE.MeshBasicMaterial({map:t,transparent:true}));
   grp.add(body);
   const gl=glow(c.bg,14,.5);gl.position.z=-2;grp.add(gl);
   grp.position.set((i%2?5.4:-5.4)*Math.max(F,.6),(i%3-1)*.7,-62-26*i);
@@ -346,12 +355,11 @@ async function initWorld(){
  const lglow=glow('rgba(255,246,232,.4)',24,.5);lglow.position.set(0,1,zc-8);scene.add(lglow);
  /* ---- CONTACT: the doorway of light ---- */
  const door=new THREE.Group();
- const dGlow=glow('rgba(255,95,168,.9)',17,.85);dGlow.position.z=-1;door.add(dGlow);
- const doorTxt=canvasPlane(10,2.6,(x,W,H)=>{x.clearRect(0,0,W,H);x.textAlign='center';x.textBaseline='middle';x.shadowColor='rgba(255,95,168,1)';x.shadowBlur=40;x.fillStyle='#fff6e8';x.font='italic 190px "Instrument Serif", Georgia, serif';x.fillText('say hello.',W/2,H/2)});
- door.add(doorTxt);
- const dRing=new THREE.Mesh(new THREE.TorusGeometry(5.4,.08,12,110),new THREE.MeshBasicMaterial({color:0xffc24b,transparent:true,opacity:.8}));door.add(dRing);
- door.position.set(0,.6,-306);scene.add(door);
- const cglow=glow('rgba(43,80,224,.7)',30,.6);cglow.position.set(0,0,-316);scene.add(cglow);
+ const dGlow=glow('rgba(255,95,168,.9)',19,.8);dGlow.position.z=-1;door.add(dGlow);
+ const dRing=new THREE.Mesh(new THREE.TorusGeometry(5.4,.09,12,110),new THREE.MeshBasicMaterial({color:0xffc24b,transparent:true,opacity:.85}));door.add(dRing);
+ const dRing2=new THREE.Mesh(new THREE.TorusGeometry(7.2,.05,12,110),new THREE.MeshBasicMaterial({color:0xff5fa8,transparent:true,opacity:.5}));dRing2.rotation.x=.4;door.add(dRing2);
+ door.position.set(0,.6,-330);scene.add(door);
+ const cglow=glow('rgba(43,80,224,.7)',30,.6);cglow.position.set(0,0,-342);scene.add(cglow);
  /* ---- scroll -> camera ---- */
  let anchors=[[0,10]];
  function measure(){
@@ -393,7 +401,7 @@ async function initWorld(){
   ring1.rotation.z=t*.15;ring1.rotation.x=Math.sin(t*.2)*.3;
   ring2.rotation.z=-t*.1;ring2.rotation.y=t*.13;
   chai.rotation.y=t*.5;
-  dRing.rotation.z=t*.3;
+  dRing.rotation.z=t*.3;dRing2.rotation.z=-t*.2;dRing2.rotation.y=t*.16;
   dGlow.material.opacity=.65+Math.sin(t*1.6)*.2;
   stars.rotation.y=t*.004;
   for(const b of bobbers){b.o.position.y=b.y+Math.sin(t*b.sp+b.ph)*b.amp}
