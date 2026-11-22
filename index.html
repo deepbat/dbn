@@ -113,12 +113,14 @@ CARDS.forEach((c,i)=>{
 function closeCloseups(){document.querySelectorAll('.work-card.expanded').forEach(a=>{a.classList.remove('expanded');const b=a.querySelector('.closeup-toggle');if(b){b.setAttribute('aria-expanded','false');b.textContent='CLOSE-UP +'}})}
 const dimEl=document.createElement('div');dimEl.id='photo-dim';dimEl.setAttribute('aria-hidden','true');document.body.append(dimEl);
 const prints=[...document.querySelectorAll('.photo')];
-function closePrints(){prints.forEach(f=>{f.classList.remove('open');f.setAttribute('aria-expanded','false')});dimEl.classList.remove('on')}
+const printHomes=new Map();
+function openPrint(f){if(!printHomes.has(f))printHomes.set(f,{parent:f.parentNode,next:f.nextSibling});document.body.append(f);f.classList.add('open');f.setAttribute('aria-expanded','true');dimEl.classList.add('on')}
+function closePrints(){prints.forEach(f=>{f.classList.remove('open');f.setAttribute('aria-expanded','false');const h=printHomes.get(f);if(h&&f.parentNode!==h.parent){if(h.next&&h.next.parentNode===h.parent)h.parent.insertBefore(f,h.next);else h.parent.append(f);printHomes.delete(f)}});dimEl.classList.remove('on')}
 prints.forEach(f=>{
  const cap=f.querySelector('figcaption');
  f.setAttribute('tabindex','0');f.setAttribute('role','button');f.setAttribute('aria-expanded','false');
  f.setAttribute('aria-label','Enlarge this photo'+(cap?': '+cap.textContent.trim():''));
- f.addEventListener('click',e=>{e.stopPropagation();const willOpen=!f.classList.contains('open');closePrints();if(willOpen){f.classList.add('open');f.setAttribute('aria-expanded','true');dimEl.classList.add('on')}});
+ f.addEventListener('click',e=>{e.stopPropagation();const willOpen=!f.classList.contains('open');closePrints();if(willOpen)openPrint(f)});
  f.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f.click()}});
 });
 dimEl.addEventListener('click',closePrints);
