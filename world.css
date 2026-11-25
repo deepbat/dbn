@@ -51,9 +51,9 @@ body.w-ready .life .hometown{background:linear-gradient(180deg,#0000,#00000030);
 body.w-ready .scn{position:relative;z-index:1;background:transparent;padding:0;margin:0}
 .st{position:relative;--ink:#fff4de;--acc:#ffb45a;color:var(--ink)}
 .st-desk{--ink:#fff4de;--acc:#ffb45a}.st-work{--ink:#e9fffb;--acc:#2fe0c4}.st-life{--ink:#fff;--acc:#ffe0a8}.st-hello{--ink:#fbeee0;--acc:#f5abc7}
-.st-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.st-stage{position:sticky;top:var(--hh,64px);height:calc(100vh - var(--hh,64px));height:calc(100svh - var(--hh,64px));overflow:hidden}
 .st-stage>*{--i:1;--o:0}
-.st-tag{position:absolute;left:max(16px,4vw);top:84px;font:500 11px/1 Mono,ui-monospace,monospace;letter-spacing:.16em;opacity:.8;z-index:3}
+.st-tag{position:absolute;left:max(16px,4vw);top:16px;font:500 11px/1 Mono,ui-monospace,monospace;letter-spacing:.16em;opacity:.8;z-index:3}
 .st-giant{position:absolute;left:0;right:0;top:50%;margin:0;padding:0 5vw;font:400 clamp(70px,24vw,300px)/.86 Instrument,Georgia,serif;letter-spacing:-.035em;text-align:center;text-shadow:0 6px 50px #0006;
  opacity:calc(1 - var(--o)*1.05);transform:translate3d(0,calc(-50% - var(--o)*9vh),0) scale(calc(1 + var(--o)*.9));filter:blur(calc(var(--o)*8px));will-change:transform,opacity}
 .st-giant em{color:var(--acc);font-style:italic}
@@ -106,3 +106,6 @@ body.w-ready .scn{position:relative;z-index:1;background:transparent;padding:0;m
 @media (min-width:900px){.st-giant{font-size:clamp(120px,17vw,300px)}.st-work .st-giant{font-size:clamp(100px,14vw,240px)}.st-sheet{width:560px}.st-term{top:calc(50% + 17vw)}}
 @media (prefers-reduced-motion:reduce){.st{height:auto!important}.st-stage{position:relative;height:auto;min-height:100svh;overflow:visible;padding:100px 5vw 40px}.st-stage>*{position:relative!important;left:auto!important;top:auto!important;transform:none!important;opacity:1!important;filter:none!important;margin:20px auto!important;width:auto;max-width:560px}.st-bigword{display:none}}
 @media (min-width:900px){.st-desk .st-giant{font-size:clamp(100px,12vw,220px)}.st-life .st-giant{font-size:clamp(100px,12vw,220px)}.st-hello .st-giant{font-size:clamp(100px,14vw,260px)}}
+.st-work .st-sub{bottom:auto;top:8vh}
+html,body{overflow-x:clip}
+@media (min-width:900px){.st-sub{bottom:7vh}.st-cue{display:none}}
