@@ -1,0 +1,49 @@
+/* dbn scene world: one fixed backdrop behind the sections below the hero, scroll-driven. */
+#world{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .5s ease}
+body.w-on #world{opacity:1;visibility:visible}
+#world .w-scene{position:absolute;inset:0;opacity:0;overflow:hidden;will-change:opacity}
+#world .w-art{position:absolute;inset:-6%;will-change:transform}
+#world .w-word{position:absolute;left:0;top:50%;margin:0;font:italic 400 clamp(180px,42vw,640px)/.8 Instrument,Georgia,serif;letter-spacing:-.04em;white-space:nowrap;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.16);will-change:transform;transform:translate3d(0,-50%,0)}
+#w-canvas{position:absolute;inset:0;width:100%;height:100%}
+#w-cap{position:absolute;left:max(14px,4vw);bottom:14px;font:500 10px/1.5 Mono,ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:#fff;text-shadow:0 1px 8px #0008;opacity:.85;max-width:60vw}
+#w-cap b{font-weight:500;opacity:.6;margin-right:.8em}
+/* scene 1: the desk, warm wood and a lamp */
+.s-desk{background:linear-gradient(180deg,#1a0f0a 0%,#2b180e 55%,#3a2214 100%)}
+.s-desk .w-art{background:radial-gradient(60% 45% at 82% 12%,#ffb45a66,#ffb45a00 70%),radial-gradient(40% 30% at 15% 90%,#ff7a3a33,#0000 70%),repeating-linear-gradient(90deg,#ffffff06 0 2px,#0000 2px 90px)}
+.s-desk::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(180deg,#0000,#00000070),repeating-linear-gradient(0deg,#ffffff08 0 1px,#0000 1px 14px)}
+/* scene 2: the workbench, a glowing screen */
+.s-build{background:linear-gradient(180deg,#06141d 0%,#0a2a33 60%,#0c3a40 100%)}
+.s-build .w-art{background:radial-gradient(70% 50% at 50% 0%,#2fe0c433,#0000 70%),linear-gradient(#2fe0c410 1px,#0000 1px) 0 0/48px 48px,linear-gradient(90deg,#2fe0c410 1px,#0000 1px) 0 0/48px 48px}
+.s-build::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#0000 0 3px,#00000022 3px 4px)}
+/* scene 3: outside, sky and an autumn floor */
+.s-life{background:linear-gradient(180deg,#5aaeff 0%,#a9d8ff 52%,#e9f5ff 68%)}
+.s-life .w-art{background:radial-gradient(28% 12% at 22% 22%,#fff,#fff0 70%),radial-gradient(34% 13% at 78% 34%,#fffe,#fff0 70%),radial-gradient(22% 9% at 55% 14%,#fff9,#fff0 70%)}
+.s-life::after{content:"";position:absolute;left:-5%;right:-5%;bottom:0;height:38%;background:radial-gradient(120% 80% at 50% 100%,#c2490f,#e0731a 45%,#e0731a00 75%),linear-gradient(180deg,#0000,#a53a0a66)}
+.s-life .w-word{-webkit-text-stroke-color:rgba(255,255,255,.55)}
+/* scene 4: say hello, dusk */
+.s-hello{background:linear-gradient(180deg,#0b0f2e 0%,#2a1650 55%,#6b2a4f 100%)}
+.s-hello .w-art{background:radial-gradient(50% 40% at 50% 100%,#ff8a4a66,#0000 70%),radial-gradient(30% 20% at 80% 15%,#f5abc733,#0000 70%)}
+/* sections become transparent windows onto the scenes */
+body.w-ready .about,body.w-ready .work,body.w-ready .life,body.w-ready .contact{background:transparent;position:relative;z-index:1}
+body.w-ready .hero{position:relative;z-index:2}
+body.w-ready .about{color:#f6ead4}
+body.w-ready .about .marquee{border-top-color:#f6ead455}
+body.w-ready .about h2,body.w-ready .about .lead{color:#fff4de}
+body.w-ready .about h2 em{color:#ffb45a}
+body.w-ready .work{color:#d9fff6}
+body.w-ready .work-heading h2{color:#e9fffb}
+body.w-ready .work-heading h2 em{color:#2fe0c4}
+body.w-ready .life{color:#fff}
+body.w-ready .life h2{color:#fff;text-shadow:0 3px 24px #1a5bb088}
+body.w-ready .life h2 em{color:#ffe0a8}
+body.w-ready .life-intro,body.w-ready .life .section-label,body.w-ready .life .section-label a{color:#0c3a73}
+body.w-ready .life .hometown{color:#fff;text-shadow:0 2px 14px #7a2a0a}
+body.w-ready .life .album-footer{color:#fff}
+body.w-ready .contact{color:#fbeee0}
+body.w-ready .contact h2{text-shadow:0 2px 0 #f5abc766,0 8px 40px #ff8a4a88}
+@media (max-width:700px){#world .w-word{font-size:62vw}#w-cap{font-size:9px;max-width:70vw}}
+@media (prefers-reduced-motion:reduce){#world .w-scene,#world{transition:none}}
+body.w-ready .about .paper,body.w-ready .about .paper dd,body.w-ready .about .paper dt,body.w-ready .about .paper span{color:#212322}
+body.w-ready .about .paper-stamp{color:#c0302a}
+body.w-ready .about .scribble{color:#ffd9a0}
+body.w-ready .life .hometown{background:linear-gradient(180deg,#0000,#00000030);text-shadow:0 2px 16px #5a1c06aa}
