@@ -109,3 +109,4 @@ body.w-ready .scn{position:relative;z-index:1;background:transparent;padding:0;m
 .st-work .st-sub{bottom:auto;top:8vh}
 html,body{overflow-x:clip}
 @media (min-width:900px){.st-sub{bottom:7vh}.st-cue{display:none}}
+.st-chips{bottom:84px}
