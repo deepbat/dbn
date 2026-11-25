@@ -53,3 +53,13 @@ function loop(t){requestAnimationFrame(loop);var dt=Math.min(50,t-last||16);last
 if(reduce){draw(0,16)}else requestAnimationFrame(loop);
 addEventListener('resize',init);
 })();
+/* v2 stage driver: each .st is a pinned full-screen stage; scroll progress sets --i (enter) and --o (exit) on its beats. */
+(function(){
+var sts=[].slice.call(document.querySelectorAll('.st')),beats=[];
+sts.forEach(function(st){[].slice.call(st.querySelectorAll('[data-r]')).forEach(function(el){var r=el.getAttribute('data-r').split(',').map(Number);beats.push({st:st,el:el,r:r})})});
+function c(x){return x<0?0:x>1?1:x}
+function run(){var vh=innerHeight;sts.forEach(function(st){st._p=c(-st.getBoundingClientRect().top/Math.max(1,st.offsetHeight-vh))});
+beats.forEach(function(b){var p=b.st._p,r=b.r,i=c((p-r[0])/Math.max(.001,r[1]-r[0])),o=r.length>3?c((p-r[2])/Math.max(.001,r[3]-r[2])):0;b.el.style.setProperty('--i',i.toFixed(3));b.el.style.setProperty('--o',o.toFixed(3));})}
+var busy=false;function q(){if(!busy){busy=true;requestAnimationFrame(function(){busy=false;run()})}}
+addEventListener('scroll',q,{passive:true});addEventListener('resize',q);run();
+})();
