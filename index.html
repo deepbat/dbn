@@ -120,7 +120,7 @@ img.closeup-shot:hover{transform:rotate(0) scale(1.04)}
 <div class="w-object hello-moon" data-depth=".5"></div><div class="w-object hello-ring" data-depth="1"><i></i></div>
 <div class="w-object hello-star hello-star-one" data-depth=".8">✦</div><div class="w-object hello-star hello-star-two" data-depth="1.25">✦</div><div class="w-object hello-star hello-star-three" data-depth=".65">✦</div>
 <div class="w-object hello-bubble" data-depth=".9">hello<span>↗</span></div><b class="w-word">HELLO</b></div>
-<canvas id="w-canvas"></canvas><div id="w-cap"></div></div>
+<canvas id="w-3d"></canvas><canvas id="w-canvas"></canvas><div id="w-cap"></div></div>
 <main>
 <section id="home" class="hero">
 <div class="hero-title"><p class="eyebrow">DEEPAK BATRA · JALANDHAR, INDIA</p><h1>DEEPAK<span class="dot">.</span><em>in person</em></h1></div>
@@ -266,4 +266,5 @@ const revIO=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){e
 document.querySelectorAll('.depth-in,.contact-links,.skills,.album').forEach(el=>revIO.observe(el));
 </script>
 <script src="world.js"></script>
+<script type="module" src="world-3d.js"></script>
 </body></html>
