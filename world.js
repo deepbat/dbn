@@ -12,6 +12,16 @@ var ptr={x:-999,y:-999,on:0};
 addEventListener('pointermove',function(e){ptr.x=e.clientX;ptr.y=e.clientY;ptr.on=1},{passive:true});
 addEventListener('pointerdown',function(e){ptr.x=e.clientX;ptr.y=e.clientY;ptr.on=1},{passive:true});
 addEventListener('pointerup',function(){ptr.on=0},{passive:true});
+var objects=[].slice.call(host.querySelectorAll('.w-object'));
+function moveObjects(){
+  if(reduce){objects.forEach(function(el){el.style.translate='0 0'});return}
+  var mx=ptr.x>0?((ptr.x/W)-.5)*2:0, my=ptr.y>0?((ptr.y/H)-.5)*2:0;
+  objects.forEach(function(el){
+    var depth=parseFloat(el.getAttribute('data-depth')||1);
+    var x=(mx*depth*24).toFixed(1), y=(my*depth*18).toFixed(1);
+    el.style.translate=x+'px '+y+'px';
+  });
+}
 function R(a,b){return a+Math.random()*(b-a)}
 var N=mob?{dust:28,code:14,leaf:16,ember:26}:{dust:60,code:30,leaf:30,ember:50};
 var dust=[],code=[],leaves=[],embers=[];
@@ -49,8 +59,8 @@ if(heroEnd>=vh*.92)best=-1;setCap(best)}
 var busy=false;addEventListener('scroll',function(){if(!busy){busy=true;requestAnimationFrame(function(){busy=false;scroll()})}},{passive:true});
 init();document.body.classList.add('w-ready');scroll();
 var last=0,run=false;
-function loop(t){requestAnimationFrame(loop);var dt=Math.min(50,t-last||16);last=t;if(document.hidden||!document.body.classList.contains('w-on'))return;draw(t,dt)}
-if(reduce){draw(0,16)}else requestAnimationFrame(loop);
+function loop(t){requestAnimationFrame(loop);var dt=Math.min(50,t-last||16);last=t;if(document.hidden||!document.body.classList.contains('w-on'))return;draw(t,dt);moveObjects()}
+if(reduce){draw(0,16);moveObjects()}else requestAnimationFrame(loop);
 addEventListener('resize',init);
 })();
 /* v2 stage driver: each .st is a pinned full-screen stage; scroll progress sets --i (enter) and --o (exit) on its beats. */
