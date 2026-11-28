@@ -5,7 +5,8 @@ const host = document.getElementById('world');
 if (!canvas || !host) throw new Error('3D world mount not found');
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: true, powerPreference: 'high-performance'});
+const renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: false, powerPreference: 'high-performance'});
+renderer.setClearColor(0x000000, 1); // opaque black: with mix-blend-mode screen, empty areas show the scene art and objects additively lighten it
 renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -108,7 +109,7 @@ const key = new THREE.DirectionalLight(0xffc47b, 4); key.position.set(4,7,6); ke
 const fill = new THREE.PointLight(palette.teal, 2.5, 14); fill.position.set(-4,2,4); scene.add(fill);
 
 let width=innerWidth, height=innerHeight, pointerX=0, pointerY=0, targetX=0, targetY=0, current=0;
-function resize(){width=innerWidth;height=innerHeight;renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
+function resize(){width=innerWidth;height=innerHeight;renderer.setSize(width,height,false);camera.aspect=width/height;camera.position.z=width<700?14.5:10;camera.updateProjectionMatrix();}
 function pointer(e){pointerX=(e.clientX/width-.5)*2;pointerY=(e.clientY/height-.5)*2;}
 addEventListener('resize',resize); addEventListener('pointermove',pointer,{passive:true}); resize();
 function sceneIndex(){
@@ -118,7 +119,7 @@ function sceneIndex(){
   return best;
 }
 function activate(i){['desk','build','life','hello'].forEach((name,n)=>{groups[name].visible=n===i;});}
-function animate(t=0){requestAnimationFrame(animate); const index=sceneIndex(); if(index>=0) current += (index-current)*.06; const i=Math.round(current); activate(i);
+function animate(t=0){requestAnimationFrame(animate); const index=sceneIndex(); current += ((index>=0?index:-1)-current)*.06; if(index<0 && current<=-0.95){activate(-1); return;} const i=Math.round(current); activate(i);
   targetX=reduce?0:pointerX; targetY=reduce?0:pointerY;
   root.rotation.y += ((targetX*.12)-root.rotation.y)*.04; root.rotation.x += ((-targetY*.07)-root.rotation.x)*.04;
   camera.position.x += (targetX*.7-camera.position.x)*.025; camera.position.y += (1.2-targetY*.35-camera.position.y)*.025;
